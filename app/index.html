@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Scalr Farm Migrator</title>
+  <link type="image/x-icon" href="static/favicon.ico" rel="shortcut icon" />
+</head>
+<body ng-app="ScalrStorefront">
+  <div class="container">
+
+    <div class="header">
+      <h1>Scalr Storefront</h1>
+      <p>A simplified user experience for Scalr</p>
+    </div>
+
+    <div class="auth">
+      <h2>Please enter your API credentials to get started</h2>
+      <form id="loginForm">
+        <label for="auth-server">
+          <span class="auth-label">Server</span>
+          <input required id="auth-server" class="auth-input" name="server" value="https://my.scalr.com/" type="text"/>
+        </label>
+        <br/>
+        <label for="auth-keyid">
+          <span class="auth-label">API Key ID</span>
+          <input required id="auth-keyid" class="auth-input" name="keyid" placeholder="Required" value="" type="text"/>
+        </label>
+        <br/>
+        <label for="auth-secret">
+          <span class="auth-label">Secret</span>
+          <input required id="auth-secret" class="auth-input" name="secret" placeholder="Required" value="" type="password"/>
+        </label>
+        <br/>
+        <div class="button-container">
+          <button type="button" class="auth-button" id="auth-button-done">Done</button>
+          <button type="button" class="auth-button store-dependant" id="auth-button-save">Save credentials locally</button>
+          <button type="button" class="auth-button store-dependant" id="auth-button-unsave">Delete saved credentials</button>
+        </div>
+        <p>Saving your credentials in your browser allows you not to have to fill them in every time you visit this page</p>
+        <p>Saving credentials locally is not available because your browser doesn't support local storage</p>
+      </form>
+    </div>
+
+    <div class="running-farms">
+      <h2>Your Farms</h2>
+      <p>You don't have any Farm running at the moment! Launch one from the selection below.</p>
+      <ul>
+       <li class="running-farm-desc">
+        <img class="running-farm-logo" src={{}}/>
+        <p>Farm Name<br/><a href="#" onclick="javascript:void 0;">Details</a></p>
+        <div class="running-farm-details">
+          <p>Running since: </p>
+        </div>
+       </li>
+      </ul>
+    </div>
+
+    <div class="available-farms">
+      <h2>Available Farms</h2>
+      <p>It looks like no Farms are available in your environment! Ask your administrator to add template Farms.</p>
+      <p>Select a Farm to launch</p>
+      <ul>
+       <li class="available-farm-desc">
+        <img class="available-farm-logo" src={{}}/>
+        <p>Name:{{ Template name }}<br/>
+        Estimated price: $15/day<br/>
+        <a href="#" onclick="javascript:void 0;">Configure launch</a></p>
+        <div class="available-farm-launch">
+          <form>
+            <label for="launch-farm-name">
+              Name:
+              <input required id="launch-farm-name" class="launch-farm-input" type="text"/>
+            </label>
+            <!-- TODO: Farm scheduling -->
+            <div id="button-container">
+              <button type="button" class="auth-button" id="auth-button-done">Done</button>
+              <button type="button" class="auth-button" id="auth-button-save">Cancel</button>
+            </div>
+          </form>
+        </div>
+       </li>
+      </ul>
+    </div>
+
+  </div>
+
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script>
+  <script src="static/angular-local-storage.min.js"></script>
+  <script src="storefront.js"></script>
+</body>
+</html>
