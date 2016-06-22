@@ -115,7 +115,7 @@
 
   // CommonJS/nodeJS Loader
   if (typeof module !== 'undefined' && module.exports) {
-    module.exports = showdown;
+    module.exports = ScalrAPI;
 
   // AMD Loader
   } else if (typeof define === 'function' && define.amd) {
