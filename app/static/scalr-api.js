@@ -96,7 +96,7 @@
 
   ScalrAPI.makeOnScrollSuccess = function(path, onSuccess, onError, previousData, that) {
     return function(response) {
-      var result = response.data;
+      var result = response;
       var data = result.data.concat(previousData);
 
       if (result.pagination.next) {
