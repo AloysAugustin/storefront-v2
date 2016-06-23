@@ -7,7 +7,7 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
    * Credentials management
    */
   $scope.defaultApiSettings = {
-    apiUrl: "https://api.scalr.net/",
+    apiUrl: "https://my.scalr.com/",
     keyId: "",
     secretKey: "",
     envId: ""
@@ -53,7 +53,7 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
    * Farms
    */
   $scope.myFarms = [];
-  $scope.availableFarms = [];
+  $scope.availableFarmSets = [];
 
   $scope.showError = function(reason, obj) {
     console.log(reason, obj);
@@ -70,9 +70,32 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
     $scope.showError("Error fetching the list of Farms, check your credentials", response);
   };
 
+  $scope.addFarmToSets = function(farm) {
+    farm.platform = farm.name.substring(1, farm.name.indexOf(']'))
+    farm.name = farm.name.substring(farm.name.indexOf(']')+1, farm.name.length);
+    farm.new_name = farm.name;
+    var id = farm.id.toString();
+    for (var i = 0; i < $scope.availableFarmSets.length; i ++) {
+      if ($scope.availableFarmSets[i].name == farm.name) {
+        $scope.availableFarmSets[i].farms[id] = farm;
+        return;
+      }
+    }
+    var farms = {};
+    farms[id] = farm;
+    $scope.availableFarmSets.push({
+      'name': farm.name,
+      'logo': farm.description.logo,
+      'description': farm.description.description,
+      'selected': id,
+      'show_launch': false,
+      'farms': farms
+    });
+  };
+
   $scope.farmsFetched = function(response) {
     $scope.myFarms.length = 0;
-    $scope.availableFarms.length = 0;
+    $scope.availableFarmSets.length = 0;
 
     var farms = response.all_data;
     for (var i = 0; i < farms.length; i ++) {
@@ -86,12 +109,11 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
           $scope.updateFarmDetails(farm);
         } else if (farm.name.startsWith('[TEMPLATE]')) {
           farm.name = farm.name.replace('[TEMPLATE]', '').trim();
-          farm.show_launch = false;
-          farm.new_name = farm.name;
-          $scope.availableFarms.push(farm);
+          $scope.addFarmToSets(farm);
         }
       } catch (e) {
         // non-interesting farm, pass
+        console.log("Skipped farm: ", farm);
       }
     }
     $scope.$apply();
@@ -168,8 +190,6 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
   $scope.serversFetched = function(response, farm) {
     var servers = response.data;
     farm.servers = servers;
-    console.log(farm);
-    console.log($scope.availableFarms);
   };
 
   $scope.showDetails = function(farm) {

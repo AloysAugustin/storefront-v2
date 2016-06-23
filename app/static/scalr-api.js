@@ -34,7 +34,7 @@
                    'X-Scalr-Date' : date,
                    'X-Scalr-Debug' : '1'};
     var toSign = [method, date, path, params, body].join('\n');
-console.log(toSign);
+
     var signature = CryptoJS.enc.Base64.stringify(CryptoJS.HmacSHA256(toSign, this.apiSettings.secretKey));
 
     headers['X-Scalr-Signature'] = this.signatureVersion + ' ' + signature;
