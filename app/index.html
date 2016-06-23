@@ -7,6 +7,7 @@
   <link type="image/x-icon" href="static/favicon.ico" rel="shortcut icon" />
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
   <link rel="stylesheet" href="static/css/main.css" type='text/css'>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" type='text/css'>
   <link href='https://fonts.googleapis.com/css?family=Open+Sans:300|Montserrat' rel='stylesheet' type='text/css'>
 </head>
 <body ng-app="ScalrStorefront">
@@ -54,13 +55,20 @@
     <div class="running-farms">
       <h2>Your Farms</h2>
       <div ng-hide="myFarms.length > 0"><p>You don't have any Farm running at the moment! Launch one from the selection below.</p></div>
-      <ul ng-hide="myFarms.length == 0" class="ng-hide">
-       <li ng-repeat="farm in myFarms" class="running-farm-desc">
-        <img class="running-farm-logo" src="{{farm.description.logo}}"/>
-        <p>{{farm.name}}<br/><a href="#" ng-click="showDetails(farm);">Details</a></p>
+      <div ng-hide="myFarms.length == 0" class="ng-hide">
+       <div ng-repeat="farm in myFarms" class="running-farm-desc">
+        <div class="farm">
+          <img class="running-farm-logo farm-image hidden-xs" src="https://www.mysql.fr/common/logos/logo-mysql-170x115.png"/>
+          <div class='farm-body'>
+            <h3>{{farm.name}}</h3>
+            <p>{{farm.description.description}}</p>
+          </div>
+          <ul class="list-inline farm-controls hidden-sm hidden-xs">
+              <li><i class="fa fa-chevron-down" ng-click="showDetails(farm);"></i></li>
+            </ul>
+        </div>
         <div class="running-farm-{{farm.id}}-details" ng-show="farm.showDetails">
-          <p>Servers:</p>
-          <table>
+          <table class='table'>
             <thead>
               <tr>
                 <td>Hostname</td>
@@ -83,9 +91,12 @@
             </tbody>
           </table>
         </div>
-       </li>
-      </ul>
+       </div>
+      </div>
     </div>
+
+    
+
 
     <div class="available-farms">
       <h2>Available Farms</h2>

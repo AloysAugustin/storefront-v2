@@ -1,0 +1,64 @@
+/* List items */
+
+.farm {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  border-radius: 3px;
+  transition: all 0.15s ease;
+  cursor: default;
+}
+
+/* Body design */
+.farm-body {
+  flex: 1 1 auto;
+}
+.farm-body h3 {
+  font-weight: bold;
+  font-size: 23px;
+  margin-top: 0;
+  font-family: 'Open Sans', sans-serif;
+}
+.farm-body p {
+  font-weight: lighter;
+  color: #999999;
+  margin-bottom: 0;
+  font-size: 16px;
+  font-family: 'Open Sans', sans-serif;
+}
+
+/* farm image */
+.farm-image {
+  border-radius: 10px;
+  margin-right: 20px;
+  width: 100px;
+}
+
+/* Hover effects */
+.farm:hover {
+  background: #f7f7fa;
+  cursor: pointer;
+}
+
+.farm-controls {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 0px;
+  color: red;
+}
+.farm-controls a {
+  padding: 0 20px;
+  font-size: 17px;
+  color: red;
+}
+.farm-controls a:hover {
+  color: red !important;
+}
+.farm-controls-hidden a {
+  color: transparent;
+  font-size: 15px;
+  transition: all 0.15s ease;
+  border-color: transparent;
+}
+.farm:hover .farm-controls-hidden a { color: red }
