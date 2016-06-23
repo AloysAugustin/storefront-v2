@@ -51,12 +51,34 @@
     <div class="running-farms">
       <h2>Your Farms</h2>
       <div ng-hide="myFarms.length > 0"><p>You don't have any Farm running at the moment! Launch one from the selection below.</p></div>
-      <ul ng-hide="myFarms.length == 0">
+      <ul ng-hide="myFarms.length == 0" class="ng-hide">
        <li ng-repeat="farm in myFarms" class="running-farm-desc">
-        <img class="running-farm-logo" src=""/>
-        <p>Farm Name<br/><a href="#" onclick="javascript:void 0;">Details</a></p>
-        <div class="running-farm-details">
-          <p>Running since: </p>
+        <img class="running-farm-logo" src="{{farm.description.logo}}"/>
+        <p>{{farm.name}}<br/><a href="#" ng-click="showDetails(farm);">Details</a></p>
+        <div class="running-farm-{{farm.id}}-details" ng-show="farm.showDetails">
+          <p>Servers:</p>
+          <table>
+            <thead>
+              <tr>
+                <td>Hostname</td>
+                <td>Status</td>
+                <td>Platform</td>
+                <td>Public IP</td>
+                <td>Private IP</td>
+                <td>Launched</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="s in farm.servers">
+                <td>{{s.hostname}}</td>
+                <td>{{s.status}}</td>
+                <td>{{s.cloudPlatform}}</td>
+                <td>{{s.publicIp[0]}}</td>
+                <td>{{s.privateIp[0]}}</td>
+                <td>{{s.launched}}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
        </li>
       </ul>
@@ -65,25 +87,24 @@
     <div class="available-farms">
       <h2>Available Farms</h2>
       <div ng-hide="availableFarms.length > 0"><p>It looks like no Farms are available in your environment! Ask your administrator to add template Farms.</p></div>
-      <div ng-hide="availableFarms.length == 0">
+      <div ng-hide="availableFarms.length == 0" class="ng-hide">
       <p>Select a Farm to launch:</p>
       <ul>
-        <p>{{availableFarms.length}}</p>
        <li ng-repeat="farm in availableFarms" class="available-farm-desc">
         <img class="available-farm-logo" src=""/>
         <p>Name:{{ farm.name }}<br/>
         Estimated price: $15/day<br/>
-        <a href="#" onclick="javascript:void 0;">Configure launch</a></p>
-        <div class="available-farm-launch">
+        <a href="#" ng-click="farm.show_launch = ! farm.show_launch">Configure launch</a></p>
+        <div class="available-farm-launch" id="farm-{{farm.id}}-launch" ng-show="farm.show_launch">
           <form>
-            <label for="launch-farm-name">
+            <label for="launch-farm-{{farm.id}}-name">
               Name:
-              <input required id="launch-farm-name" class="launch-farm-input" type="text"/>
+              <input required id="launch-farm-{{farm.id}}-name" class="launch-farm-input" ng-model="farm.new_name" type="text"/>
             </label>
             <!-- TODO: Farm scheduling -->
             <div id="button-container">
-              <button type="button" class="auth-button" id="auth-button-done">Done</button>
-              <button type="button" class="auth-button" id="auth-button-save">Cancel</button>
+              <button type="button" class="auth-button" id="button-farm-{{farm.id}}-done" ng-click="cloneAndLaunch(farm);">Done</button>
+              <button type="button" class="auth-button" id="button-farm-{{farm.id}}-cancel" ng-click="">Cancel</button>
             </div>
           </form>
         </div>

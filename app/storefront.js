@@ -79,21 +79,27 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
       var farm = farms[i];
       try {
         farm.description = JSON.parse(farm.description);
-        if ('createdBy' in farm.description && farm.description.createdBy == $scope.apiSettings.keyId) {
-          $scope.myFarms.push(farm)
+        if (farm.name.startsWith('['+$scope.apiSettings.keyId+']')) {
+          farm.name = farm.name.replace('['+$scope.apiSettings.keyId+']', '');
+          farm.showDetails = false;
+          $scope.myFarms.push(farm);
+          $scope.updateFarmDetails(farm);
         } else if (farm.name.startsWith('[TEMPLATE]')) {
           farm.name = farm.name.replace('[TEMPLATE]', '').trim();
+          farm.show_launch = false;
+          farm.new_name = farm.name;
           $scope.availableFarms.push(farm);
         }
       } catch (e) {
         // non-interesting farm, pass
       }
     }
-    console.log($scope.availableFarms);
     $scope.$apply();
   };
 
-  $scope.cloneAndLaunch = function(farmId, newName) {
+  $scope.cloneAndLaunch = function(farm) {
+    farmId = farm.id;
+    newName = '[' + $scope.apiSettings.keyId + ']' + farm.new_name;
     var path = '/api/v1beta0/user/{envId}/farms/{farmId}/actions/clone/';
     path = path.replace('{envId}', $scope.apiSettings.envId);
     path = path.replace('{farmId}', farmId);
@@ -107,18 +113,20 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
 
   $scope.farmCloned = function(response) {
     //Start by updating the description
-    var farmId = response.data.id;
+    /*var farmId = response.data.id;
     var description = JSON.parse(response.data.description);
     description.createdBy = $scope.apiSettings.keyId;
     description.createdOn = new Date().toISOString();
     var path = '/api/v1beta0/user/{envId}/farms/{farmId}/';
     path = path.replace('{envId}', $scope.apiSettings.envId);
     path = path.replace('{farmId}', farmId);
-    ScalrAPI.setSettings($scope.apiSettings);
-    ScalrAPI.edit(path, {'description': description}, $scope.farmUpdated, $scope.updateError);
+    ScalrAPI.edit(path, {
+      'description': JSON.stringify(description)
+    }, $scope.farmUpdated, $scope.updateError);*/
+    $scope.farmUpdated(response);
   };
 
-  $scope.updateError = function() {
+  $scope.updateError = function(response) {
     $scope.showError("Error updating the Farm's description", response);
   };
 
@@ -128,8 +136,7 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
     var path = '/api/v1beta0/user/{envId}/farms/{farmId}/actions/launch/';
     path = path.replace('{envId}', $scope.apiSettings.envId);
     path = path.replace('{farmId}', farmId);
-    ScalrAPI.setSettings($scope.apiSettings);
-    ScalrAPI.create(path, {name: newName}, $scope.farmLaunched, $scope.launchError);
+    ScalrAPI.create(path, '', $scope.farmLaunched, $scope.launchError);
   }
 
   $scope.launchError = function(response) {
@@ -159,8 +166,14 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
   };
 
   $scope.serversFetched = function(response, farm) {
-    var servers = reponse.data;
+    var servers = response.data;
     farm.servers = servers;
+    console.log(farm);
+    console.log($scope.availableFarms);
+  };
+
+  $scope.showDetails = function(farm) {
+    farm.showDetails = true;
   };
 
 
