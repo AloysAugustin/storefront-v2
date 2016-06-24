@@ -62,3 +62,13 @@
   border-color: transparent;
 }
 .farm:hover .farm-controls-hidden a { color: red }
+
+/* Padding */
+
+.padding-sm-top {
+  padding-top: 1em;
+}
+
+.control-label {
+    text-align: left !important;
+}
