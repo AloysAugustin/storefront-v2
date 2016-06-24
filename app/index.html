@@ -52,8 +52,8 @@
     </div>
 
     <ul class="nav nav-tabs" role="tablist">
-      <li role="presentation" class="active"><a href="#my_farms" aria-controls="my_farms" role="tab" data-toggle="tab">Your Farms</a></li>
-      <li role="presentation"><a href="#available_farms" aria-controls="available_farms" role="tab" data-toggle="tab">Available Farms</a></li>
+      <li role="presentation" class="active"><a href="#my_farms" aria-controls="my_farms" role="tab" data-toggle="tab">Your Applications</a></li>
+      <li role="presentation"><a href="#available_farms" aria-controls="available_farms" role="tab" data-toggle="tab">Available Applications</a></li>
     </ul>
 
     <div class="tab-content">
@@ -62,7 +62,7 @@
           <div class="running-farms">
             <div ng-hide="myFarms.length > 0">
               <p>
-                You don't have any Farm running at the moment! Launch one from the selection below.
+                You don't have any application running at the moment! Launch one from the selection below.
               </p>
             </div>
             <div ng-hide="myFarms.length == 0" class="ng-hide">
@@ -110,7 +110,7 @@
         <div class="available-farms">
         <div ng-hide="availableFarmSets.length > 0">
           <p>
-            It looks like no Farms are available in your environment! Ask your administrator to add template Farms.
+            It looks like no application are available in your environment! Ask your administrator to add application templates.
           </p>
         </div>
         <div ng-hide="availableFarmSets.length == 0" class="ng-hide">
