@@ -10,18 +10,41 @@
   <link href='https://fonts.googleapis.com/css?family=Open+Sans:300|Montserrat' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="static/css/main.css" type='text/css'>
 </head>
-<body ng-app="ScalrStorefront">
-  <div class="container" ng-controller="StorefrontController">
-
-    <div class="header">
+<body ng-app="ScalrStorefront" ng-controller="StorefrontController">
+  <div class="navbar-wagon">
+    <a href="/" class="navbar-wagon-brand">
+      <img src="static/scalr-logo.png" />
+    </a>
+    <div class="navbar-wagon-right hidden-xs hidden-sm">
+      <!-- <a href="" class="navbar-wagon-item navbar-wagon-link">Team</a> -->
+      <div class="navbar-wagon-item">
+        <div class="dropdown" ng-show="loggedIn && ! autoLoggedIn">
+          <img src="static/avatar.png" width='40' class="avatar dropdown-toggle" id="navbar-wagon-menu" data-toggle="dropdown">
+          <ul class="dropdown-menu dropdown-menu-right navbar-wagon-dropdown-menu">  
+            <li><a ng-show="! credentialsSaved" ng-click="saveApiSettings()" class="auth-button" id="auth-button-save2">Save credentials</a></li>
+            <li><a ng-click="clearApiSettings()" class="auth-button" id="auth-button-unsave">Delete saved credentials</a></li>
+            <li><a ng-click="loggedIn = false; autoLoggedIn = false" class="auth-button" id="auth-button-logout2">Log out</a></
+          </ul>
+        </div>
+        <div class="dropdown" ng-show="loggedIn && autoLoggedIn">
+          <img src="static/avatar.png" width='40' class="avatar dropdown-toggle" id="navbar-wagon-menu" data-toggle="dropdown">
+          <ul class="dropdown-menu dropdown-menu-right navbar-wagon-dropdown-menu">  
+            <li><a ng-click="clearApiSettings()" class="auth-button" id="auth-button-unsave">Delete saved credentials</a></li>
+            <li><a ng-click="loggedIn = false; autoLoggedIn = false" class="auth-button" id="auth-button-logout2">Log out</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="header banner" style="background-image: linear-gradient(-225deg, rgba(0,101,168,0.6) 0%, rgba(0,36,61,0.6) 50%), url('gfkdhk');">
+    <div class="banner-content">
       <h1>Scalr Storefront</h1>
       <p>A simplified user experience for Scalr</p>
     </div>
-
+  </div>
+  <div class="container">
     <div class="auth">
-      <h2>Login</h2>
       <div ng-show="! loggedIn">
-        <p>Please enter your Scalr API credentials to get started.</p>
         <form id="loginForm" class="form-horizontal padding-sm-top">
           <div class="form-group">
             <label for="auth-server" class="control-label col-sm-2">Server</label>
@@ -51,27 +74,13 @@
             <div class="col-sm-offset-2 col-sm-10">
               <button type="button" ng-click="apiSettingsDone()" class="auth-button btn" id="auth-button-done">Done</button>
               <button type="button" ng-click="saveApiSettings()" class="auth-button btn success" id="auth-button-save">Save credentials locally</button>
-              <p>Saving your credentials in your browser allows you not to have to fill them in every time you visit this page.</p>
             </div>
           </div>
         </form>
       </div>
-      <div ng-show="loggedIn && autoLoggedIn">
-        <p>You have been automatically logged in.</p>
-        <button type="button" ng-click="loggedIn = false; autoLoggedIn = false" class="auth-button btn btn-danger" id="auth-button-logout2">Logout</button>
-        <button type="button" ng-click="clearApiSettings()" class="auth-button btn btn-danger" id="auth-button-unsave">Delete saved credentials</button>
-      </div>
-      <div ng-show="loggedIn && ! autoLoggedIn">
-        <p>Logged in.</p>
-        <button type="button" ng-click="loggedIn = false" class="auth-button btn btn-danger" id="auth-button-logout">Logout</button>
-        <button type="button" ng-show="! credentialsSaved" ng-click="saveApiSettings()" class="auth-button btn" id="auth-button-save2">Save credentials</button>
-        <button type="button" ng-show="credentialsSaved" ng-click="clearApiSettings()" class="auth-button btn btn-danger" id="auth-button-unsave2">Delete saved credentials</button>
-      </div>
     </div>
 
-    <div ng-show="loggedIn">
-    <h2>Applications</h2>
-
+    <div ng-show="loggedIn" class="margin-lg">
     <ul class="nav nav-tabs" role="tablist">
       <li role="presentation" class="active"><a href="#my_farms" aria-controls="my_farms" role="tab" data-toggle="tab">My Applications</a></li>
       <li role="presentation"><a href="#available_farms" aria-controls="available_farms" role="tab" data-toggle="tab">Available Applications</a></li>
@@ -81,7 +90,7 @@
       <div role="tabpanel" class="tab-pane fade in active" id="my_farms">
         <div class="farms">
           <div class="running-farms">
-            <div ng-hide="myFarms.length > 0">
+            <div ng-hide="myFarms.length > 0" class="margin-md-top">
               <p>
                 You don't have any application running at the moment! Launch one from the selection below.
               </p>
@@ -139,7 +148,7 @@
       </div>
       <div role="tabpanel" class="tab-pane fade" id="available_farms">
         <div class="available-farms">
-        <div ng-hide="availableFarmSets.length > 0">
+        <div ng-hide="availableFarmSets.length > 0" class="margin-md-top">
           <p>
             It looks like no application are available in your environment! Ask your administrator to add application templates.
           </p>
