@@ -24,9 +24,11 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
     } else {
       $scope.storedApiSettings = storedApiSettings;
       $scope.apiSettings = angular.copy($scope.storedApiSettings);
-      $scope.autoLoggedIn = true;
-      $scope.loggedIn = true;
-      $scope.apiSettingsDone();
+      if ($scope.apiSettings.keyId.length > 0 && $scope.apiSettings.secretKey.length > 0 && $scope.apiSettings.envId.length > 0) {
+        $scope.autoLoggedIn = true;
+        $scope.apiSettingsDone();
+        $scope.credentialsSaved = true;
+      }
     }
   }
 
