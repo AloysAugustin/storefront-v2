@@ -19,40 +19,61 @@
     </div>
 
     <div class="auth">
-      <h2>Please enter your API credentials to get started</h2>
-      <form id="loginForm">
-        <label for="auth-server">
-          <span class="auth-label">Server</span>
-          <input required id="auth-server" class="auth-input" name="server" ng-model="apiSettings.apiUrl" type="text"/>
-        </label>
-        <br/>
-        <label for="auth-keyid">
-          <span class="auth-label">API Key ID</span>
-          <input required id="auth-keyid" class="auth-input" name="keyid" ng-model="apiSettings.keyId" placeholder="Required" type="text"/>
-        </label>
-        <br/>
-        <label for="auth-secret">
-          <span class="auth-label">Secret Key</span>
-          <input required id="auth-secret" class="auth-input" name="secret" ng-model="apiSettings.secretKey" placeholder="Required" type="password"/>
-        </label>
-        <br/> 
-        <label for="auth-envid">
-          <span class="auth-label">Environment ID</span>
-          <input required id="auth-envid" class="auth-input" name="envid" ng-model="apiSettings.envId" placeholder="Required" type="text"/>
-        </label>
-        <br/>
-        <div class="button-container">
-          <button type="button" ng-click="apiSettingsDone()" class="auth-button" id="auth-button-done">Done</button>
-          <button type="button" ng-click="saveApiSettings()" class="auth-button store-dependant" id="auth-button-save">Save credentials locally</button>
-          <button type="button" ng-click="clearApiSettings()" class="auth-button store-dependant" id="auth-button-unsave">Delete saved credentials</button>
-        </div>
-        <p>Saving your credentials in your browser allows you not to have to fill them in every time you visit this page</p>
-        <p>Saving credentials locally is not available because your browser doesn't support local storage</p>
-      </form>
+      <h2>Login</h2>
+      <div ng-show="! loggedIn">
+        <p>Please enter your Scalr API credentials to get started.</p>
+        <form id="loginForm" class="form-horizontal padding-sm-top">
+          <div class="form-group">
+            <label for="auth-server" class="control-label col-sm-2">Server</label>
+            <div class="col-sm-10">
+            <input required id="auth-server" class="auth-input form-control" name="server" ng-model="apiSettings.apiUrl" type="text"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="auth-keyid" class="control-label col-sm-2">API Key ID</label>
+            <div class="col-sm-10">
+            <input required id="auth-keyid" class="auth-input form-control" name="keyid" ng-model="apiSettings.keyId" placeholder="Required" type="text"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="auth-secret" class="control-label col-sm-2">Secret Key</label>
+            <div class="col-sm-10">
+            <input required id="auth-secret" class="auth-input form-control" name="secret" ng-model="apiSettings.secretKey" placeholder="Required" type="password"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="auth-envid" class="control-label col-sm-2">Environment ID</label>
+            <div class="col-sm-10">
+            <input required id="auth-envid" class="auth-input form-control" name="envid" ng-model="apiSettings.envId" placeholder="Required" type="text"/>
+            </div>
+          </div>
+          <div class='form-group padding-sm-top'>
+            <div class="col-sm-offset-2 col-sm-10">
+              <button type="button" ng-click="apiSettingsDone()" class="auth-button btn" id="auth-button-done">Done</button>
+              <button type="button" ng-click="saveApiSettings()" class="auth-button btn success" id="auth-button-save">Save credentials locally</button>
+              <p>Saving your credentials in your browser allows you not to have to fill them in every time you visit this page.</p>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div ng-show="loggedIn && autoLoggedIn">
+        <p>You have been automatically logged in.</p>
+        <button type="button" ng-click="loggedIn = false; autoLoggedIn = false" class="auth-button btn btn-danger" id="auth-button-logout2">Logout</button>
+        <button type="button" ng-click="clearApiSettings()" class="auth-button btn btn-danger" id="auth-button-unsave">Delete saved credentials</button>
+      </div>
+      <div ng-show="loggedIn && ! autoLoggedIn">
+        <p>Logged in.</p>
+        <button type="button" ng-click="loggedIn = false" class="auth-button btn btn-danger" id="auth-button-logout">Logout</button>
+        <button type="button" ng-show="! credentialsSaved" ng-click="saveApiSettings()" class="auth-button btn" id="auth-button-save2">Save credentials</button>
+        <button type="button" ng-show="credentialsSaved" ng-click="clearApiSettings()" class="auth-button btn btn-danger" id="auth-button-unsave2">Delete saved credentials</button>
+      </div>
     </div>
 
+    <div ng-show="loggedIn">
+    <h2>Applications</h2>
+
     <ul class="nav nav-tabs" role="tablist">
-      <li role="presentation" class="active"><a href="#my_farms" aria-controls="my_farms" role="tab" data-toggle="tab">Your Applications</a></li>
+      <li role="presentation" class="active"><a href="#my_farms" aria-controls="my_farms" role="tab" data-toggle="tab">My Applications</a></li>
       <li role="presentation"><a href="#available_farms" aria-controls="available_farms" role="tab" data-toggle="tab">Available Applications</a></li>
     </ul>
 
@@ -67,8 +88,8 @@
             </div>
             <div ng-hide="myFarms.length == 0" class="ng-hide">
               <div ng-repeat="farm in myFarms" class="running-farm-desc">
-                <div class="farm" ng-click="showDetails(farm);">
-                  <img class="running-farm-logo farm-image hidden-xs" src="https://www.mysql.fr/common/logos/logo-mysql-170x115.png"/>
+                <div class="farm" ng-click="toggleDetails(farm);">
+                  <img class="running-farm-logo farm-image hidden-xs" src="{{farm.description.logo}}"/>
                   <div class='farm-body'>
                     <h3>{{farm.name}}</h3>
                     <p>{{farm.description.description}}</p>
@@ -78,28 +99,38 @@
                   </ul>
                 </div>
                 <div class="running-farm-{{farm.id}}-details" ng-show="farm.showDetails">
-                  <table class='table'>
-                    <thead>
-                      <tr>
-                        <td>Hostname</td>
-                        <td>Status</td>
-                        <td>Platform</td>
-                        <td>Public IP</td>
-                        <td>Private IP</td>
-                        <td>Launched</td>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr ng-repeat="s in farm.servers">
-                        <td>{{s.hostname}}</td>
-                        <td>{{s.status}}</td>
-                        <td>{{s.cloudPlatform}}</td>
-                        <td>{{s.publicIp[0]}}</td>
-                        <td>{{s.privateIp[0]}}</td>
-                        <td>{{s.launched}}</td>
-                      </tr>
-                    </tbody>
-                  </table>
+                  <div ng-show="farm.servers.length == 0">
+                    <p>This application is not running</p>
+                    <button type="button" ng-click="startFarm(farm)" class="btn btn-success" id="farm-{{farm.id}}-button-start">Start application</button>
+                    <button type="button" ng-click="deleteFarm(farm)" class="btn btn-danger" id="farm-{{farm.id}}-button-delete">Delete application</button>
+                  </div>
+                  <div ng-hide="farm.servers.length == 0">
+                    <p>This application is running</p>
+                    <button type="button" ng-click="stopFarm(farm)" class="btn btn-danger" id="farm-{{farm.id}}-button-stop">Stop application</button>
+                    <h3>Servers</h3>
+                    <table class='table'>
+                      <thead>
+                        <tr>
+                          <td>Hostname</td>
+                          <td>Status</td>
+                          <td>Platform</td>
+                          <td>Public IP</td>
+                          <td>Private IP</td>
+                          <td>Launched</td>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr ng-repeat="s in farm.servers">
+                          <td>{{s.hostname}}</td>
+                          <td>{{s.status}}</td>
+                          <td>{{s.cloudPlatform}}</td>
+                          <td>{{s.publicIp[0]}}</td>
+                          <td>{{s.privateIp[0]}}</td>
+                          <td>{{s.launched}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
             </div>
@@ -116,7 +147,7 @@
         <div ng-hide="availableFarmSets.length == 0" class="ng-hide">
           <div ng-repeat="farmSet in availableFarmSets" class="available-farm-desc">
             <div class="farm">
-              <img class="running-farm-logo farm-image hidden-xs" src="https://www.mysql.fr/common/logos/logo-mysql-170x115.png" />
+              <img class="running-farm-logo farm-image hidden-xs" src="{{farmSet.logo}}" />
               <div class='farm-body'>
                 <h3>{{ farmSet.name }}</h3>
                 <p>{{ farmSet.description }}</p>
@@ -150,7 +181,7 @@
                 <div class='form-group padding-sm-top' id="button-container">
                   <div class="col-sm-offset-2 col-sm-10">
                     <button type="button" class="auth-button btn btn-success" id="button-farm-{{farmSet.selected}}-done" ng-click="cloneAndLaunch(farmSet.farms[farmSet.selected]);">Done</button>
-                    <button type="button" class="auth-button btn btn-danger" id="button-farm-{{farmSet.selected}}-cancel" ng-click="">Cancel</button>
+                    <button type="button" class="auth-button btn btn-danger" id="button-farm-{{farmSet.selected}}-cancel" ng-click="farmSet.show_launch = false">Cancel</button>
                   </div>
                 </div>
               </form>
@@ -158,6 +189,7 @@
          </li>
         </ul>
       </div>
+    </div>
     </div>
   </div>
 

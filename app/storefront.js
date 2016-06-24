@@ -24,16 +24,22 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
     } else {
       $scope.storedApiSettings = storedApiSettings;
       $scope.apiSettings = angular.copy($scope.storedApiSettings);
-      //$scope.apiSettingsDone();
+      $scope.autoLoggedIn = true;
+      $scope.loggedIn = true;
+      $scope.apiSettingsDone();
     }
   }
 
   $scope.saveApiSettings = function () {
     $scope.storedApiSettings = angular.copy($scope.apiSettings);
+    $scope.apiSettingsDone();
+    $scope.credentialsSaved = true;
   }
 
   $scope.clearApiSettings = function () {
     $scope.storedApiSettings = angular.copy($scope.defaultApiSettings);
+    $scope.autoLoggedIn = false;
+    $scope.loggedIn = false;
   }
 
   // Update storage on save
@@ -44,6 +50,7 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
 
   $scope.apiSettingsDone = function() {
     $scope.fetchAllFarms();
+    $scope.credentialsSaved = false;
     $scope.loggedIn = true;
   }
 
@@ -192,14 +199,41 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
     farm.servers = servers;
   };
 
-  $scope.showDetails = function(farm) {
-    farm.showDetails = true;
+  $scope.toggleDetails = function(farm) {
+    farm.showDetails = ! farm.showDetails;
   };
 
+  $scope.startFarm = function(farm) {
+    $scope.farmUpdated({data: farm});
+  };
+
+  $scope.stopFarm = function(farm) {
+    var path = '/api/v1beta0/user/{envId}/farms/{farmId}/actions/terminate/';
+    path = path.replace('{envId}', $scope.apiSettings.envId);
+    path = path.replace('{farmId}', farm.id);
+    ScalrAPI.create(path, '', $scope.fetchAllFarms, $scope.stopError);
+  };
+
+  $scope.stopError = function(response) {
+    $scope.showError('Error stopping farm', response);
+  };
+
+  $scope.deleteFarm = function(farm) {
+    var path = '/api/v1beta0/user/{envId}/farms/{farmId}/';
+    path = path.replace('{envId}', $scope.apiSettings.envId);
+    path = path.replace('{farmId}', farm.id);
+    ScalrAPI.delete(path, $scope.fetchAllFarms, $scope.deleteError);
+  };
+
+  $scope.stopError = function(response) {
+    $scope.showError('Error deleting farm', response);
+  };
 
   /*
    * Initialisation
    */
   $scope.loggedIn = false;
+  $scope.autoLoggedIn = false;
+  $scope.credentialsSaved = false;
   $scope.loadApiSettings();
 }]);
