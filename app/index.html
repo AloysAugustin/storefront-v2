@@ -83,49 +83,51 @@
                   </p>
                 </div>
                 <div ng-hide="myFarms.length == 0" class="ng-hide">
-                  <div ng-repeat="farm in myFarms" class="running-farm-desc">
-                    <div class="farm" ng-click="toggleDetails(farm);">
-                      <img class="running-farm-logo farm-image hidden-xs" src="{{farm.description.logo}}"/>
-                      <div class='farm-body'>
-                        <h3>{{farm.name}}</h3>
-                        <p>{{farm.description.description}}</p>
+                  <div ng-repeat="row in myFarms | chunkBy:2">
+                    <div ng-repeat="farm in row" class="running-farm-desc">
+                      <div class="farm" ng-click="toggleDetails(farm);">
+                        <img class="running-farm-logo farm-image hidden-xs" src="{{farm.description.logo}}"/>
+                        <div class='farm-body'>
+                          <h3>{{farm.name}}</h3>
+                          <p>{{farm.description.description}}</p>
+                        </div>
+                        <ul class="list-inline farm-controls hidden-sm hidden-xs">
+                          <li><i class="fa fa-chevron-down"></i></li>
+                        </ul>
                       </div>
-                      <ul class="list-inline farm-controls hidden-sm hidden-xs">
-                        <li><i class="fa fa-chevron-down"></i></li>
-                      </ul>
-                    </div>
-                    <div class="running-farm-{{farm.id}}-details" ng-show="farm.showDetails">
-                      <div ng-show="farm.servers.length == 0">
-                        <p>This application is not running</p>
-                        <button type="button" ng-click="startFarm(farm)" class="btn btn-success" id="farm-{{farm.id}}-button-start">Start application</button>
-                        <button type="button" ng-click="deleteFarm(farm)" class="btn btn-danger" id="farm-{{farm.id}}-button-delete">Delete application</button>
-                      </div>
-                      <div ng-hide="farm.servers.length == 0">
-                        <p>This application is running</p>
-                        <button type="button" ng-click="stopFarm(farm)" class="btn btn-danger" id="farm-{{farm.id}}-button-stop">Stop application</button>
-                        <h3>Servers</h3>
-                        <table class='table'>
-                          <thead>
-                            <tr>
-                              <td>Hostname</td>
-                              <td>Status</td>
-                              <td>Platform</td>
-                              <td>Public IP</td>
-                              <td>Private IP</td>
-                              <td>Launched</td>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr ng-repeat="s in farm.servers">
-                              <td>{{s.hostname}}</td>
-                              <td>{{s.status}}</td>
-                              <td>{{s.cloudPlatform}}</td>
-                              <td>{{s.publicIp[0]}}</td>
-                              <td>{{s.privateIp[0]}}</td>
-                              <td>{{s.launched}}</td>
-                            </tr>
-                          </tbody>
-                        </table>
+                      <div class="running-farm-{{farm.id}}-details" ng-show="farm.showDetails">
+                        <div ng-show="farm.servers.length == 0">
+                          <p>This application is not running</p>
+                          <button type="button" ng-click="startFarm(farm)" class="btn btn-success" id="farm-{{farm.id}}-button-start">Start application</button>
+                          <button type="button" ng-click="deleteFarm(farm)" class="btn btn-danger" id="farm-{{farm.id}}-button-delete">Delete application</button>
+                        </div>
+                        <div ng-hide="farm.servers.length == 0">
+                          <p>This application is running</p>
+                          <button type="button" ng-click="stopFarm(farm)" class="btn btn-danger" id="farm-{{farm.id}}-button-stop">Stop application</button>
+                          <h3>Servers</h3>
+                          <table class='table'>
+                            <thead>
+                              <tr>
+                                <td>Hostname</td>
+                                <td>Status</td>
+                                <td>Platform</td>
+                                <td>Public IP</td>
+                                <td>Private IP</td>
+                                <td>Launched</td>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr ng-repeat="s in farm.servers">
+                                <td>{{s.hostname}}</td>
+                                <td>{{s.status}}</td>
+                                <td>{{s.cloudPlatform}}</td>
+                                <td>{{s.publicIp[0]}}</td>
+                                <td>{{s.privateIp[0]}}</td>
+                                <td>{{s.launched}}</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -141,45 +143,47 @@
                 </p>
               </div>
               <div ng-hide="availableFarmSets.length == 0" class="ng-hide">
-                <div ng-repeat="farmSet in availableFarmSets" class="available-farm-desc">
-                  <div class="farm">
-                    <img class="running-farm-logo farm-image hidden-xs" src="{{farmSet.logo}}" />
-                    <div class='farm-body'>
-                      <h3>{{ farmSet.name }}</h3>
-                      <p>{{ farmSet.description }}</p>
+                <div ng-repeat="row in availableFarmSets | chunkBy:2">
+                  <div ng-repeat="farmSet in row" class="available-farm-desc">
+                    <div class="farm">
+                      <img class="running-farm-logo farm-image hidden-xs" src="{{farmSet.logo}}" />
+                      <div class='farm-body'>
+                        <h3>{{ farmSet.name }}</h3>
+                        <p>{{ farmSet.description }}</p>
+                      </div>
+                      <ul class="list-inline">
+                        <li><span class='btn btn-default' ng-click="farmSet.show_launch = ! farmSet.show_launch">Configure launch</span></li>
+                      </ul>
                     </div>
-                    <ul class="list-inline">
-                      <li><span class='btn btn-default' ng-click="farmSet.show_launch = ! farmSet.show_launch">Configure launch</span></li>
-                    </ul>
-                  </div>
-                  <div class="available-farm-launch" id="farm-{{farm.id}}-launch" ng-show="farmSet.show_launch">
-                    <form class="form-horizontal padding-sm-top">
-                      <div class="form-group">
-                        <label for="platform-select-{{farmSet.selected}}" class="control-label col-sm-2">Platform:</label>
-                        <div class="col-sm-10">
-                          <select id="platform-select-{{farmSet.selected}}" ng-model="farmSet.selected" ng-options="k as v.platform for (k,v) in farmSet.farms" class="form-control"></select>
+                    <div class="available-farm-launch" id="farm-{{farm.id}}-launch" ng-show="farmSet.show_launch">
+                      <form class="form-horizontal padding-sm-top">
+                        <div class="form-group">
+                          <label for="platform-select-{{farmSet.selected}}" class="control-label col-sm-2">Platform:</label>
+                          <div class="col-sm-10">
+                            <select id="platform-select-{{farmSet.selected}}" ng-model="farmSet.selected" ng-options="k as v.platform for (k,v) in farmSet.farms" class="form-control"></select>
+                          </div>
                         </div>
-                      </div>
-                      <div class="form-group">
-                        <label class="control-label col-sm-2">Estimated price: </label>
-                        <div class="col-sm-10">
-                          <p class="form-control-static">{{farmSet.farms[farmSet.selected].description.dailyPrice}}/day</p>
+                        <div class="form-group">
+                          <label class="control-label col-sm-2">Estimated price: </label>
+                          <div class="col-sm-10">
+                            <p class="form-control-static">{{farmSet.farms[farmSet.selected].description.dailyPrice}}/day</p>
+                          </div>
                         </div>
-                      </div>
-                      <div class="form-group">
-                        <label for="launch-farm-{{farmSet.selected}}-name" class="control-label col-sm-2">Name:</label>
-                        <div class="col-sm-10">
-                          <input required id="launch-farm-{{farmSet.selected}}-name" class="launch-farm-input form-control" ng-model="farmSet.farms[farmSet.selected].new_name" type="text"/>
+                        <div class="form-group">
+                          <label for="launch-farm-{{farmSet.selected}}-name" class="control-label col-sm-2">Name:</label>
+                          <div class="col-sm-10">
+                            <input required id="launch-farm-{{farmSet.selected}}-name" class="launch-farm-input form-control" ng-model="farmSet.farms[farmSet.selected].new_name" type="text"/>
+                          </div>
                         </div>
-                      </div>
-                    <!-- TODO: Farm scheduling -->
-                      <div class='form-group padding-sm-top' id="button-container">
-                        <div class="col-sm-offset-2 col-sm-10">
-                          <button type="button" class="auth-button btn btn-success" id="button-farm-{{farmSet.selected}}-done" ng-click="cloneAndLaunch(farmSet.farms[farmSet.selected]);">Done</button>
-                          <button type="button" class="auth-button btn btn-danger" id="button-farm-{{farmSet.selected}}-cancel" ng-click="farmSet.show_launch = false">Cancel</button>
+                      <!-- TODO: Farm scheduling -->
+                        <div class='form-group padding-sm-top' id="button-container">
+                          <div class="col-sm-offset-2 col-sm-10">
+                            <button type="button" class="auth-button btn btn-success" id="button-farm-{{farmSet.selected}}-done" ng-click="cloneAndLaunch(farmSet.farms[farmSet.selected]);">Done</button>
+                            <button type="button" class="auth-button btn btn-danger" id="button-farm-{{farmSet.selected}}-cancel" ng-click="farmSet.show_launch = false">Cancel</button>
+                          </div>
                         </div>
-                      </div>
-                    </form>
+                      </form>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -193,6 +197,7 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
   <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script>
   <script src="/static/angular-local-storage.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-filter/0.5.8/angular-filter.js"></script>
   <script src="/static/hmac-sha256.js"></script>
   <script src="/static/enc-base64-min.js"></script>
   <script src="/static/scalr-api.js"></script>

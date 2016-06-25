@@ -1,4 +1,4 @@
-var app = angular.module('ScalrStorefront', ["LocalStorageModule"]);
+var app = angular.module('ScalrStorefront', ['LocalStorageModule', 'angular.filter']);
 
 app.controller('StorefrontController', ["$scope", "$location", "$filter", "localStorageService", 
   function ($scope, $location, $filter, localStorageService) {
