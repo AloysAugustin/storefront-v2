@@ -49,7 +49,7 @@
         <div class="auth col-md-4 col-md-offset-4 margin-md-top">
           <form id="loginForm" class="form-horizontal padding-sm-top">
             <div class="form-group">
-              <input required id="auth-server" class="auth-input form-control input-lg" name="server" ng-model="apiSettings.apiUrl" type="text" value="https://my.scalr.com/" />
+              <input required id="auth-server" class="auth-input form-control input-lg" name="server" ng-model="apiSettings.apiUrl" type="text" placeholder="Server (ex: https://my.scalr.com/)" />
             </div>
             <div class="form-group">
               <input required id="auth-keyid" class="auth-input form-control input-lg" name="keyid" ng-model="apiSettings.keyId" placeholder="API Key ID" type="text"/>
@@ -85,7 +85,9 @@
                 <div ng-hide="myFarms.length == 0" class="ng-hide">
                   <div ng-repeat="farm in myFarms" class="running-farm-desc">
                     <div class="farm" ng-click="toggleDetails(farm);">
-                      <img class="running-farm-logo farm-image hidden-xs" src="{{farm.description.logo}}"/>
+                      <div class="farm-image-container">
+                        <img class="running-farm-logo farm-image hidden-xs" src="{{farm.description.logo}}"/>
+                      </div>
                       <div class='farm-body'>
                         <h3>{{farm.name}}</h3>
                         <p>{{farm.description.description}}</p>
@@ -143,7 +145,9 @@
               <div ng-hide="availableFarmSets.length == 0" class="ng-hide">
                 <div ng-repeat="farmSet in availableFarmSets" class="available-farm-desc">
                   <div class="farm">
-                    <img class="running-farm-logo farm-image hidden-xs" src="{{farmSet.logo}}" />
+                    <div class="farm-image-container">
+                      <img class="running-farm-logo farm-image hidden-xs" src="{{farmSet.logo}}" />
+                    </div>
                     <div class='farm-body'>
                       <h3>{{ farmSet.name }}</h3>
                       <p>{{ farmSet.description }}</p>
