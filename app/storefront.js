@@ -1,7 +1,8 @@
-var app = angular.module('ScalrStorefront', ['LocalStorageModule', 'angular.filter']);
+var app = angular.module('ScalrStorefront', ['LocalStorageModule', 'angular.filter', 'ui.bootstrap']);
 
 app.controller('StorefrontController', ["$scope", "$location", "$filter", "localStorageService", 
   function ($scope, $location, $filter, localStorageService) {
+  $scope.singleModel = 1;
   /* Docker */
 
   $scope.docker_apps = {
@@ -50,7 +51,7 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
         var container = response[app_name][i];
         var p = container['NetworkSettings']['Ports'];
         for (var a in p) {
-          if (a.indexOf('tcp') > 0 && p[a].length > 0) {
+          if (a.indexOf('tcp') > 0 && p[a] && p[a].length > 0) {
             var address = p[a][0].HostIp + ':' + p[a][0].HostPort;
             console.log(p[a][0], address);
             newFarm.servers.push({publicIp: [address]});
@@ -228,7 +229,8 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
       'description': farm.description.description,
       'selected': id,
       'show_launch': false,
-      'farms': farms
+      'farms': farms,
+      'day_only': '1'
     });
   };
 
@@ -334,6 +336,7 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
   $scope.serversFetched = function(response, farm) {
     var servers = response.data;
     farm.servers = servers;
+    $scope.$apply();
   };
 
   $scope.toggleDetails = function(farm) {
@@ -386,3 +389,29 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
   $scope.credentialsSaved = false;
   $scope.loadApiSettings();
 }]);
+
+app.directive('ngConfirmClick', [
+        function(){
+            return {
+                priority: 1,
+                terminal: true,
+                link: function (scope, element, attr) {
+                    var msg = attr.ngConfirmClick || "Are you sure?";
+                    var clickAction = attr.ngClick;
+                    element.bind('click',function (event) {
+                        if ( window.confirm(msg) ) {
+                            scope.$eval(clickAction)
+                        }
+                    });
+                }
+            };
+    }]);
+
+app.filter('safe', function() {
+    return function(x) {
+        var txt = x.replace(' ', '-').toLowerCase();
+        return txt;
+    };
+});
+
+

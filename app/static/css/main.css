@@ -122,7 +122,9 @@
 
 /* Navbar logo */
 .navbar-wagon-brand img {
-  width: 125px;
+  width: 45px;
+  margin-right: 10px;
+  margin-top: -5px;
 }
 
 /* Navbar right section (with form, links, button) */
@@ -140,13 +142,15 @@
 }
 
 /* Navbar standard link */
-.navbar-wagon-link {
-  color: #616668;
-  font-size: 14px;
+.navbar-wagon-brand {
+  color: black;
+  font-weight: bold;
+  font-size: 25px;
+  line-height: 3.5em;
 }
-.navbar-wagon-link:hover {
-  color: #da552f;
+.navbar-wagon-brand:hover {
   text-decoration: none;
+  color: black;
 }
 
 /* Navbar right button */
