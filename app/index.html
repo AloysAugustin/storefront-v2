@@ -103,13 +103,11 @@
                         </ul>
                       </div>
                       <div class="running-farm-{{farm.id}}-details col-xs-12" ng-show="farm.showDetails">
-                        <div ng-show="farm.servers.length == 0">
-                          <p>This application is not running</p>
+                        <div class='padding-md' ng-show="farm.servers.length == 0">
                           <button type="button" ng-click="startFarm(farm)" class="btn btn-success" id="farm-{{farm.id}}-button-start">Start application</button>
                           <button type="button" ng-click="deleteFarm(farm)" class="btn btn-danger" id="farm-{{farm.id}}-button-delete">Delete application</button>
                         </div>
-                        <div ng-hide="farm.servers.length == 0">
-                          <p>This application is running</p>
+                        <div class="padding-md" ng-hide="farm.servers.length == 0">
                           <button type="button" ng-click="stopFarm(farm)" class="btn btn-danger" id="farm-{{farm.id}}-button-stop">Stop application</button>
                           <h3>Servers</h3>
                           <table class='table'>

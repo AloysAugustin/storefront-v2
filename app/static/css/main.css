@@ -88,6 +88,11 @@
   margin-bottom: 5em;
 }
 
+.padding-md {
+  padding-top: 3em;
+  padding-bottom: 3em;
+}
+
 .control-label {
     text-align: left !important;
 }
@@ -239,12 +244,14 @@
   font-size: 50px;
   font-weight: bold;
   text-shadow: 0px 1px rgba(0, 0, 0, 0.2);
+  font-family: 'Montserrat';
 }
 .banner p {
   font-size: 20px;
   font-weight: lighter;
   color: rgba(255, 255, 255, 0.7);
   margin-bottom: 20px;
+  font-family: 'Open Sans';
 }
 
 .sign-in-up .left-inner-addon {
@@ -279,4 +286,8 @@
 .label-apps {
   display: inline;
   font-size: 14px;
+}
+
+div, a, p, h3, li {
+  font-family: 'Open Sans', sans-serif;
 }
