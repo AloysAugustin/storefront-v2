@@ -7,9 +7,6 @@
   border-radius: 3px;
   transition: all 0.15s ease;
   cursor: default;
-}
-
-.available-farms {
   height: 180px;
 }
 
@@ -277,4 +274,9 @@
     right: 0px;
     padding: 17px 12px;
     pointer-events: none;
+}
+
+.label-apps {
+  display: inline;
+  font-size: 14px;
 }

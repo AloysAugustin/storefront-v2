@@ -85,19 +85,24 @@
                 <div ng-hide="myFarms.length == 0" class="ng-hide">
                   <div ng-repeat="row in myFarms | chunkBy:2">
                     <div ng-repeat="farm in row" class="running-farm-desc">
-                      <div class="farm" ng-click="toggleDetails(farm);">
+                      <div class="farm col-xs-6" ng-click="toggleDetails(farm);">
                         <div class="img-container">
                           <img class="running-farm-logo farm-image hidden-xs" src="{{farm.description.logo}}"/>
                         </div>
                         <div class='farm-body'>
-                          <h3>{{farm.name}}</h3>
+                          <h3>{{farm.name}}</h3> 
                           <p>{{farm.description.description}}</p>
                         </div>
                         <ul class="list-inline farm-controls hidden-sm hidden-xs">
-                          <li><i class="fa fa-chevron-down"></i></li>
+                          <li ng-show="farm.servers.length != 0">
+                            <span class="label label-success label-apps">Running</span>
+                          </li>
+                          <li ng-show="farm.servers.length == 0" >
+                            <span class="label label-danger label-apps">Stopped</span>
+                          </li>
                         </ul>
                       </div>
-                      <div class="running-farm-{{farm.id}}-details" ng-show="farm.showDetails">
+                      <div class="running-farm-{{farm.id}}-details col-xs-12" ng-show="farm.showDetails">
                         <div ng-show="farm.servers.length == 0">
                           <p>This application is not running</p>
                           <button type="button" ng-click="startFarm(farm)" class="btn btn-success" id="farm-{{farm.id}}-button-start">Start application</button>
@@ -147,8 +152,8 @@
               <div ng-hide="availableFarmSets.length == 0" class="ng-hide">
                 <div ng-repeat="row in availableFarmSets | chunkBy:2">
                   <div ng-repeat="farmSet in row" class="available-farm-desc">
-                    <div class="farm available-farms col-xs-6">
-                      <div class="img-container">
+                    <div class="farm col-xs-6">
+                      <div class="img-containergut ">
                         <img class="running-farm-logo farm-image hidden-xs" src="{{farmSet.logo}}" />
                       </div>
                       <div class='farm-body'>
