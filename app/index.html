@@ -22,7 +22,7 @@
             <ul class="dropdown-menu dropdown-menu-right navbar-wagon-dropdown-menu">  
               <li><a ng-show="! credentialsSaved" ng-click="saveApiSettings()" class="auth-button" id="auth-button-save2">Save credentials</a></li>
               <li><a ng-show="credentialsSaved" ng-click="clearApiSettings()" class="auth-button" id="auth-button-unsave">Delete saved credentials</a></li>
-              <li><a ng-click="loggedIn = false; autoLoggedIn = false" class="auth-button" id="auth-button-logout2">Log out</a></li>
+              <li><a ng-click="loggedIn = false" class="auth-button" id="auth-button-logout2">Log out</a></li>
             </ul>
           </div>
         </div>
@@ -69,7 +69,7 @@
               <div class="running-farms">
                 <div ng-hide="myFarms.length > 0" class="margin-md-top">
                   <p>
-                    You don't have any application running at the moment! Launch one from the selection below.
+                    You don't have any application running at the moment. Launch one from the Catalog tab.
                   </p>
                 </div>
                 <div ng-hide="myFarms.length == 0" class="ng-hide">
@@ -114,7 +114,7 @@
             <div class="available-farms">
               <div ng-hide="availableFarmSets.length > 0" class="margin-md-top">
                 <p>
-                  It looks like no application are available in your environment! Ask your administrator to add application templates.
+                  It looks like no application are available in your environment. Ask your administrator to add application templates.
                 </p>
               </div>
               <div ng-hide="availableFarmSets.length == 0" class="ng-hide">
