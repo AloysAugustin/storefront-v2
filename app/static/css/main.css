@@ -13,6 +13,11 @@
   height: 180px;
 }
 
+.farm .img-container {
+  width: 100px;
+  text-align: center;
+}
+
 /* Body design */
 .farm-body {
   flex: 1 1 auto;

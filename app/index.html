@@ -86,7 +86,9 @@
                   <div ng-repeat="row in myFarms | chunkBy:2">
                     <div ng-repeat="farm in row" class="running-farm-desc">
                       <div class="farm" ng-click="toggleDetails(farm);">
-                        <img class="running-farm-logo farm-image hidden-xs" src="{{farm.description.logo}}"/>
+                        <div class="img-container">
+                          <img class="running-farm-logo farm-image hidden-xs" src="{{farm.description.logo}}"/>
+                        </div>
                         <div class='farm-body'>
                           <h3>{{farm.name}}</h3>
                           <p>{{farm.description.description}}</p>
@@ -146,7 +148,9 @@
                 <div ng-repeat="row in availableFarmSets | chunkBy:2">
                   <div ng-repeat="farmSet in row" class="available-farm-desc">
                     <div class="farm available-farms col-xs-6">
-                      <img class="running-farm-logo farm-image hidden-xs" src="{{farmSet.logo}}" />
+                      <div class="img-container">
+                        <img class="running-farm-logo farm-image hidden-xs" src="{{farmSet.logo}}" />
+                      </div>
                       <div class='farm-body'>
                         <h3>{{ farmSet.name }}</h3>
                         <p>{{ farmSet.description }}</p>
