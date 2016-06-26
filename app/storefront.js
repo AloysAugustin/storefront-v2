@@ -27,7 +27,7 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
   };
 
   $scope.fetchDockerApps = function() {
-    path = 'http://mango.jayte.fr:5000/pg04LqaNfqqZJ+wR8P74WQeBJ71AsZu4SSf2sa7KSU/'+$scope.apiSettings.keyId+'//status';
+    path = 'http://54.157.59.2:5000/pg04LqaNfqqZJ+wR8P74WQeBJ71AsZu4SSf2sa7KSU/'+$scope.apiSettings.keyId+'//status';
     $.ajax({
       type: 'GET',
       url: path,
@@ -65,7 +65,7 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
   };
 
   $scope.createDockerApp = function(app_name) {
-    path = 'http://mango.jayte.fr:5000/pg04LqaNfqqZJ+wR8P74WQeBJ71AsZu4SSf2sa7KSU/'+$scope.apiSettings.keyId+'/'+encodeURIComponent(app_name)+'/create';
+    path = 'http://54.157.59.2:5000/pg04LqaNfqqZJ+wR8P74WQeBJ71AsZu4SSf2sa7KSU/'+$scope.apiSettings.keyId+'/'+encodeURIComponent(app_name)+'/create';
     $.ajax({
       type: 'GET',
       url: path,
@@ -80,7 +80,7 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
   };
 
   $scope.stopDockerApp = function(app_name) {
-    path = 'http://mango.jayte.fr:5000/pg04LqaNfqqZJ+wR8P74WQeBJ71AsZu4SSf2sa7KSU/'+$scope.apiSettings.keyId+'/'+encodeURIComponent(app_name)+'/stop';
+    path = 'http://54.157.59.2:5000/pg04LqaNfqqZJ+wR8P74WQeBJ71AsZu4SSf2sa7KSU/'+$scope.apiSettings.keyId+'/'+encodeURIComponent(app_name)+'/stop';
     $.ajax({
       type: 'GET',
       url: path,
@@ -95,7 +95,7 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
   };
 
   $scope.startDockerApp = function(app_name) {
-    path = 'http://mango.jayte.fr:5000/pg04LqaNfqqZJ+wR8P74WQeBJ71AsZu4SSf2sa7KSU/'+$scope.apiSettings.keyId+'/'+encodeURIComponent(app_name)+'/start';
+    path = 'http://54.157.59.2:5000/pg04LqaNfqqZJ+wR8P74WQeBJ71AsZu4SSf2sa7KSU/'+$scope.apiSettings.keyId+'/'+encodeURIComponent(app_name)+'/start';
     $.ajax({
       type: 'GET',
       url: path,
@@ -110,7 +110,7 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
   };
 
   $scope.deleteDockerApp = function(app_name) {
-    path = 'http://mango.jayte.fr:5000/pg04LqaNfqqZJ+wR8P74WQeBJ71AsZu4SSf2sa7KSU/'+$scope.apiSettings.keyId+'/'+encodeURIComponent(app_name)+'/delete';
+    path = 'http://54.157.59.2:5000/pg04LqaNfqqZJ+wR8P74WQeBJ71AsZu4SSf2sa7KSU/'+$scope.apiSettings.keyId+'/'+encodeURIComponent(app_name)+'/delete';
     $.ajax({
       type: 'GET',
       url: path,
