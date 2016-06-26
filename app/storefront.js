@@ -11,7 +11,7 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
       name: "MySQL Server",
       description: {
         "logo": "https://www.mysql.fr/common/logos/logo-mysql-170x115.png",
-        "description": "A MySQL server, running on Ubuntu 14.04",
+        "description": "A MySQL server, running on Ubuntu 14.04. Default root password: qkdfijnoviejnrcfisuhbdfiuvcynsiuydfbcib",
         "dailyPrice": "0.55"
       }
     },
