@@ -46,6 +46,7 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
     for (var app_name in response) {
       var newFarm = angular.copy($scope.docker_apps[app_name])
       newFarm.showDetails = false;
+      newFarm.working = false;
       newFarm.servers = [];
       for (var i = 0; i < response[app_name].length; i ++) {
         var container = response[app_name][i];
@@ -53,13 +54,11 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
         for (var a in p) {
           if (a.indexOf('tcp') > 0 && p[a] && p[a].length > 0) {
             var address = p[a][0].HostIp + ':' + p[a][0].HostPort;
-            console.log(p[a][0], address);
             newFarm.servers.push({publicIp: [address]});
           }
         }
       }
       $scope.myFarms.push(newFarm);
-      // TODO get URL
     }
     $scope.$apply();
   };
@@ -120,7 +119,7 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
   };
 
   $scope.onDockerDeleteSuccess = function(response) {
-    console.log("Success starting docker app:", response);
+    console.log("Success deleting docker app:", response);
     $scope.fetchAllFarms();
   };
 
@@ -191,8 +190,8 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
   };
 
   $scope.fetchAllFarms = function() {
-    $scope.myFarms.length = 0;
-    $scope.availableFarmSets.length = 0;
+    $scope.myFarms = [];
+    $scope.availableFarmSets = [];
     var path = '/api/v1beta0/user/{envId}/farms/';
     path = path.replace('{envId}', $scope.apiSettings.envId);
     ScalrAPI.setSettings($scope.apiSettings);
@@ -229,9 +228,11 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
       'description': farm.description.description,
       'selected': id,
       'show_launch': false,
+      'launching': false,
       'farms': farms,
       'day_only': '1'
     });
+    $scope.$apply();
   };
 
   $scope.farmsFetched = function(response) {
@@ -243,6 +244,7 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
         if (farm.name.startsWith('['+$scope.apiSettings.keyId+']')) {
           farm.name = farm.name.replace('['+$scope.apiSettings.keyId+']', '');
           farm.showDetails = false;
+          farm.working = false;
           $scope.myFarms.push(farm);
           $scope.updateFarmDetails(farm);
         } else if (farm.name.startsWith('[TEMPLATE]')) {
@@ -256,9 +258,11 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
     }
     // Add docker apps to catalog
     for (i in $scope.docker_apps) {
-      $scope.addFarmToSets($scope.docker_apps[i]);
+      $scope.addFarmToSets(angular.copy($scope.docker_apps[i]));
     }
     $scope.$apply();
+    // Show my farms
+    $('#tab-control a[href="#my_farms"]').tab("show");
   };
 
   $scope.cloneAndLaunch = function(farm) {
@@ -335,7 +339,13 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
 
   $scope.serversFetched = function(response, farm) {
     var servers = response.data;
-    farm.servers = servers;
+    farm.servers = [];
+    for (var i = 0; i < servers.length; i ++) {
+      console.log(servers[i]);
+      if (servers[i].status != 'terminated' && servers[i].status != 'pending_terminate') {
+        farm.servers.push(servers[i]);
+      }
+    }
     $scope.$apply();
   };
 
@@ -367,6 +377,8 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
   };
 
   $scope.deleteFarm = function(farm) {
+    farm.working = true;
+    $scope.$apply();
     if (farm.id.toString().startsWith('docker')) {
       $scope.deleteDockerApp(farm.name);
       return;

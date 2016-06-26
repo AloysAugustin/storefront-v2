@@ -59,7 +59,7 @@
       </div>
 
       <div ng-show="loggedIn" class="margin-lg">
-        <ul class="nav nav-tabs" role="tablist">
+        <ul class="nav nav-tabs" role="tablist" id="tab-control">
           <li role="presentation" class="active"><a href="#my_farms" aria-controls="my_farms" role="tab" data-toggle="tab">My Applications</a></li>
           <li role="presentation"><a href="#available_farms" aria-controls="available_farms" role="tab" data-toggle="tab">Catalog</a></li>
         </ul>
@@ -96,12 +96,14 @@
                         <h3>{{farm.name}} details:</h3>
                         <div class='' ng-show="farm.servers.length == 0">
                           <p>This application is not running.</p>
-                          <button type="button" ng-click="startFarm(farm)" class="btn btn-success" id="farm-{{farm.id}}-button-start">Start application</button>
-                          <button type="button" ng-click="deleteFarm(farm)" ng-confirm-click="Are you sure that you want to delete this application? This cannot be undone." class="btn btn-danger" id="farm-{{farm.id}}-button-delete">Delete application</button>
+                          <button type="button" ng-disabled="farm.working" ng-click="farm.working=true; startFarm(farm)" class="btn btn-success" id="farm-{{farm.id}}-button-start">Start application</button>
+                          <button type="button" ng-disabled="farm.working" ng-click="deleteFarm(farm);" ng-confirm-click="Are you sure that you want to delete this application? This cannot be undone." class="btn btn-danger" id="farm-{{farm.id}}-button-delete">Delete application</button>
+                          <img src="/static/throbber.gif" ng-show="farm.working"/>
                         </div>
                         <div class="" ng-hide="farm.servers.length == 0">
-                          <p>Endpoint: <a href="http://{{farm.servers[0].publicIp[0]}}">{{farm.servers[0].publicIp[0]}}</a></p>
-                          <button type="button" ng-click="stopFarm(farm)" class="btn btn-danger" id="farm-{{farm.id}}-button-stop">Stop application</button>
+                          <p>Endpoint: <a target="_blank" href="http://{{farm.servers[0].publicIp[0]}}">{{farm.servers[0].publicIp[0]}}</a></p>
+                          <button type="button" ng-disabled="farm.working" ng-click="farm.working=true; stopFarm(farm)" class="btn btn-danger" id="farm-{{farm.id}}-button-stop">Stop application</button>
+                          <img src="/static/throbber.gif" ng-show="farm.working"/>
                         </div>
                       </div>
                     </div>
@@ -163,10 +165,11 @@
                         </div>
                         <div class='form-group padding-sm-top' id="button-container">
                           <div class="col-sm-offset-3 col-sm-2">
-                            <button type="button" class="auth-button btn btn-success" id="button-farm-{{farmSet.selected}}-done" ng-click="cloneAndLaunch(farmSet.farms[farmSet.selected]);">Launch for ${{farmSet.farms[farmSet.selected].description.dailyPrice / farmSet.day_only }}/day</button>
+                            <button type="button" ng-disabled="farmSet.launching" class="auth-button btn btn-success" id="button-farm-{{farmSet.selected}}-done" ng-click="farmSet.launching = true; cloneAndLaunch(farmSet.farms[farmSet.selected]);">Launch for ${{farmSet.farms[farmSet.selected].description.dailyPrice / farmSet.day_only }}/day</button>
                           </div>
                           <div class="col-sm-2">
-                            <button type="button" class="auth-button btn btn-danger" id="button-farm-{{farmSet.selected}}-cancel" ng-click="farmSet.show_launch = false">Cancel</button>
+                            <button ng-show="! farmSet.launching" type="button" class="auth-button btn btn-danger" id="button-farm-{{farmSet.selected}}-cancel" ng-click="farmSet.show_launch = false">Cancel</button>
+                            <img class="control-label" src="/static/throbber.gif" ng-show="farmSet.launching"/>
                           </div>
                         </div>
                       </form>
