@@ -9,6 +9,10 @@
   cursor: default;
 }
 
+.available-farms {
+  height: 180px;
+}
+
 /* Body design */
 .farm-body {
   flex: 1 1 auto;

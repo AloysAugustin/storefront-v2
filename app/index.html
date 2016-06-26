@@ -145,7 +145,7 @@
               <div ng-hide="availableFarmSets.length == 0" class="ng-hide">
                 <div ng-repeat="row in availableFarmSets | chunkBy:2">
                   <div ng-repeat="farmSet in row" class="available-farm-desc">
-                    <div class="farm">
+                    <div class="farm available-farms col-xs-6">
                       <img class="running-farm-logo farm-image hidden-xs" src="{{farmSet.logo}}" />
                       <div class='farm-body'>
                         <h3>{{ farmSet.name }}</h3>
@@ -155,7 +155,7 @@
                         <li><span class='btn btn-default' ng-click="farmSet.show_launch = ! farmSet.show_launch">Configure launch</span></li>
                       </ul>
                     </div>
-                    <div class="available-farm-launch" id="farm-{{farm.id}}-launch" ng-show="farmSet.show_launch">
+                    <div class="available-farm-launch col-xs-12" id="farm-{{farm.id}}-launch" ng-show="farmSet.show_launch">
                       <form class="form-horizontal padding-sm-top">
                         <div class="form-group">
                           <label for="platform-select-{{farmSet.selected}}" class="control-label col-sm-2">Platform:</label>
