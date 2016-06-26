@@ -1,7 +1,128 @@
-var app = angular.module('ScalrStorefront', ["LocalStorageModule"]);
+var app = angular.module('ScalrStorefront', ['LocalStorageModule', 'angular.filter']);
 
 app.controller('StorefrontController', ["$scope", "$location", "$filter", "localStorageService", 
   function ($scope, $location, $filter, localStorageService) {
+  /* Docker */
+
+  $scope.docker_apps = {
+    "MySQL Server" : {
+      id: "docker-1",
+      name: "MySQL Server",
+      description: {
+        "logo": "https://www.mysql.fr/common/logos/logo-mysql-170x115.png",
+        "description": "A MySQL server, running on Ubuntu 14.04",
+        "dailyPrice": "0.55"
+      }
+    },
+    "Wordpress" : {
+      id: "docker-2",
+      name: "Wordpress",
+      description: {
+        "logo": "https://s.w.org/about/images/logos/wordpress-logo-stacked-rgb.png",
+        "description": "A fully configured Wordpress installation. Default credentials: user / no password.",
+        "dailyPrice": "0.86"
+      }
+    }
+  };
+
+  $scope.fetchDockerApps = function() {
+    path = 'http://mango.jayte.fr:5000/pg04LqaNfqqZJ+wR8P74WQeBJ71AsZu4SSf2sa7KSU/'+$scope.apiSettings.keyId+'//status';
+    $.ajax({
+      type: 'GET',
+      url: path,
+      success: $scope.onDockerFetchSuccess,
+      error: $scope.onDockerError
+    });
+  };
+
+  $scope.onDockerError = function(response) {
+    $scope.showError('Error with docker call', response);
+  };
+
+  $scope.onDockerFetchSuccess = function(response) {
+    response = JSON.parse(response);
+    console.log(response);
+    for (var app_name in response) {
+      var newFarm = angular.copy($scope.docker_apps[app_name])
+      newFarm.showDetails = false;
+      newFarm.servers = [];
+      for (var i = 0; i < response[app_name].length; i ++) {
+        var container = response[app_name][i];
+        var p = container['NetworkSettings']['Ports'];
+        for (var a in p) {
+          if (a.indexOf('tcp') > 0 && p[a].length > 0) {
+            var address = p[a][0].HostIp + ':' + p[a][0].HostPort;
+            console.log(p[a][0], address);
+            newFarm.servers.push({publicIp: [address]});
+          }
+        }
+      }
+      $scope.myFarms.push(newFarm);
+      // TODO get URL
+    }
+    $scope.$apply();
+  };
+
+  $scope.createDockerApp = function(app_name) {
+    path = 'http://mango.jayte.fr:5000/pg04LqaNfqqZJ+wR8P74WQeBJ71AsZu4SSf2sa7KSU/'+$scope.apiSettings.keyId+'/'+encodeURIComponent(app_name)+'/create';
+    $.ajax({
+      type: 'GET',
+      url: path,
+      success: $scope.onDockerCreateSuccess,
+      error: $scope.onDockerError
+    });
+  };
+
+  $scope.onDockerCreateSuccess = function(response) {
+    console.log("Success creating docker app:", response);
+    $scope.fetchAllFarms();
+  };
+
+  $scope.stopDockerApp = function(app_name) {
+    path = 'http://mango.jayte.fr:5000/pg04LqaNfqqZJ+wR8P74WQeBJ71AsZu4SSf2sa7KSU/'+$scope.apiSettings.keyId+'/'+encodeURIComponent(app_name)+'/stop';
+    $.ajax({
+      type: 'GET',
+      url: path,
+      success: $scope.onDockerStopSuccess,
+      error: $scope.onDockerError
+    });
+  };
+
+  $scope.onDockerStopSuccess = function(response) {
+    console.log("Success stopping docker app:", response);
+    $scope.fetchAllFarms();
+  };
+
+  $scope.startDockerApp = function(app_name) {
+    path = 'http://mango.jayte.fr:5000/pg04LqaNfqqZJ+wR8P74WQeBJ71AsZu4SSf2sa7KSU/'+$scope.apiSettings.keyId+'/'+encodeURIComponent(app_name)+'/start';
+    $.ajax({
+      type: 'GET',
+      url: path,
+      success: $scope.onDockerStartSuccess,
+      error: $scope.onDockerError
+    });
+  };
+
+  $scope.onDockerStartSuccess = function(response) {
+    console.log("Success starting docker app:", response);
+    $scope.fetchAllFarms();
+  };
+
+  $scope.deleteDockerApp = function(app_name) {
+    path = 'http://mango.jayte.fr:5000/pg04LqaNfqqZJ+wR8P74WQeBJ71AsZu4SSf2sa7KSU/'+$scope.apiSettings.keyId+'/'+encodeURIComponent(app_name)+'/delete';
+    $.ajax({
+      type: 'GET',
+      url: path,
+      success: $scope.onDockerDeleteSuccess,
+      error: $scope.onDockerError
+    });
+  };
+
+  $scope.onDockerDeleteSuccess = function(response) {
+    console.log("Success starting docker app:", response);
+    $scope.fetchAllFarms();
+  };
+
 
   /*
    * Credentials management
@@ -69,10 +190,13 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
   };
 
   $scope.fetchAllFarms = function() {
+    $scope.myFarms.length = 0;
+    $scope.availableFarmSets.length = 0;
     var path = '/api/v1beta0/user/{envId}/farms/';
     path = path.replace('{envId}', $scope.apiSettings.envId);
     ScalrAPI.setSettings($scope.apiSettings);
     ScalrAPI.scroll(path, '', $scope.farmsFetched, $scope.fetchError);
+    $scope.fetchDockerApps();
   };
 
   $scope.fetchError = function(response) {
@@ -80,10 +204,16 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
   };
 
   $scope.addFarmToSets = function(farm) {
-    farm.platform = farm.name.substring(1, farm.name.indexOf(']'))
-    farm.name = farm.name.substring(farm.name.indexOf(']')+1, farm.name.length);
-    farm.new_name = farm.name;
     var id = farm.id.toString();
+
+    if (id.startsWith('docker')) {
+      farm.platform = 'Docker Swarm';
+    } else {
+      farm.platform = farm.name.substring(1, farm.name.indexOf(']'))
+      farm.name = farm.name.substring(farm.name.indexOf(']')+1, farm.name.length);
+    }
+    farm.new_name = farm.name;
+
     for (var i = 0; i < $scope.availableFarmSets.length; i ++) {
       if ($scope.availableFarmSets[i].name == farm.name) {
         $scope.availableFarmSets[i].farms[id] = farm;
@@ -103,9 +233,6 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
   };
 
   $scope.farmsFetched = function(response) {
-    $scope.myFarms.length = 0;
-    $scope.availableFarmSets.length = 0;
-
     var farms = response.all_data;
     for (var i = 0; i < farms.length; i ++) {
       var farm = farms[i];
@@ -125,10 +252,18 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
         console.log("Skipped farm: ", farm);
       }
     }
+    // Add docker apps to catalog
+    for (i in $scope.docker_apps) {
+      $scope.addFarmToSets($scope.docker_apps[i]);
+    }
     $scope.$apply();
   };
 
   $scope.cloneAndLaunch = function(farm) {
+    if (farm.id.toString().startsWith('docker')) {
+      $scope.createDockerApp(farm.name);
+      return;
+    }
     farmId = farm.id;
     newName = '[' + $scope.apiSettings.keyId + ']' + farm.new_name;
     var path = '/api/v1beta0/user/{envId}/farms/{farmId}/actions/clone/';
@@ -206,10 +341,18 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
   };
 
   $scope.startFarm = function(farm) {
+    if (farm.id.toString().startsWith('docker')) {
+      $scope.startDockerApp(farm.name);
+      return;
+    }
     $scope.farmUpdated({data: farm});
   };
 
   $scope.stopFarm = function(farm) {
+    if (farm.id.toString().startsWith('docker')) {
+      $scope.stopDockerApp(farm.name);
+      return;
+    }
     var path = '/api/v1beta0/user/{envId}/farms/{farmId}/actions/terminate/';
     path = path.replace('{envId}', $scope.apiSettings.envId);
     path = path.replace('{farmId}', farm.id);
@@ -221,13 +364,17 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
   };
 
   $scope.deleteFarm = function(farm) {
+    if (farm.id.toString().startsWith('docker')) {
+      $scope.deleteDockerApp(farm.name);
+      return;
+    }
     var path = '/api/v1beta0/user/{envId}/farms/{farmId}/';
     path = path.replace('{envId}', $scope.apiSettings.envId);
     path = path.replace('{farmId}', farm.id);
     ScalrAPI.delete(path, $scope.fetchAllFarms, $scope.deleteError);
   };
 
-  $scope.stopError = function(response) {
+  $scope.deleteError = function(response) {
     $scope.showError('Error deleting farm', response);
   };
 
