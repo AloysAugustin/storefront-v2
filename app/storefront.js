@@ -48,6 +48,7 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
       newFarm.showDetails = false;
       newFarm.working = false;
       newFarm.servers = [];
+      newFarm.terminating_servers_count = 0;
       for (var i = 0; i < response[app_name].length; i ++) {
         var container = response[app_name][i];
         var p = container['NetworkSettings']['Ports'];
@@ -245,6 +246,7 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
           farm.name = farm.name.replace('['+$scope.apiSettings.keyId+']', '');
           farm.showDetails = false;
           farm.working = false;
+          farm.terminating_servers_count = 0;
           $scope.myFarms.push(farm);
           $scope.updateFarmDetails(farm);
         } else if (farm.name.startsWith('[TEMPLATE]')) {
@@ -340,12 +342,16 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
   $scope.serversFetched = function(response, farm) {
     var servers = response.data;
     farm.servers = [];
+    farm.terminating_servers_count = 0;
     for (var i = 0; i < servers.length; i ++) {
       console.log(servers[i]);
       if (servers[i].status != 'terminated' && servers[i].status != 'pending_terminate') {
         farm.servers.push(servers[i]);
+      } else {
+        farm.terminating_servers_count ++;
       }
     }
+    console.log(farm);
     $scope.$apply();
   };
 

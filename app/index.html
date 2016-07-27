@@ -97,7 +97,7 @@
                         <div class='' ng-show="farm.servers.length == 0">
                           <p>This application is not running.</p>
                           <button type="button" ng-disabled="farm.working" ng-click="farm.working=true; startFarm(farm)" class="btn btn-success" id="farm-{{farm.id}}-button-start">Start application</button>
-                          <button type="button" ng-disabled="farm.working" ng-click="deleteFarm(farm);" ng-confirm-click="Are you sure that you want to delete this application? This cannot be undone." class="btn btn-danger" id="farm-{{farm.id}}-button-delete">Delete application</button>
+                          <button type="button" ng-disabled="farm.working || farm.terminating_servers_count > 0" ng-click="deleteFarm(farm);" ng-confirm-click="Are you sure that you want to delete this application? This cannot be undone." class="btn btn-danger" id="farm-{{farm.id}}-button-delete">Delete application</button>
                           <img src="/static/throbber.gif" ng-show="farm.working"/>
                         </div>
                         <div class="" ng-hide="farm.servers.length == 0">
