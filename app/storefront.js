@@ -101,7 +101,11 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
         var gv = response.data;
         for (var i = 0; i < gv.length; i++) {
             if (gv[i].name == "STOREFRONT_CONFIGURABLE_GV") {
-                options_list = JSON.parse(gv[i].value);
+                try {
+                  options_list = JSON.parse(gv[i].value);
+                } catch(e) {
+                  options_list = [];
+                }
                 farm.gv_options = {};
                 for (var j = 0; j < options_list.length; j ++) {
                   farm.gv_options[options_list[j]] = {'name': options_list[j], 'value': ''};
@@ -159,7 +163,20 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
       farmRole.gv = response.data;
       for (var i = 0; i < farmRole.gv.length; i ++) {
         if (farmRole.gv[i].name == 'STOREFRONT_SCALING_ENABLED') {
-          farmRole.scaling = JSON.parse(farmRole.gv[i].value);
+          try {
+            farmRole.scaling = JSON.parse(farmRole.gv[i].value);
+          } catch(e) {
+            farmRole.scaling = {'min': 1, 'max': 3, 'value': 1}
+          }
+          if (! 'min' in farmRole.scaling) {
+            farmRole.scaling['min'] = 1;
+          }
+          if (! 'max' in farmRole.scaling) {
+            farmRole.scaling['max'] = 3; //arbitrary
+          }
+          if (! 'value' in farmRole.scaling) {
+            farmRole.scaling['value'] = 1;
+          }
         }
       };
     };
