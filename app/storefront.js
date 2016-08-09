@@ -94,7 +94,6 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
     path = path.replace('{farmId}', farm.id);
     ScalrAPI.setSettings($scope.apiSettings);
     ScalrAPI.scroll(path, '', $scope.farmGVFetched(farm), $scope.farmGVFetchError(farm));
-    console.log(path);
   };
 
   $scope.farmGVFetched = function(farm) {
@@ -124,7 +123,6 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
     path = path.replace('{farmId}', farm.id);
     ScalrAPI.setSettings($scope.apiSettings);
     ScalrAPI.scroll(path, '', $scope.farmRolesFetched(farm), $scope.farmRoleFetchError(farm));
-    console.log(path);
   };
 
   $scope.farmRoleFetchError = function(farm) {
@@ -148,7 +146,6 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
     path = path.replace('{farmRoleId}', farmRole.id);
     ScalrAPI.setSettings($scope.apiSettings);
     ScalrAPI.scroll(path, '', $scope.farmRoleGVFetched(farmRole), $scope.farmRoleGVFetchError(farmRole));
-    console.log(path);
   };
 
   $scope.farmRoleGVFetchError = function(farmRole) {
@@ -237,38 +234,113 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
     path = path.replace('{envId}', $scope.apiSettings.envId);
     path = path.replace('{farmId}', farmId);
     ScalrAPI.setSettings($scope.apiSettings);
-    ScalrAPI.create(path, {name: newName}, $scope.farmCloned, $scope.cloneError);
+    ScalrAPI.create(path, {name: newName}, $scope.farmCloned(farm), $scope.cloneError);
   }
 
   $scope.cloneError = function(response) {
     $scope.showError("Error cloning the Farm", response);
   };
 
-  $scope.farmCloned = function(response) {
-    //Start by updating the description
-    /*var farmId = response.data.id;
-    var description = JSON.parse(response.data.description);
-    description.createdBy = $scope.apiSettings.keyId;
-    description.createdOn = new Date().toISOString();
-    var path = '/api/v1beta0/user/{envId}/farms/{farmId}/';
+  $scope.farmCloned = function(farm) {
+    return function(response) {
+      //Start by updating the description
+      /*var farmId = response.data.id;
+      var description = JSON.parse(response.data.description);
+      description.createdBy = $scope.apiSettings.keyId;
+      description.createdOn = new Date().toISOString();
+      var path = '/api/v1beta0/user/{envId}/farms/{farmId}/';
+      path = path.replace('{envId}', $scope.apiSettings.envId);
+      path = path.replace('{farmId}', farmId);
+      ScalrAPI.edit(path, {
+        'description': JSON.stringify(description)
+      }, $scope.farmUpdated, $scope.updateError);*/
+      console.log('Farm cloned, getting new farm roles');
+      var newId = response.data.id;
+      $scope.getNewFarmRoles(farm, newId);
+    }
+  };
+
+  $scope.getNewFarmRoles = function(farm, newId) {
+    var path = '/api/v1beta0/user/{envId}/farms/{farmId}/farm-roles/';
     path = path.replace('{envId}', $scope.apiSettings.envId);
-    path = path.replace('{farmId}', farmId);
-    ScalrAPI.edit(path, {
-      'description': JSON.stringify(description)
-    }, $scope.farmUpdated, $scope.updateError);*/
-    $scope.farmUpdated(response);
+    path = path.replace('{farmId}', newId);
+    ScalrAPI.scroll(path, '', $scope.configureFarm(farm, newId), $scope.getNewFarmRolesError);
+  };
+
+  $scope.getNewFarmRolesError = function(response) {
+    $scope.showError('Unable to get new farm roles', response);
+  };
+
+  $scope.configureFarm = function(farm, newId) {
+    return function(response) {
+      // Set GVs and scaling rules
+      var newFarmRoles = response.data;
+      var deferreds = [];
+      for (var i = 0; i < farm.farmRoles.length; i ++) {
+        if ($scope.hasScaling(farm.farmRoles[i])) {
+          // Find new corresponding farm role
+          for (var j = 0; j < newFarmRoles.length; j ++) {
+            if (newFarmRoles[j].name == farm.farmRoles[i].name) {
+              deferreds.push($scope.setFarmRoleScaling(farm.farmRoles[i], newFarmRoles[j]));
+              break;
+            }
+          }
+        }
+      }
+      for (var name in farm.gv_options) {
+        if (farm.gv_options[name].value) {
+          deferreds.push($scope.setFarmGV(newId, name, farm.gv_options[name].value));
+        }
+      }
+      $.when.apply(null, deferreds).done(function() {
+        console.log('config done, launching');
+        $scope.farmUpdated(newId);
+      });
+    }
+  };
+
+  $scope.setFarmGV = function(newId, name, value) {
+    console.log('Setting gv', name, value);
+    var path = '/api/v1beta0/user/{envId}/farms/{farmId}/global-variables/{globalVariableName}/';
+    path = path.replace('{envId}', $scope.apiSettings.envId);
+    path = path.replace('{farmId}', newId);
+    path = path.replace('{globalVariableName}', name);
+    return ScalrAPI.edit(path, {'value': value}, function(){return true;}, $scope.setFarmGVError(newId, name, value));
+  };
+
+  $scope.setFarmGVError = function(farm, name, value) {
+    return function(response) {
+      $scope.showError("Error setting GV for farm", {'id': farm, 'name': name, 'value': value, 'response': response});
+    }
+  }
+
+  $scope.setFarmRoleScaling = function(oldFarmRole, newFarmRole) {
+    console.log('setting scaling for', newFarmRole);
+    var path = '/api/v1beta0/user/{envId}/farm-roles/{farmRoleId}/scaling/';
+    path = path.replace('{envId}', $scope.apiSettings.envId);
+    path = path.replace('{farmRoleId}', newFarmRole.id);
+    return ScalrAPI.edit(path, {
+      'enabled': true,
+      'maxInstances': oldFarmRole.scaling.value,
+      'minInstances': oldFarmRole.scaling.value
+    }, function() {return true;}, $scope.setFarmRoleScalingError(newFarmRole));
+  };
+
+  $scope.setFarmRoleScalingError = function(farmRole) {
+    return function(response) {
+      $scope.showError("Error setting scaling for Farm Role", {'farmRole': farmRole, 'response': response});
+    };
   };
 
   $scope.updateError = function(response) {
     $scope.showError("Error updating the Farm's description", response);
   };
 
-  $scope.farmUpdated = function(response) {
+  $scope.farmUpdated = function(id) {
     // Final step, launch the farm.
-    var farmId = response.data.id;
     var path = '/api/v1beta0/user/{envId}/farms/{farmId}/actions/launch/';
     path = path.replace('{envId}', $scope.apiSettings.envId);
-    path = path.replace('{farmId}', farmId);
+    path = path.replace('{farmId}', id);
     ScalrAPI.create(path, '', $scope.farmLaunched, $scope.launchError);
   }
 
@@ -303,14 +375,12 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
     farm.servers = [];
     farm.terminating_servers_count = 0;
     for (var i = 0; i < servers.length; i ++) {
-      console.log(servers[i]);
       if (servers[i].status != 'terminated' && servers[i].status != 'pending_terminate') {
         farm.servers.push(servers[i]);
       } else {
         farm.terminating_servers_count ++;
       }
     }
-    console.log(farm);
     $scope.$apply();
   };
 

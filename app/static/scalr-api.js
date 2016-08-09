@@ -64,7 +64,7 @@
 
     headers = this.makeAuthHeaders(method, timestamp, path, queryString, body);
 
-    $.ajax({
+    return $.ajax({
       type: method,
       url: scalrAddress + path + (queryString.length > 0 ? '?' + queryString : ''),
       contentType: "application/json; charset=utf-8",
@@ -76,25 +76,25 @@
   }
 
   ScalrAPI.fetch = function(path, params, onSuccess, onError) {
-    this.makeApiCall('GET', path, params, '', onSuccess, onError);
+    return this.makeApiCall('GET', path, params, '', onSuccess, onError);
   }
 
   ScalrAPI.create = function(path, body, onSuccess, onError) {
-    this.makeApiCall('POST', path, '', body, onSuccess, onError);
+    return this.makeApiCall('POST', path, '', body, onSuccess, onError);
   }
 
   ScalrAPI.delete = function(path, onSuccess, onError) {
-    this.makeApiCall('DELETE', path, '', '', onSuccess, onError);
+    return this.makeApiCall('DELETE', path, '', '', onSuccess, onError);
   }
 
   ScalrAPI.edit = function(path, body, onSuccess, onError) {
-    this.makeApiCall('PATCH', path, '', body, onSuccess, onError);
+    return this.makeApiCall('PATCH', path, '', body, onSuccess, onError);
   }
 
   // Note: with this function the response object passed to the onSuccess will be the one returned by the last API call
   // of the scroll, to which a new property all_data is added, containing the parsed representation of all the results.
   ScalrAPI.scroll = function(path, params, onSuccess, onError) {
-    this.makeApiCall('GET', path, params, '', 
+    this.makeApiCall('GET', path, params, '',
       this.makeOnScrollSuccess(path, onSuccess, onError, [], this),
       onError);
   }
@@ -106,7 +106,7 @@
 
       if (result.pagination.next) {
         var nextParams = result.pagination.next.substring(result.pagination.next.indexOf('?') + 1);
-        that.makeApiCall('GET', path, nextParams, '', 
+        that.makeApiCall('GET', path, nextParams, '',
           that.makeOnScrollSuccess(path, onSuccess, onError, data, that),
           onError);
       } else {
