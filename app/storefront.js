@@ -1,9 +1,9 @@
 var app = angular.module('ScalrStorefront', ['LocalStorageModule', 'angular.filter', 'ui.bootstrap']);
 
-app.controller('StorefrontController', ["$scope", "$location", "$filter", "localStorageService", 
+app.controller('StorefrontController', ["$scope", "$location", "$filter", "localStorageService",
   function ($scope, $location, $filter, localStorageService) {
   $scope.singleModel = 1;
-  
+
   /*
    * Credentials management
    */
@@ -82,12 +82,103 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
     $scope.showError("Error fetching the list of Farms, check your credentials", response);
   };
 
+  $scope.getFarmSettings = function(farm) {
+    //Get Global variables and Farm Roles' global variables
+    $scope.addFarmGVOptions(farm);
+    $scope.addFarmRoleOptions(farm);
+  };
+
+  $scope.addFarmGVOptions = function(farm) {
+    var path = '/api/v1beta0/user/{envId}/farms/{farmId}/global-variables/';
+    path = path.replace('{envId}', $scope.apiSettings.envId);
+    path = path.replace('{farmId}', farm.id);
+    ScalrAPI.setSettings($scope.apiSettings);
+    ScalrAPI.scroll(path, '', $scope.farmGVFetched(farm), $scope.farmGVFetchError(farm));
+    console.log(path);
+  };
+
+  $scope.farmGVFetched = function(farm) {
+     return function(response) {
+        var gv = response.data;
+        for (var i = 0; i < gv.length; i++) {
+            if (gv[i].name == "STOREFRONT_CONFIGURABLE_GV") {
+                options_list = JSON.parse(gv[i].value);
+                farm.gv_options = {};
+                for (var j = 0; j < options_list.length; j ++) {
+                  farm.gv_options[options_list[j]] = {'name': options_list[j], 'value': ''};
+                }
+            }
+        }
+     };
+  };
+
+  $scope.farmGVFetchError = function(farm) {
+    return function(response) {
+      $scope.showError("Error fetching GVs", {'response': response, 'farm': farm})
+    };
+  };
+
+  $scope.addFarmRoleOptions = function(farm) {
+    var path = '/api/v1beta0/user/{envId}/farms/{farmId}/farm-roles/';
+    path = path.replace('{envId}', $scope.apiSettings.envId);
+    path = path.replace('{farmId}', farm.id);
+    ScalrAPI.setSettings($scope.apiSettings);
+    ScalrAPI.scroll(path, '', $scope.farmRolesFetched(farm), $scope.farmRoleFetchError(farm));
+    console.log(path);
+  };
+
+  $scope.farmRoleFetchError = function(farm) {
+    return function(response) {
+      $scope.showError("Error fetching Farm Roles", {'response': response, 'farm': farm})
+    };
+  };
+
+  $scope.farmRolesFetched = function(farm) {
+    return function(response) {
+      farm.farmRoles = response.data;
+      for (var i = 0; i < farm.farmRoles.length; i ++) {
+        $scope.fetchFarmRoleGVOptions(farm.farmRoles[i]);
+      }
+    };
+  };
+
+  $scope.fetchFarmRoleGVOptions = function(farmRole) {
+    var path = '/api/v1beta0/user/{envId}/farm-roles/{farmRoleId}/global-variables/';
+    path = path.replace('{envId}', $scope.apiSettings.envId);
+    path = path.replace('{farmRoleId}', farmRole.id);
+    ScalrAPI.setSettings($scope.apiSettings);
+    ScalrAPI.scroll(path, '', $scope.farmRoleGVFetched(farmRole), $scope.farmRoleGVFetchError(farmRole));
+    console.log(path);
+  };
+
+  $scope.farmRoleGVFetchError = function(farmRole) {
+    return function(response) {
+      $scope.showError("Error fetching GV for Farm Role", {'farmRole': farmRole, 'response': response});
+    };
+  };
+
+  $scope.farmRoleGVFetched = function(farmRole) {
+    return function(response) {
+      farmRole.gv = response.data;
+      for (var i = 0; i < farmRole.gv.length; i ++) {
+        if (farmRole.gv[i].name == 'STOREFRONT_SCALING_ENABLED') {
+          farmRole.scaling = JSON.parse(farmRole.gv[i].value);
+        }
+      };
+    };
+  };
+
+  $scope.hasScaling = function(farmRole) {
+    return 'scaling' in farmRole;
+  };
+
   $scope.addFarmToSets = function(farm) {
     var id = farm.id.toString();
 
     farm.platform = farm.name.substring(1, farm.name.indexOf(']'))
     farm.name = farm.name.substring(farm.name.indexOf(']')+1, farm.name.length);
     farm.new_name = farm.name;
+    farm.show_advanced = false;
 
     for (var i = 0; i < $scope.availableFarmSets.length; i ++) {
       if ($scope.availableFarmSets[i].name == farm.name) {
@@ -108,6 +199,8 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
       'day_only': '1'
     });
     $scope.$apply();
+    // Get settings in the background
+    $scope.getFarmSettings(farm);
   };
 
   $scope.farmsFetched = function(response) {
@@ -285,5 +378,3 @@ app.filter('safe', function() {
         return txt;
     };
 });
-
-

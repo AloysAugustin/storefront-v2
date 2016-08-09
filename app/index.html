@@ -19,7 +19,7 @@
         <div class="navbar-wagon-item">
           <div class="dropdown" ng-show="loggedIn">
             <img src="static/avatar.png" width='40' class="avatar dropdown-toggle" id="navbar-wagon-menu" data-toggle="dropdown" />
-            <ul class="dropdown-menu dropdown-menu-right navbar-wagon-dropdown-menu">  
+            <ul class="dropdown-menu dropdown-menu-right navbar-wagon-dropdown-menu">
               <li><a ng-show="! credentialsSaved" ng-click="saveApiSettings()" class="auth-button" id="auth-button-save2">Save credentials</a></li>
               <li><a ng-show="credentialsSaved" ng-click="clearApiSettings()" class="auth-button" id="auth-button-unsave">Delete saved credentials</a></li>
               <li><a ng-click="loggedIn = false" class="auth-button" id="auth-button-logout2">Log out</a></li>
@@ -80,7 +80,7 @@
                           <img class="running-farm-logo farm-image hidden-xs" src="{{farm.description.logo}}"/>
                         </div>
                         <div class='farm-body'>
-                          <h3>{{farm.name}}</h3> 
+                          <h3>{{farm.name}}</h3>
                           <p>{{farm.description.description}}</p>
                         </div>
                         <ul class="list-inline farm-controls hidden-sm hidden-xs">
@@ -172,6 +172,23 @@
                             <img class="control-label" src="/static/throbber.gif" ng-show="farmSet.launching"/>
                           </div>
                         </div>
+
+                        <h3 ng-click="farmSet.farms[farmSet.selected].show_advanced = ! farmSet.farms[farmSet.selected].show_advanced">Advanced Settings <span ng-show="! farmSet.farms[farmSet.selected].showAdvanced">></span></h3>
+                        <div id="template-{{farmSet.selected}}-advanced-settings" ng-show="farmSet.farms[farmSet.selected].show_advanced">
+                          <div id="settings" class="form-group" ng-repeat="(name, gv) in farmSet.farms[farmSet.selected].gv_options">
+                            <label class="control-label col-sm-3">{{name}}</label>
+                            <div class="col-sm-9">
+                              <input type="text" id="{{farmSet.selected}}-{{gv}}" ng-model="gv.value">
+                            </div>
+                          </div>
+                          <div id="scaling-{{farmRole.id}}" class="form-group" ng-repeat="farmRole in farmSet.farms[farmSet.selected].farmRoles | filter:hasScaling">
+                            <label class="control-label col-sm-3">Number of {{farmRole.name}} instances:</label>
+                            <div class="col-sm-9">
+                              <input type="range" id="scaling-{{farmRole.id}}" min="{{farmRole.scaling.min}}" max="{{farmRole.scaling.max}}" value="{{farmRole.scaling.value}}" ng-model="farmRole.scaling.value">
+                            </div>
+                          </div>
+                        </div>
+
                       </form>
                     </div>
                   </div>
