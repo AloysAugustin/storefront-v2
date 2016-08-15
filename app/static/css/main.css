@@ -76,7 +76,7 @@ input[type='email']:focus, input[type='number']:focus, input[type='password']:fo
   border: .1rem solid #092EBB;
 }
 
-.btn-success, .btn-success:hover, .btn-success:active, .btn-success:focus {
+.btn-success, .btn-success:hover, .btn-success:active, .btn-success:focus, .btn-success.active, .open, .dropdown-toggle.btn-success {
   background-color: #092EBB;
   border: 0;
 }
@@ -124,13 +124,12 @@ input[type='email']:focus, input[type='number']:focus, input[type='password']:fo
   padding: 20px;
   border-radius: 2px;
   /*transition: all 0.15s ease;*/
-  height: 180px;
+  height: 300px;
   background-color: white;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08),0 0px 0px 1px rgba(0, 0, 0, 0.02);
   margin: 10px;
   width: 48%;
 }
-
 
 .farm .img-container {
   width: 100px;
@@ -443,4 +442,10 @@ input[type='email']:focus, input[type='number']:focus, input[type='password']:fo
   display: inline;
   font-size: 14px;
 }
+.font-size-lg {
+  font-size: 3em !important;
+}
 
+.margin-auto {
+  margin: auto;
+}

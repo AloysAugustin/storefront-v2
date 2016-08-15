@@ -62,7 +62,7 @@
       <div ng-show="loggedIn" class="margin-md">
         <div id='pills'>
           <ul class="nav nav-pills nav-justified">
-            <li role="presentation" class="active"><a class="pill-left" href="#available_farms" data-toggle="pill">Catalog</a></li>
+            <li role="presentation" class="active li-left"><a class="pill-left" href="#available_farms" data-toggle="pill">Catalog</a></li>
             <li role="presentation"><a href="#my_farms" class="pill-right" data-toggle="pill">My Applications</a></li>
           </ul>
         </div>
@@ -79,12 +79,11 @@
                   <div ng-repeat="(i1, row) in availableFarmSets | chunkBy:2 track by i1">
                     <div ng-repeat="(i2, farmSet) in row track by i2" class="available-farm-desc">
                       <div class="farm catalog-farm col-xs-6" ng-click="farmSet.show_launch = ! farmSet.show_launch">
-                        <div class="img-container">
-                          <img class="running-farm-logo farm-image hidden-xs" src="{{farmSet.logo}}" />
-                        </div>
                         <div class='farm-body text-center'>
-                          <h3>{{ farmSet.name }}</h3>
-                          <p>{{ farmSet.description }}</p>
+                          <h3 class="farm-name">{{ farmSet.name }}</h3>
+                          <p class="farm-description">{{ farmSet.description }}</p>
+                          <br>
+                          <p><img class="running-farm-logo farm-image hidden-xs" src="{{farmSet.logo}}" /></p>
                         </div>
                       </div>
                       <div class="available-farm-launch col-xs-12" id="farm-{{farm.id}}-launch" ng-show="farmSet.show_launch">
@@ -108,7 +107,7 @@
                             <br>
                             <div class="col-sm-12 text-center">
                               <div class="server-input">
-                                <input required id="launch-farm-{{farmSet.selected}}-name" class="launch-farm-input form-control server-name-input" ng-model="farmSet.farms[farmSet.selected].new_name" type="text"/>
+                                <input required id="launch-farm-{{farmSet.selected}}-name" class="launch-farm-input text-center form-control server-name-input" ng-model="farmSet.farms[farmSet.selected].new_name" type="text"/>
                               </div>
                             </div>
                           </div>
@@ -127,7 +126,7 @@
                           </div>
                           <br><br>
                           <div class="text-center underline pointer">
-                            <p ng-click="farmSet.farms[farmSet.selected].show_advanced = ! farmSet.farms[farmSet.selected].show_advanced">Advanced Settings <span ng-show="! farmSet.farms[farmSet.selected].showAdvanced"></span></h3>
+                            <p class='advanded-settings' ng-click="farmSet.farms[farmSet.selected].show_advanced = ! farmSet.farms[farmSet.selected].show_advanced">Advanced Settings <span ng-show="! farmSet.farms[farmSet.selected].showAdvanced"></span></h3>
                           </div>
                           <div id='advanced'>
                             <br>
@@ -136,12 +135,12 @@
                                 <div class='label-settings-form'><h5>{{name}}</h5></div>
                                 <div class="col-sm-12 text-center">
                                   <div class="server-input">
-                                    <input type="text" id="{{farmSet.selected}}-{{gv}}" ng-model="gv.value">
+                                    <input type="text" class='text-center' id="{{farmSet.selected}}-{{gv}}" ng-model="gv.value">
                                   </div>
                                 </div>
                               </div>
                               <br>
-                              <div id="scaling-{{farmRole.id}}" class="form-group" ng-repeat="(i, farmRole) in farmSet.farms[farmSet.selected].farmRoles | filter:hasScaling track by i">
+                              <div id="scaling-{{farmRole.id}}" class="form-group number-of-instances" ng-repeat="(i, farmRole) in farmSet.farms[farmSet.selected].farmRoles | filter:hasScaling track by i">
                                 <div class='label-settings-form'><h5>Number of {{farmSet.name}} instances : {{farmRole.scaling.value}}</h5></div>
                                 <br>
                                 <div class="col-sm-offset-3 col-sm-6">
