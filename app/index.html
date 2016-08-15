@@ -78,7 +78,7 @@
                 <div class="farm-group">
                   <div ng-repeat="(i1, row) in availableFarmSets | chunkBy:2 track by i1">
                     <div ng-repeat="(i2, farmSet) in row track by i2" class="available-farm-desc">
-                      <div class="farm col-xs-6" ng-click="farmSet.show_launch = ! farmSet.show_launch">
+                      <div class="farm catalog-farm col-xs-6" ng-click="farmSet.show_launch = ! farmSet.show_launch">
                         <div class="img-container">
                           <img class="running-farm-logo farm-image hidden-xs" src="{{farmSet.logo}}" />
                         </div>
@@ -142,10 +142,10 @@
                               </div>
                               <br>
                               <div id="scaling-{{farmRole.id}}" class="form-group" ng-repeat="(i, farmRole) in farmSet.farms[farmSet.selected].farmRoles | filter:hasScaling track by i">
-                                <div class='label-settings-form'><h5>Number of {{farmRole.name}} instances</h5></div>
+                                <div class='label-settings-form'><h5>Number of {{farmSet.name}} instances : {{farmRole.scaling.value}}</h5></div>
                                 <br>
                                 <div class="col-sm-offset-3 col-sm-6">
-                                  <span>{{farmRole.scaling.value}}</span><input type="range" id="scaling-{{farmRole.id}}" min="{{farmRole.scaling.min}}" max="{{farmRole.scaling.max}}" value="{{farmRole.scaling.value}}" ng-model="farmRole.scaling.value">
+                                  <input type="range" id="scaling-{{farmRole.id}}" min="{{farmRole.scaling.min}}" max="{{farmRole.scaling.max}}" value="{{farmRole.scaling.value}}" ng-model="farmRole.scaling.value">
                                 </div>
                               </div>
                             </div>
@@ -170,11 +170,11 @@
                   <div ng-repeat="row in myFarms | chunkBy:2">
                     <div ng-repeat="farm in row" class="running-farm-desc">
                       <div class="farm-wrap">
-                        <div class="farm col-xs-6" ng-click="toggleDetails(farm);">
+                        <div class="farm running-farm col-xs-6" ng-click="toggleDetails(farm);">
                           <div class="img-container">
                             <img class="running-farm-logo farm-image hidden-xs" src="{{farm.description.logo}}"/>
                           </div>
-                          <div class='farm-body'>
+                          <div class='farm-body text-center'>
                             <h3>{{farm.name}}</h3>
                             <p>{{farm.description.description}}</p>
                           </div>
@@ -188,7 +188,7 @@
                           </ul>
                         </div>
                       </div>
-                      <div class="padding-md running-farm-{{farm.id}}-details col-xs-12" ng-show="farm.showDetails">
+                      <div class="padding-md running-farm-{{farm.id}}-details running-farm-details col-xs-12" ng-show="farm.showDetails">
                         <h3>{{farm.name}} details:</h3>
                         <div class='' ng-show="farm.servers.length == 0">
                           <p>This application is not running.</p>
