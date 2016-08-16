@@ -440,6 +440,26 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
   $scope.autoLoggedIn = false;
   $scope.credentialsSaved = false;
   $scope.loadApiSettings();
+
+  /*
+   * Front
+   */
+  $scope.shouldHideFarmSet = function(this_hidden) {
+    if (!this_hidden) return '';
+    for (var i = 0; i < $scope.availableFarmSets.length; i ++) {
+      if ($scope.availableFarmSets[i].show_launch) return 'hide';
+    }
+    return '';
+  };
+
+  $scope.shouldHideRunning = function(this_hidden) {
+    if (!this_hidden) return '';
+    for (var i = 0; i < $scope.myFarms.length; i ++) {
+      if ($scope.myFarms[i].showDetails) return 'hide';
+    }
+    return '';
+  };
+
 }]);
 
 app.directive('ngConfirmClick', [
