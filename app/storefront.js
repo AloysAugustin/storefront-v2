@@ -460,6 +460,18 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
     return '';
   };
 
+  $scope.resetCatalog = function() {
+    for (var i = 0; i < $scope.availableFarmSets.length; i ++) {
+      $scope.availableFarmSets[i].show_launch = false;
+    }
+  };
+
+  $scope.resetApps = function() {
+    for (var i = 0; i < $scope.myFarms.length; i ++) {
+      $scope.myFarms[i].showDetails = false;
+    }
+  };
+
 }]);
 
 app.directive('ngConfirmClick', [

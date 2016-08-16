@@ -62,8 +62,8 @@
       <div ng-show="loggedIn" class="margin-md">
         <div id='pills'>
           <ul class="nav nav-pills nav-justified">
-            <li role="presentation" class="active li-left"><a class="pill-left" href="#available_farms" data-toggle="pill">Catalog</a></li>
-            <li role="presentation"><a href="#my_farms" class="pill-right" data-toggle="pill">My Applications</a></li>
+            <li role="presentation" class="active li-left"><a class="pill-left" href="#available_farms" data-toggle="pill" ng-click="resetCatalog()">Catalog</a></li>
+            <li role="presentation"><a href="#my_farms" class="pill-right" data-toggle="pill" ng-click="resetApps()">My Applications</a></li>
           </ul>
         </div>
         <div class="tab-content">
