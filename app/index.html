@@ -126,7 +126,7 @@
                           </div>
                           <br><br>
                           <div class="text-center underline pointer">
-                            <p class='advanded-settings' ng-click="farmSet.farms[farmSet.selected].show_advanced = ! farmSet.farms[farmSet.selected].show_advanced">Advanced Settings <span ng-show="! farmSet.farms[farmSet.selected].showAdvanced"></span></h3>
+                            <p class='advanded-settings' ng-click="farmSet.farms[farmSet.selected].show_advanced = ! farmSet.farms[farmSet.selected].show_advanced" ng-show="farmSet.farms[farmSet.selected].has_advanced">Advanced Settings</h3>
                           </div>
                           <div id='advanced'>
                             <br>
@@ -141,10 +141,10 @@
                               </div>
                               <br>
                               <div id="scaling-{{farmRole.id}}" class="form-group number-of-instances" ng-repeat="(i, farmRole) in farmSet.farms[farmSet.selected].farmRoles | filter:hasScaling track by i">
-                                <div class='label-settings-form'><h5>Number of {{farmRole.alias}} instances : {{farmRole.scaling.value}}</h5></div>
+                                <div class='label-settings-form'><h5>Number of {{farmRole.alias}} instances : {{farmRole.sf_scaling.value}}</h5></div>
                                 <br>
                                 <div class="col-sm-offset-3 col-sm-6">
-                                  <input type="range" id="scaling-{{farmRole.id}}" min="{{farmRole.scaling.min}}" max="{{farmRole.scaling.max}}" value="{{farmRole.scaling.value}}" ng-model="farmRole.scaling.value">
+                                  <input type="range" id="scaling-{{farmRole.id}}-range" min="{{farmRole.sf_scaling.min}}" max="{{farmRole.sf_scaling.max}}" value="{{farmRole.sf_scaling.value}}" ng-model="farmRole.sf_scaling.value">
                                 </div>
                               </div>
                             </div>
