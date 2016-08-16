@@ -106,6 +106,9 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
                 } catch(e) {
                   options_list = [];
                 }
+                if (options_list.length > 0) {
+                  farm.has_advanced = true;
+                }
                 farm.gv_options = {};
                 for (var j = 0; j < options_list.length; j ++) {
                   farm.gv_options[options_list[j]] = {'name': options_list[j], 'value': ''};
@@ -139,17 +142,17 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
     return function(response) {
       farm.farmRoles = response.data;
       for (var i = 0; i < farm.farmRoles.length; i ++) {
-        $scope.fetchFarmRoleGVOptions(farm.farmRoles[i]);
+        $scope.fetchFarmRoleGVOptions(farm, farm.farmRoles[i]);
       }
     };
   };
 
-  $scope.fetchFarmRoleGVOptions = function(farmRole) {
+  $scope.fetchFarmRoleGVOptions = function(farm, farmRole) {
     var path = '/api/v1beta0/user/{envId}/farm-roles/{farmRoleId}/global-variables/';
     path = path.replace('{envId}', $scope.apiSettings.envId);
     path = path.replace('{farmRoleId}', farmRole.id);
     ScalrAPI.setSettings($scope.apiSettings);
-    ScalrAPI.scroll(path, '', $scope.farmRoleGVFetched(farmRole), $scope.farmRoleGVFetchError(farmRole));
+    ScalrAPI.scroll(path, '', $scope.farmRoleGVFetched(farm, farmRole), $scope.farmRoleGVFetchError(farmRole));
   };
 
   $scope.farmRoleGVFetchError = function(farmRole) {
@@ -158,24 +161,25 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
     };
   };
 
-  $scope.farmRoleGVFetched = function(farmRole) {
+  $scope.farmRoleGVFetched = function(farm, farmRole) {
     return function(response) {
       farmRole.gv = response.data;
       for (var i = 0; i < farmRole.gv.length; i ++) {
         if (farmRole.gv[i].name == 'STOREFRONT_SCALING_ENABLED') {
+          farm.has_advanced = true;
           try {
-            farmRole.scaling = JSON.parse(farmRole.gv[i].value);
+            farmRole.sf_scaling = JSON.parse(farmRole.gv[i].value);
           } catch(e) {
-            farmRole.scaling = {'min': 1, 'max': 3, 'value': 1}
+            farmRole.sf_scaling = {'min': 1, 'max': 3, 'value': 1}
           }
-          if (! 'min' in farmRole.scaling) {
-            farmRole.scaling['min'] = 1;
+          if (! 'min' in farmRole.sf_scaling) {
+            farmRole.sf_scaling['min'] = 1;
           }
-          if (! 'max' in farmRole.scaling) {
-            farmRole.scaling['max'] = 3; //arbitrary
+          if (! 'max' in farmRole.sf_scaling) {
+            farmRole.sf_scaling['max'] = 3; //arbitrary
           }
-          if (! 'value' in farmRole.scaling) {
-            farmRole.scaling['value'] = 1;
+          if (! 'value' in farmRole.sf_scaling) {
+            farmRole.sf_scaling['value'] = 1;
           }
         }
       };
@@ -183,7 +187,7 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
   };
 
   $scope.hasScaling = function(farmRole) {
-    return 'scaling' in farmRole;
+    return 'sf_scaling' in farmRole;
   };
 
   $scope.addFarmToSets = function(farm) {
@@ -193,6 +197,7 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
     farm.name = farm.name.substring(farm.name.indexOf(']')+1, farm.name.length);
     farm.new_name = farm.name;
     farm.show_advanced = false;
+    farm.has_advanced = false;
 
     for (var i = 0; i < $scope.availableFarmSets.length; i ++) {
       if ($scope.availableFarmSets[i].name == farm.name) {
@@ -338,8 +343,8 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
     path = path.replace('{farmRoleId}', newFarmRole.id);
     return ScalrAPI.edit(path, {
       'enabled': true,
-      'maxInstances': oldFarmRole.scaling.value,
-      'minInstances': oldFarmRole.scaling.value
+      'maxInstances': oldFarmRole.sf_scaling.value,
+      'minInstances': oldFarmRole.sf_scaling.value
     }, function() {return true;}, $scope.setFarmRoleScalingError(newFarmRole));
   };
 
@@ -440,6 +445,38 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
   $scope.autoLoggedIn = false;
   $scope.credentialsSaved = false;
   $scope.loadApiSettings();
+
+  /*
+   * Front
+   */
+  $scope.shouldHideFarmSet = function(this_hidden) {
+    if (!this_hidden) return '';
+    for (var i = 0; i < $scope.availableFarmSets.length; i ++) {
+      if ($scope.availableFarmSets[i].show_launch) return 'hide';
+    }
+    return '';
+  };
+
+  $scope.shouldHideRunning = function(this_hidden) {
+    if (!this_hidden) return '';
+    for (var i = 0; i < $scope.myFarms.length; i ++) {
+      if ($scope.myFarms[i].showDetails) return 'hide';
+    }
+    return '';
+  };
+
+  $scope.resetCatalog = function() {
+    for (var i = 0; i < $scope.availableFarmSets.length; i ++) {
+      $scope.availableFarmSets[i].show_launch = false;
+    }
+  };
+
+  $scope.resetApps = function() {
+    for (var i = 0; i < $scope.myFarms.length; i ++) {
+      $scope.myFarms[i].showDetails = false;
+    }
+  };
+
 }]);
 
 app.directive('ngConfirmClick', [

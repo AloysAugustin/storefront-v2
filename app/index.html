@@ -7,13 +7,15 @@
   <link type="image/x-icon" href="static/favicon.ico" rel="shortcut icon" />
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" type='text/css'>
-  <link href='https://fonts.googleapis.com/css?family=Open+Sans:300|Montserrat' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.1.0/milligram.min.css">
   <link rel="stylesheet" href="static/css/main.css" type='text/css'>
 </head>
 <body ng-app="ScalrStorefront">
   <div ng-controller="StorefrontController">
     <div class="navbar-wagon">
-      <p><a href="/" class="navbar-wagon-brand"><img src="static/logo.png" />ACME Corp.</a></p>
+      <a href="/" class="navbar-wagon-brand"><img src="static/logo.png" />ACME Corp. Cloud Portal</a>
       <div class="navbar-wagon-right hidden-xs hidden-sm">
         <!-- <a href="" class="navbar-wagon-item navbar-wagon-link">Team</a> -->
         <div class="navbar-wagon-item">
@@ -28,12 +30,12 @@
         </div>
       </div>
     </div>
-    <div class="header banner" style="background-image: linear-gradient(-225deg, rgba(0,101,168,0.6) 0%, rgba(0,36,61,0.6) 50%), url('static/triangles-blue.png');">
+    <!-- <div class="header banner" style="background-image: linear-gradient(-225deg, rgba(0,101,168,0.6) 0%, rgba(0,36,61,0.6) 50%), url('static/triangles-blue.png');">
       <div class="banner-content">
         <h1>ACME Cloud portal</h1>
         <p>Self-service frontend to Scalr</p>
       </div>
-    </div>
+    </div> -->
     <div class="container">
       <div ng-show="! loggedIn">
         <div class="auth col-md-4 col-md-offset-4 margin-md-top">
@@ -57,14 +59,105 @@
           </form>
         </div>
       </div>
-
-      <div ng-show="loggedIn" class="margin-lg">
-        <ul class="nav nav-tabs" role="tablist" id="tab-control">
-          <li role="presentation" class="active"><a href="#my_farms" aria-controls="my_farms" role="tab" data-toggle="tab">My Applications</a></li>
-          <li role="presentation"><a href="#available_farms" aria-controls="available_farms" role="tab" data-toggle="tab">Catalog</a></li>
-        </ul>
+      <div ng-show="loggedIn" class="margin-md">
+        <div id='pills'>
+          <ul class="nav nav-pills nav-justified">
+            <li role="presentation" class="active li-left"><a class="pill-left" href="#available_farms" data-toggle="pill" ng-click="resetCatalog()">Catalog</a></li>
+            <li role="presentation"><a href="#my_farms" class="pill-right" data-toggle="pill" ng-click="resetApps()">My Applications</a></li>
+          </ul>
+        </div>
         <div class="tab-content">
-          <div role="tabpanel" class="tab-pane fade in active" id="my_farms">
+          <div class="tab-pane fade in active" id="available_farms">
+            <div class="available-farms">
+              <div ng-hide="availableFarmSets.length > 0" class="margin-md-top">
+                <p>
+                  It looks like no application are available in your environment. Ask your administrator to add application templates.
+                </p>
+              </div>
+              <div ng-hide="availableFarmSets.length == 0" class="ng-hide">
+                <div class="farm-group">
+                  <div ng-repeat="(i1, row) in availableFarmSets | chunkBy:2 track by i1">
+                    <div ng-repeat="(i2, farmSet) in row track by i2" class="available-farm-desc">
+                      <div class="farm catalog-farm col-xs-6 {{shouldHideFarmSet(!farmSet.show_launch)}}" ng-class="{'full-width': farmSet.show_launch}" ng-click="farmSet.show_launch = ! farmSet.show_launch">
+                        <div class='farm-body text-center'>
+                          <h3 class="farm-name" ng-class="{'font-size-lg': farmSet.show_launch}">{{ farmSet.name }}</h3>
+                          <p class="farm-description">{{ farmSet.description }}</p>
+                          <br>
+                          <p><img class="running-farm-logo farm-image hidden-xs" src="{{farmSet.logo}}" /></p>
+                        </div>
+                      </div>
+                      <div class="available-farm-launch col-xs-12" id="farm-{{farm.id}}-launch" ng-show="farmSet.show_launch">
+                        <form class="form-horizontal padding-sm-top">
+                          <div class="form-group">
+                          <div class='label-settings-form'><h5>Choose a cloud provider</h5></div>
+                          <br>
+                            <!-- <label for="platform-select-{{farmSet.selected}}" class="control-label col-sm-3">Platform:</label> -->
+                            <div class="col-sm-12 text-center">
+                              <div class="btn-group text-center" data-toggle="buttons">
+                                <label class="btn btn-primary btn-cloud" ng-repeat="(k,v) in farmSet.farms" ng-model="farmSet.selected" btn-radio="'{{k}}'">
+                                  {{v.platform}}
+                                </label>
+                              </div>
+                            </div>
+                          </div>
+                          <br><br>
+                          <div class="form-group">
+                            <!-- <label for="launch-farm-{{farmSet.selected}}-name" class="control-label col-sm-3">Name:</label> -->
+                            <div class='label-settings-form'><h5>Give a name to your server</h5></div>
+                            <br>
+                            <div class="col-sm-12 text-center">
+                              <div class="server-input">
+                                <input required id="launch-farm-{{farmSet.selected}}-name" class="launch-farm-input text-center form-control server-name-input" ng-model="farmSet.farms[farmSet.selected].new_name" type="text"/>
+                              </div>
+                            </div>
+                          </div>
+                          <br>
+                          <div class="form-group">
+                            <div class='label-settings-form'><h5>Other options</h5></div>
+                            <div class="col-sm-12 text-center">
+                              <input type="checkbox" ng-model="farmSet.day_only" ng-true-value="2" ng-false-value="1"/><p class="business-hours-label">I want to run it only during business hours: </p>
+                            </div>
+                          </div>
+                          <br>
+                          <div class='form-group padding-sm-top' id="button-container">
+                            <div class="text-center">
+                              <button type="button" ng-disabled="farmSet.launching" class="auth-button btn btn-success" id="button-farm-{{farmSet.selected}}-done" ng-click="farmSet.launching = true; cloneAndLaunch(farmSet.farms[farmSet.selected]);">Launch for ${{farmSet.farms[farmSet.selected].description.dailyPrice / farmSet.day_only }}/day</button>
+                            </div>
+                          </div>
+                          <br><br>
+                          <div class="text-center underline pointer">
+                            <p class='advanded-settings' ng-click="farmSet.farms[farmSet.selected].show_advanced = ! farmSet.farms[farmSet.selected].show_advanced" ng-show="farmSet.farms[farmSet.selected].has_advanced">Advanced Settings</h3>
+                          </div>
+                          <div id='advanced'>
+                            <br>
+                            <div id="template-{{farmSet.selected}}-advanced-settings" ng-show="farmSet.farms[farmSet.selected].show_advanced">
+                              <div id="settings" class="form-group" ng-repeat="(name, gv) in farmSet.farms[farmSet.selected].gv_options track by name">
+                                <div class='label-settings-form'><h5>{{name}}</h5></div>
+                                <div class="col-sm-12 text-center">
+                                  <div class="server-input">
+                                    <input type="text" class='text-center' id="{{farmSet.selected}}-{{gv}}" ng-model="gv.value">
+                                  </div>
+                                </div>
+                              </div>
+                              <br>
+                              <div id="scaling-{{farmRole.id}}" class="form-group number-of-instances" ng-repeat="(i, farmRole) in farmSet.farms[farmSet.selected].farmRoles | filter:hasScaling track by i">
+                                <div class='label-settings-form'><h5>Number of {{farmRole.alias}} instances : {{farmRole.sf_scaling.value}}</h5></div>
+                                <br>
+                                <div class="col-sm-offset-3 col-sm-6">
+                                  <input type="range" id="scaling-{{farmRole.id}}-range" min="{{farmRole.sf_scaling.min}}" max="{{farmRole.sf_scaling.max}}" value="{{farmRole.sf_scaling.value}}" ng-model="farmRole.sf_scaling.value">
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="my_farms">
             <div class="farms">
               <div class="running-farms">
                 <div ng-hide="myFarms.length > 0" class="margin-md-top">
@@ -75,24 +168,26 @@
                 <div ng-hide="myFarms.length == 0" class="ng-hide">
                   <div ng-repeat="row in myFarms | chunkBy:2">
                     <div ng-repeat="farm in row" class="running-farm-desc">
-                      <div class="farm col-xs-6" ng-click="toggleDetails(farm);">
-                        <div class="img-container">
-                          <img class="running-farm-logo farm-image hidden-xs" src="{{farm.description.logo}}"/>
+                      <div class="farm-wrap">
+                        <div class="farm running-farm col-xs-6 {{shouldHideRunning(!farm.showDetails)}}" ng-click="toggleDetails(farm);" ng-class="{'full-width': farm.showDetails}">
+                          <div class="img-container">
+                            <img class="running-farm-logo farm-image hidden-xs" src="{{farm.description.logo}}"/>
+                          </div>
+                          <div class='farm-body text-center'>
+                            <h3>{{farm.name}}</h3>
+                            <p>{{farm.description.description}}</p>
+                          </div>
+                          <ul class="list-inline farm-controls hidden-sm hidden-xs">
+                            <li ng-show="farm.servers.length != 0">
+                              <span class="label label-success label-apps">Running</span>
+                            </li>
+                            <li ng-show="farm.servers.length == 0" >
+                              <span class="label label-danger label-apps">Stopped</span>
+                            </li>
+                          </ul>
                         </div>
-                        <div class='farm-body'>
-                          <h3>{{farm.name}}</h3>
-                          <p>{{farm.description.description}}</p>
-                        </div>
-                        <ul class="list-inline farm-controls hidden-sm hidden-xs">
-                          <li ng-show="farm.servers.length != 0">
-                            <span class="label label-success label-apps">Running</span>
-                          </li>
-                          <li ng-show="farm.servers.length == 0" >
-                            <span class="label label-danger label-apps">Stopped</span>
-                          </li>
-                        </ul>
                       </div>
-                      <div class=" padding-md running-farm-{{farm.id}}-details col-xs-12" ng-show="farm.showDetails">
+                      <div class="padding-md running-farm-{{farm.id}}-details running-farm-details col-xs-12" ng-show="farm.showDetails">
                         <h3>{{farm.name}} details:</h3>
                         <div class='' ng-show="farm.servers.length == 0">
                           <p>This application is not running.</p>
@@ -112,94 +207,11 @@
               </div>
             </div>
           </div>
-          <div role="tabpanel" class="tab-pane fade" id="available_farms">
-            <div class="available-farms">
-              <div ng-hide="availableFarmSets.length > 0" class="margin-md-top">
-                <p>
-                  It looks like no application are available in your environment. Ask your administrator to add application templates.
-                </p>
-              </div>
-              <div ng-hide="availableFarmSets.length == 0" class="ng-hide">
-                <div ng-repeat="(i1, row) in availableFarmSets | chunkBy:2 track by i1">
-                  <div ng-repeat="(i2, farmSet) in row track by i2" class="available-farm-desc">
-                    <div class="farm col-xs-6">
-                      <div class="img-containergut ">
-                        <img class="running-farm-logo farm-image hidden-xs" src="{{farmSet.logo}}" />
-                      </div>
-                      <div class='farm-body'>
-                        <h3>{{ farmSet.name }}</h3>
-                        <p>{{ farmSet.description }}</p>
-                      </div>
-                      <ul class="list-inline">
-                        <li>
-                          <span class='btn btn-default' ng-show="! farmSet.show_launch" ng-click="farmSet.show_launch = ! farmSet.show_launch">Create</span>
-                          <span class='btn btn-default' ng-show="farmSet.show_launch" ng-click="farmSet.show_launch = ! farmSet.show_launch">Cancel</span>
-                        </li>
-                      </ul>
-                    </div>
-                    <div class="available-farm-launch col-xs-12" id="farm-{{farm.id}}-launch" ng-show="farmSet.show_launch">
-                      <form class="form-horizontal padding-sm-top">
-                        <div class="form-group">
-                          <label for="platform-select-{{farmSet.selected}}" class="control-label col-sm-3">Platform:</label>
-                          <div class="col-sm-9">
-                            <div class="btn-group" data-toggle="buttons">
-                              <label class="btn btn-primary" ng-repeat="(k,v) in farmSet.farms" ng-model="farmSet.selected" btn-radio="'{{k}}'">
-                                {{v.platform}}
-                              </label>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="form-group">
-                          <label for="launch-farm-{{farmSet.selected}}-name" class="control-label col-sm-3">Name:</label>
-                          <div class="col-sm-9">
-                            <input required id="launch-farm-{{farmSet.selected}}-name" class="launch-farm-input form-control" ng-model="farmSet.farms[farmSet.selected].new_name" type="text"/>
-                          </div>
-                        </div>
-                        <div class="form-group">
-                          <label class="control-label col-sm-3">Run only during business hours: </label>
-                          <div class="col-sm-9">
-                            <div class="checkbox">
-                              <label><input type="checkbox" ng-model="farmSet.day_only" ng-true-value="2" ng-false-value="1"/></label>
-                            </div>
-                          </div>
-                        </div>
-                        <div class='form-group padding-sm-top' id="button-container">
-                          <div class="col-sm-offset-3 col-sm-2">
-                            <button type="button" ng-disabled="farmSet.launching" class="auth-button btn btn-success" id="button-farm-{{farmSet.selected}}-done" ng-click="farmSet.launching = true; cloneAndLaunch(farmSet.farms[farmSet.selected]);">Launch for ${{farmSet.farms[farmSet.selected].description.dailyPrice / farmSet.day_only }}/day</button>
-                          </div>
-                          <div class="col-sm-2">
-                            <button ng-show="! farmSet.launching" type="button" class="auth-button btn btn-danger" id="button-farm-{{farmSet.selected}}-cancel" ng-click="farmSet.show_launch = false">Cancel</button>
-                            <img class="control-label" src="/static/throbber.gif" ng-show="farmSet.launching"/>
-                          </div>
-                        </div>
-
-                        <h3 ng-click="farmSet.farms[farmSet.selected].show_advanced = ! farmSet.farms[farmSet.selected].show_advanced">Advanced Settings <span ng-show="! farmSet.farms[farmSet.selected].showAdvanced">></span></h3>
-                        <div id="template-{{farmSet.selected}}-advanced-settings" ng-show="farmSet.farms[farmSet.selected].show_advanced">
-                          <div id="settings" class="form-group" ng-repeat="(name, gv) in farmSet.farms[farmSet.selected].gv_options track by name">
-                            <label class="control-label col-sm-3">{{name}}</label>
-                            <div class="col-sm-9">
-                              <input type="text" id="{{farmSet.selected}}-{{gv}}" ng-model="gv.value">
-                            </div>
-                          </div>
-                          <div id="scaling-{{farmRole.id}}" class="form-group" ng-repeat="(i, farmRole) in farmSet.farms[farmSet.selected].farmRoles | filter:hasScaling track by i">
-                            <label class="control-label col-sm-3">Number of {{farmRole.name}} instances:</label>
-                            <div class="col-sm-9">
-                              <span>{{farmRole.scaling.value}}</span><input type="range" id="scaling-{{farmRole.id}}" min="{{farmRole.scaling.min}}" max="{{farmRole.scaling.max}}" value="{{farmRole.scaling.value}}" ng-model="farmRole.scaling.value">
-                            </div>
-                          </div>
-                        </div>
-
-                      </form>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>
   </div>
+  <br><br><br>
   <script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
   <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script>
@@ -210,5 +222,6 @@
   <script src="/static/enc-base64-min.js"></script>
   <script src="/static/scalr-api.js"></script>
   <script src="/storefront.js"></script>
+  <script src="/static/frontend.js"></script>
 </body>
 </html>

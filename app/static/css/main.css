@@ -1,13 +1,134 @@
+body {
+  background-color: #FAFAFA;
+}
+
+.container {
+  padding: 0;
+}
+
+#pills {
+  margin-bottom: 40px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.nav-pills li {
+  color: #606C76;
+}
+
+.nav-pills li .pill-left {
+  border-radius: 2px 0px 0px 2px;
+  border-bottom: 1px solid #092EBB;
+  border-top: 1px solid #092EBB;
+  border-left: 1px solid #092EBB;
+  width: 550px;
+}
+
+.nav-pills li .pill-right {
+  border-radius: 0px 2px 2px 0px;
+  border-bottom: 1px solid #092EBB;
+  border-top: 1px solid #092EBB;
+  border-right: 1px solid #092EBB;
+  width: 550px;
+}
+
+.nav-pills li.active a {
+  background-color: #092EBB;
+}
+
+.nav-pills li.active a:focus {
+  background-color: #092EBB;
+}
+
+.nav-pills li.active a:active {
+  background-color: #092EBB;
+}
+
+.nav-pills li.active a:hover {
+  background-color: #092EBB;
+}
+
+.nav-pills li.active {
+  background-color: white;
+}
+
+.nav li a:hover {
+  background-color: white;
+}
+
+.underline {
+  text-decoration: underline;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+a {
+  color: #333;
+}
+
+.float-right {
+  float: right;
+}
+
+input[type='email']:focus, input[type='number']:focus, input[type='password']:focus, input[type='search']:focus, input[type='tel']:focus, input[type='text']:focus, input[type='url']:focus, textarea:focus, select:focus {
+  border: .1rem solid #092EBB;
+}
+
+.btn-success, .btn-success:hover, .btn-success:active, .btn-success:focus, .btn-success.active, .open, .dropdown-toggle.btn-success {
+  background-color: #092EBB;
+  border: 0;
+}
+
+.business-hours-label {
+  display: inline;
+  margin-left: 15px;
+}
+
+.server-input {
+  text-align: center;
+}
+
+.server-input input {
+  width: 675px;
+  display: inline;
+}
+
+.label-settings-form {
+  text-align: center;
+}
+
+.btn-cloud.active, .btn-cloud.active:focus, .btn-cloud.active:hover {
+  background-color: #092EBB;
+  border: 1px solid #092EBB;
+}
+
+.btn-cloud {
+  background-color: white;
+  color: #606C76;
+  width: 225px;
+  border: 1px solid #092EBB;
+}
+
+.btn-cloud:hover {
+  background-color: #F7F7FA;
+  color: #606C76;
+  border: 1px solid #092EBB;
+}
 /* List items */
 
 .farm {
   display: flex;
   align-items: center;
   padding: 20px;
-  border-radius: 3px;
-  transition: all 0.15s ease;
-  cursor: default;
-  height: 180px;
+  border-radius: 2px;
+  /*transition: all 0.15s ease;*/
+  height: 300px;
+  background-color: white;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08),0 0px 0px 1px rgba(0, 0, 0, 0.02);
+  margin: 10px;
+  width: 48%;
 }
 
 .farm .img-container {
@@ -18,26 +139,26 @@
 /* Body design */
 .farm-body {
   flex: 1 1 auto;
+  margin-right: 30px;
+  margin-left: 30px;
 }
 .farm-body h3 {
   font-weight: bold;
   font-size: 23px;
   margin-top: 0;
-  font-family: 'Open Sans', sans-serif;
 }
 .farm-body p {
   font-weight: lighter;
   color: #999999;
   margin-bottom: 0;
   font-size: 16px;
-  font-family: 'Open Sans', sans-serif;
 }
 
 /* farm image */
 .farm-image {
-  border-radius: 2px;
   margin-right: 20px;
-  height: 50px;
+  margin-left: 40px;
+  width: 80px;
 }
 
 .farm-image-container {
@@ -68,10 +189,18 @@
 .farm-controls-hidden a {
   color: transparent;
   font-size: 15px;
-  transition: all 0.15s ease;
+  /*transition: all 0.15s ease;*/
   border-color: transparent;
 }
 .farm:hover .farm-controls-hidden a { color: red }
+
+.available-farm-launch {
+  background-color: white;
+  border-radius: 2px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08),0 0px 0px 1px rgba(0, 0, 0, 0.02);
+  margin-left: 1%;
+  padding: 50px;
+}
 
 /* Padding */
 
@@ -88,6 +217,11 @@
   margin-bottom: 5em;
 }
 
+.margin-md {
+  margin-top: 3em;
+  margin-bottom: 3em;
+}
+
 .padding-md {
   padding-top: 3em;
   padding-bottom: 3em;
@@ -97,6 +231,21 @@
     text-align: left !important;
 }
 
+.full-width {
+  width: 100%;
+}
+
+.hide {
+  display: none;
+}
+
+.running-farm-details {
+  background-color: white;
+  border-radius: 2px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08),0 0px 0px 1px rgba(0, 0, 0, 0.02);
+  margin-left: 1%;
+  padding: 50px;
+}
 /* Navbar */
 
 /* Main class */
@@ -109,6 +258,7 @@
   padding: 0px 30px;
   align-items: center;
   justify-content: space-between;
+  background-color: #FAFAFA;
 }
 
 /* Optional class to fix the navbar on top */
@@ -144,10 +294,13 @@
 /* Navbar standard link */
 .navbar-wagon-brand {
   color: black;
-  font-weight: bold;
-  font-size: 25px;
-  line-height: 3.5em;
+  width: 50%;
 }
+
+.navbar-wagon-brand img {
+  width: 30px;
+}
+
 .navbar-wagon-brand:hover {
   text-decoration: none;
   color: black;
@@ -248,14 +401,12 @@
   font-size: 50px;
   font-weight: bold;
   text-shadow: 0px 1px rgba(0, 0, 0, 0.2);
-  font-family: 'Montserrat';
 }
 .banner p {
   font-size: 20px;
   font-weight: lighter;
   color: rgba(255, 255, 255, 0.7);
   margin-bottom: 20px;
-  font-family: 'Open Sans';
 }
 
 .sign-in-up .left-inner-addon {
@@ -291,7 +442,10 @@
   display: inline;
   font-size: 14px;
 }
+.font-size-lg {
+  font-size: 3em !important;
+}
 
-div, a, p, h3, li {
-  font-family: 'Open Sans', sans-serif;
+.margin-auto {
+  margin: auto;
 }

@@ -18,5 +18,13 @@ All the data is stored inside Scalr. To configure some templates in an environme
 
 Note: this is experimental and unstable code, most errors are logged in the console but not displayed in the UI
 
-TODO: Add support for global variables in the launch form (the list of which can be put in the farm description) to be able to customize stuff on the launched Farms, such as credentials
-
+Templates farms can be customized in two ways:
+- Setting a farm-level global variable called STOREFRONT_CONFIGURABLE_GV that contains a JSON-formatted list of global variable names (ex: ["ACCOUNT_NAME", "ACCOUNT_PW"]) will allow the storefront user to give a custom value to these global variables.
+- Setting a farm-role level global variable called STOREFRONT_SCALING_ENABLED will allow the user to choose the number of instances for this farm role. Min, max and default number of instances can be configured with the value of STOREFRONT_SCALING_ENABLED:
+```
+{
+"min": 1,
+"max": 5,
+"value": 1
+}
+```
