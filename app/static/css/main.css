@@ -175,8 +175,6 @@ input[type='email']:focus, input[type='number']:focus, input[type='password']:fo
 
 /* farm image */
 .farm-image {
-  margin-right: 20px;
-  margin-left: 40px;
   width: 80px;
 }
 

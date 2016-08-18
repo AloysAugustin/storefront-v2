@@ -168,12 +168,11 @@
                     <div ng-repeat="farm in row" class="running-farm-desc">
                       <div class="farm-wrap">
                         <div class="farm running-farm col-xs-6 {{shouldHideRunning(!farm.showDetails)}}" ng-click="toggleDetails(farm);" ng-class="{'full-width': farm.showDetails}">
-                          <div class="img-container">
-                            <img class="running-farm-logo farm-image hidden-xs" src="{{farm.description.logo}}"/>
-                          </div>
                           <div class='farm-body text-center'>
                             <h3>{{farm.name}}</h3>
                             <p>{{farm.description.description}}</p>
+                            <br>
+                            <p><img class="running-farm-logo farm-image hidden-xs" src="{{farm.description.logo}}" /></p>
                           </div>
                           <ul class="list-inline farm-controls hidden-sm hidden-xs">
                             <li ng-show="farm.servers.length != 0">
@@ -185,7 +184,7 @@
                           </ul>
                         </div>
                       </div>
-                      <div class="padding-md running-farm-{{farm.id}}-details running-farm-details col-xs-12" ng-show="farm.showDetails">
+                      <div class="padding-md text-center running-farm-{{farm.id}}-details running-farm-details col-xs-12" ng-show="farm.showDetails">
                         <h3>{{farm.name}} details:</h3>
                         <div class='' ng-show="farm.servers.length == 0">
                           <p>This application is not running.</p>
