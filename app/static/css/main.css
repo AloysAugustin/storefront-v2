@@ -76,7 +76,7 @@ input[type='email']:focus, input[type='number']:focus, input[type='password']:fo
   border: .1rem solid #092EBB;
 }
 
-.btn-success, .btn-success:hover, .btn-success:active, .btn-success:focus, .btn-success.active, .open, .dropdown-toggle.btn-success {
+.btn-success, .btn-success:hover, .btn-success:active, .btn-success:focus, .btn-success.active, .dropdown-toggle.btn-success {
   background-color: #092EBB;
   border: 0;
 }
