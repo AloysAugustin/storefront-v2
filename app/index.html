@@ -174,7 +174,7 @@
                             <br>
                             <p><img class="running-farm-logo farm-image hidden-xs" src="{{farm.description.logo}}" /></p>
                           </div>
-                          <ul class="list-inline farm-controls hidden-sm hidden-xs">
+                          <ul class="list-inline farm-controls hidden-sm hidden-xs" ng-show="!farm.showDetails">
                             <li ng-show="farm.servers.length != 0">
                               <span class="label label-success label-apps">Running</span>
                             </li>
