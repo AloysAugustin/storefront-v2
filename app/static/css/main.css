@@ -76,9 +76,14 @@ input[type='email']:focus, input[type='number']:focus, input[type='password']:fo
   border: .1rem solid #092EBB;
 }
 
-.btn-success, .btn-success:hover, .btn-success:active, .btn-success:focus, .btn-success.active, .open, .dropdown-toggle.btn-success {
+.btn-success, .btn-success:active, .btn-success:active:focus, .btn-success:focus, .btn-success.active, .dropdown-toggle.btn-success {
   background-color: #092EBB;
   border: 0;
+  outline:none;
+}
+
+.btn-success:hover {
+  background-color: rgba(9, 46, 187, 0.9);
 }
 
 .business-hours-label {
@@ -116,6 +121,20 @@ input[type='email']:focus, input[type='number']:focus, input[type='password']:fo
   color: #606C76;
   border: 1px solid #092EBB;
 }
+
+.btn-save-credentials {
+  background-color: white;
+  color: #333;
+  border: 1px solid #092EBB;
+}
+
+.btn-save-credentials:hover {
+  background-color: #F7F7FA;
+  color: black;
+  border: 1px solid #092EBB;
+}
+
+
 /* List items */
 
 .farm {
@@ -156,8 +175,6 @@ input[type='email']:focus, input[type='number']:focus, input[type='password']:fo
 
 /* farm image */
 .farm-image {
-  margin-right: 20px;
-  margin-left: 40px;
   width: 80px;
 }
 
