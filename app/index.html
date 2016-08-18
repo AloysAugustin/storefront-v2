@@ -30,31 +30,29 @@
         </div>
       </div>
     </div>
-    <!-- <div class="header banner" style="background-image: linear-gradient(-225deg, rgba(0,101,168,0.6) 0%, rgba(0,36,61,0.6) 50%), url('static/triangles-blue.png');">
-      <div class="banner-content">
-        <h1>ACME Cloud portal</h1>
-        <p>Self-service frontend to Scalr</p>
-      </div>
-    </div> -->
     <div class="container">
       <div ng-show="! loggedIn">
         <div class="auth col-md-4 col-md-offset-4 margin-md-top">
           <form id="loginForm" class="form-horizontal padding-sm-top">
             <div class="form-group">
-              <input required id="auth-server" class="auth-input form-control input-lg" name="server" ng-model="apiSettings.apiUrl" type="text" placeholder="Server (ex: https://my.scalr.com/)" />
+              <label class="">Server (ex: https://my.scalr.com/) : </label>
+              <input required id="auth-server" class="auth-input form-control input-lg" name="server" ng-model="apiSettings.apiUrl" type="text"/>
             </div>
             <div class="form-group">
-              <input required id="auth-keyid" class="auth-input form-control input-lg" name="keyid" ng-model="apiSettings.keyId" placeholder="API Key ID" type="text"/>
+              <label class="">API Key ID :</label>
+              <input required id="auth-keyid" class="auth-input form-control input-lg" name="keyid" ng-model="apiSettings.keyId" type="text"/>
             </div>
             <div class="form-group">
-              <input required id="auth-secret" class="auth-input form-control input-lg" name="secret" ng-model="apiSettings.secretKey" type="password" placeholder="Secret Key" />
+               <label class="">Secret Key :</label>
+              <input required id="auth-secret" class="auth-input form-control input-lg" name="secret" ng-model="apiSettings.secretKey" type="password" />
             </div>
             <div class="form-group">
-              <input required id="auth-envid" class="auth-input form-control input-lg" name="envid" ng-model="apiSettings.envId" type="text" placeholder="Environment ID" />
+              <label class="">Environment ID :</label>
+              <input required id="auth-envid" class="auth-input form-control input-lg" name="envid" ng-model="apiSettings.envId" type="text" />
             </div>
             <div class='form-group padding-sm-top text-center'>
-              <button type="button" ng-click="apiSettingsDone()" class="auth-button btn btn-primary btn-lg" id="auth-button-done">Done</button>
-              <button type="button" ng-click="saveApiSettings()" class="auth-button btn btn-success btn-lg" id="auth-button-save">Save credentials locally</button>
+              <button type="button" ng-click="apiSettingsDone()" class="auth-button btn btn-success" id="auth-button-done">Done</button>
+              <button type="button" ng-click="saveApiSettings()" class="auth-button btn btn-success btn-save-credentials" id="auth-button-save">Save credentials locally</button>
             </div>
           </form>
         </div>
