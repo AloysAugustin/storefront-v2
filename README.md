@@ -28,3 +28,5 @@ Templates farms can be customized in two ways:
 "value": 1
 }
 ```
+
+TODO: Reflect impact of scaling choices in estimated price
