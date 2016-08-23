@@ -2,7 +2,6 @@ var app = angular.module('ScalrStorefront', ['LocalStorageModule', 'angular.filt
 
 app.controller('StorefrontController', ["$scope", "$location", "$filter", "localStorageService",
   function ($scope, $location, $filter, localStorageService) {
-  $scope.singleModel = 1;
 
   /*
    * Credentials management
