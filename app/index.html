@@ -190,12 +190,12 @@
                           <p>This application is not running.</p>
                           <button type="button" ng-disabled="farm.working" ng-click="farm.working=true; startFarm(farm)" class="btn btn-success" id="farm-{{farm.id}}-button-start">Start application</button>
                           <button type="button" ng-disabled="farm.working || farm.terminating_servers_count > 0" ng-click="deleteFarm(farm);" ng-confirm-click="Are you sure that you want to delete this application? This cannot be undone." class="btn btn-danger" id="farm-{{farm.id}}-button-delete">Delete application</button>
-                          <img src="/static/throbber.gif" ng-show="farm.working"/>
+                          <img src="static/throbber.gif" ng-show="farm.working"/>
                         </div>
                         <div class="" ng-hide="farm.servers.length == 0">
                           <p>Endpoint: <a target="_blank" href="http://{{farm.servers[0].publicIp[0]}}">{{farm.servers[0].publicIp[0]}}</a></p>
                           <button type="button" ng-disabled="farm.working" ng-click="farm.working=true; stopFarm(farm)" class="btn btn-danger" id="farm-{{farm.id}}-button-stop">Stop application</button>
-                          <img src="/static/throbber.gif" ng-show="farm.working"/>
+                          <img src="static/throbber.gif" ng-show="farm.working"/>
                         </div>
                       </div>
                     </div>
@@ -212,12 +212,12 @@
   <script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
   <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script>
-  <script src="/static/angular-local-storage.min.js"></script>
+  <script src="static/angular-local-storage.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-filter/0.5.8/angular-filter.js"></script>
   <script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.13.4.js"></script>
-  <script src="/static/hmac-sha256.js"></script>
-  <script src="/static/enc-base64-min.js"></script>
-  <script src="/static/scalr-api.js"></script>
-  <script src="/storefront.js"></script>
+  <script src="static/hmac-sha256.js"></script>
+  <script src="static/enc-base64-min.js"></script>
+  <script src="static/scalr-api.js"></script>
+  <script src="storefront.js"></script>
 </body>
 </html>
