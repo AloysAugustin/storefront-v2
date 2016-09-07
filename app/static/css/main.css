@@ -140,14 +140,14 @@ input[type='email']:focus, input[type='number']:focus, input[type='password']:fo
 .farm {
   display: flex;
   align-items: center;
-  padding: 20px;
+  padding: 10px;
   border-radius: 2px;
   /*transition: all 0.15s ease;*/
-  height: 300px;
+  height: 200px;
   background-color: white;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08),0 0px 0px 1px rgba(0, 0, 0, 0.02);
   margin: 10px;
-  width: 48%;
+  width: 31%;
 }
 
 .farm .img-container {
@@ -169,7 +169,8 @@ input[type='email']:focus, input[type='number']:focus, input[type='password']:fo
 .farm-body p {
   font-weight: lighter;
   color: #999999;
-  margin-bottom: 0;
+  margin-bottom: -10px;
+  margin-top: -10px;
   font-size: 16px;
 }
 
@@ -248,12 +249,16 @@ input[type='email']:focus, input[type='number']:focus, input[type='password']:fo
     text-align: left !important;
 }
 
-.full-width {
-  width: 100%;
-}
-
 .hide {
   display: none;
+}
+
+.running-farm {
+  width: 48%;
+}
+
+.full-width {
+  width: 100%;
 }
 
 .running-farm-details {

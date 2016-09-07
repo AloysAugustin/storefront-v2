@@ -260,7 +260,6 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
 
   $scope.farmsFetched = function(response) {
     var farms = response.all_data;
-    console.log(farms);
     for (var i = 0; i < farms.length; i ++) {
       var farm = farms[i];
       try {

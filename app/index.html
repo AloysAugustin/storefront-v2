@@ -74,7 +74,7 @@
               </div>
               <div ng-hide="availableFarmSets.length == 0" class="ng-hide">
                 <div class="farm-group">
-                  <div ng-repeat="(i1, row) in availableFarmSets | chunkBy:2 track by i1">
+                  <div ng-repeat="(i1, row) in availableFarmSets | chunkBy:3 track by i1">
                     <div ng-repeat="(i2, farmSet) in row track by i2" class="available-farm-desc">
                       <div class="farm catalog-farm col-xs-6 {{shouldHideFarmSet(!farmSet.show_launch)}}" ng-class="{'full-width': farmSet.show_launch}" ng-click="farmSet.show_launch = ! farmSet.show_launch">
                         <div class='farm-body text-center'>
@@ -184,13 +184,13 @@
                   </p>
                 </div>
                 <div ng-hide="myFarms.length == 0" class="ng-hide">
-                  <div ng-repeat="row in myFarms | chunkBy:2">
+                  <div ng-repeat="row in myFarms | chunkBy:3">
                     <div ng-repeat="farm in row" class="running-farm-desc">
                       <div class="farm-wrap">
                         <div class="farm running-farm col-xs-6 {{shouldHideRunning(!farm.showDetails)}}" ng-click="toggleDetails(farm);" ng-class="{'full-width': farm.showDetails}">
                           <div class='farm-body text-center'>
                             <h3>{{farm.name}}</h3>
-                            <p>{{farm.description.description}}</p>
+                            <!--p>{{farm.description.description}}</p-->
                             <br>
                             <p><img class="running-farm-logo farm-image hidden-xs" src="{{farm.description.logo}}" /></p>
                           </div>
