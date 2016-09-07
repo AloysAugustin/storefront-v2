@@ -372,7 +372,6 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
         if (with_approval) {
           $scope.sendApprovalEmail(farm, newFarm);
           //$scope.fetchAllFarms();
-          window.location.reload()
           console.log('Done. Approval pending.')
         } else {
           $scope.farmUpdated(newFarm.id);
@@ -524,6 +523,7 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
       internet: internet_access
     }), function() {
       console.log('email sent');
+      window.location.reload();
     }, function() {
       console.log('email failed');
     })
