@@ -38,7 +38,7 @@ def handle_query():
         param_dict['duration'] = urllib.quote(data['duration'],'')
         param_dict['farm-id'] = urllib.quote(str(data['farmId']),'')
         param_dict['internet'] = '1' if data['internet'] else '0'
-        url_to_send = "http://disney-portal.demo.scalr.com/approval/#?u={user}&s={url}&e={env}&t={name}&p={prio}&a={avai}&d={duration}&f={farm-id}&i={internet}".format(**param_dict)
+        url_to_send = "http://portal.demo.scalr.com/approval/#?u={user}&s={url}&e={env}&t={name}&p={prio}&a={avai}&d={duration}&f={farm-id}&i={internet}".format(**param_dict)
         resp = requests.post(
             "https://api.mailgun.net/v3/sandbox8fdd69ee92db404db4a4454837aad7e4.mailgun.org/messages",
             auth=("api", "key-1a0c7531e47353bd6ca131a8cfeaa018"),

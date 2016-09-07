@@ -511,7 +511,7 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
   $scope.sendApprovalEmail = function(template, newFarm) {
     console.log('sending email');
     var internet_access = template.internet_access_required ? true : false;
-    $.post('http://disney-portal.demo.scalr.com:5000/send/', JSON.stringify({
+    $.post('http://portal.demo.scalr.com:5000/send/', JSON.stringify({
       user: $scope.apiSettings.keyId,
       farmId: newFarm.id,
       url: $scope.apiSettings.apiUrl,
