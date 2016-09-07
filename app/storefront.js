@@ -260,6 +260,7 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
 
   $scope.farmsFetched = function(response) {
     var farms = response.all_data;
+    console.log(farms);
     for (var i = 0; i < farms.length; i ++) {
       var farm = farms[i];
       try {
@@ -370,7 +371,7 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
         if (with_approval) {
           $scope.fetchAllFarms();
           console.log('Done. Approval pending.')
-          $scope.sendApprovalEmail(newFarm);
+          $scope.sendApprovalEmail(farm, newFarm);
         } else {
           $scope.farmUpdated(newFarm.id);
         }
@@ -504,22 +505,21 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
     $scope.cloneAndLaunch(farm, true);
   };
 
-  $scope.sendApprovalEmail = function(farm) {
-    /*$.ajax({
-      type: 'POST',
-      url: 'https://api.mailgun.net/v3/sandbox8fdd69ee92db404db4a4454837aad7e4.mailgun.org/messages',
-      headers: {
-        "Authorization": "Basic YXBpOmtleS0xYTBjNzUzMWU0NzM1M2JkNmNhMTMxYThjZmVhYTAxOA=="
-      },
-      success: null,
-      error: null,
-      data: {
-        from: 'storefront@scalr.com',
-        to: 'aloys@scalr.com',
-        subject: 'Storefront request approval',
-        text: 'A new request arrived, please click on the following link to see it.'
-      }
-    });*/
+  $scope.sendApprovalEmail = function(template, newFarm) {
+    $.post('http://disney-portal.demo.scalr.com:5000/send/', {
+      user: $scope.apiSettings.keyId,
+      farmId: farm.id,
+      url: $scope.apiSettings.apiUrl,
+      env: $scope.apiSettings.envId,
+      appName: template.name,
+      perf: template.perf_level,
+      avail: template.availability,
+      duration: template.duration
+    }, function() {
+      console.log('email sent');
+    }, function() {
+      console.log('email failed');
+    })
   };
 
   /*
