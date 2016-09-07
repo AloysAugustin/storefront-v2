@@ -71,7 +71,6 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
   $scope.fetchAllFarms = function() {
     $scope.myFarms = [];
     $scope.availableFarmSets = [];
-    $scope.$apply();
     var path = '/api/v1beta0/user/{envId}/farms/';
     path = path.replace('{envId}', $scope.apiSettings.envId);
     ScalrAPI.setSettings($scope.apiSettings);
