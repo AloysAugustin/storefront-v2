@@ -569,6 +569,9 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
     if (v == 'Low') return 1;
     if (v == 'Medium') return 2;
     if (v == 'High') return 3;
+    if (v == 'Business hours') return 1;
+    if (v == '24/7') return 2;
+    if (v == 'HA') return 3;
     return v;
   }
 
