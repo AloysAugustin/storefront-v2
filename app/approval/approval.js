@@ -83,6 +83,8 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
 
   var args = $location.search();
 
+  console.log(window.location.query);
+
   $scope.user = args['u'];
   $scope.appName = args['t'];
   $scope.perf = args['p'];
@@ -91,6 +93,7 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
   $scope.farmId = args['f'];
   $scope.done = false;
   $scope.internet_access = args['i'];
+  console.log(args['i']);
   $scope.apiSettings.apiUrl = args['s'];
   $scope.apiSettings.envId = args['e'];
   console.log($scope.apiSettings, args);
