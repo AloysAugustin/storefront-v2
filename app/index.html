@@ -92,7 +92,7 @@
                             <!-- <label for="platform-select-{{farmSet.selected}}" class="control-label col-sm-3">Platform:</label> -->
                             <div class="col-sm-12 text-center">
                               <div class="btn-group text-center" data-toggle="buttons">
-                                <label class="btn btn-primary btn-cloud" ng-repeat="(k,v) in farmSet.farms" ng-model="farmSet.selected_perf" btn-radio="'{{k}}'">
+                                <label class="btn btn-primary btn-cloud" ng-repeat="k in keys(farmSet.farms) | orderBy: sortIndex" ng-model="farmSet.selected_perf" btn-radio="'{{k}}'">
                                   {{k}}
                                 </label>
                               </div>

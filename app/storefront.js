@@ -292,7 +292,7 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
     $('#tab-control a[href="#my_farms"]').tab("show");
   };
 
-  $scope.cloneAndLaunch = function(farm, with_approval=false) {
+  $scope.cloneAndLaunch = function(farm, with_approval) {
     farmId = farm.id;
     if (with_approval) {
       var newName = '[' + $scope.apiSettings.keyId + '][PENDING_APPROVAL][' + farm.availability + ',' + farm.duration + ']' + farm.new_name;
@@ -372,7 +372,7 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
           console.log('Done. Approval pending.')
           $scope.sendApprovalEmail(newFarm);
         } else {
-          $scope.farmUpdated(newId);
+          $scope.farmUpdated(newFarm.id);
         }
       });
     }
@@ -560,6 +560,17 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
       $scope.myFarms[i].showDetails = false;
     }
   };
+
+  $scope.keys = function(obj){
+    return obj? Object.keys(obj) : [];
+  }
+
+  $scope.sortIndex = function(v) {
+    if (v == 'Low') return 1;
+    if (v == 'Medium') return 2;
+    if (v == 'High') return 3;
+    return v;
+  }
 
 }]);
 
