@@ -499,7 +499,8 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
 
   // Approval mechanism
   $scope.isApprovalRequired = function(farmSet) {
-    return farmSet.selected_perf == 'High' || farmSet.selected_duration == 'Forever' || farmSet.selected_availability == '24/7' || farmSet.internet_access;
+    return farmSet.selected_perf == 'High' || farmSet.selected_duration == 'Forever' || 
+           farmSet.selected_availability == '24/7' || farmSet.selected_availability == 'HA' || farmSet.internet_access;
   };
 
   $scope.requestApproval = function(farmSet, farm) {
