@@ -7,7 +7,7 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
    * Credentials management
    */
   $scope.defaultApiSettings = {
-    apiUrl: "https://my.scalr.com/",
+    apiUrl: "https://demo.scalr.com/",
     keyId: "",
     secretKey: "",
     envId: ""
@@ -83,6 +83,8 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
 
   $scope.getFarmSettings = function(farm) {
     //Get Global variables and Farm Roles' global variables
+    // Disabled bc too many farms
+    return;
     $scope.addFarmGVOptions(farm);
     $scope.addFarmRoleOptions(farm);
   };
@@ -192,7 +194,16 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
   $scope.addFarmToSets = function(farm) {
     var id = farm.id.toString();
 
-    farm.platform = farm.name.substring(1, farm.name.indexOf(']'))
+    var info = farm.name.substring(1, farm.name.indexOf(']')).split(',');
+    farm.perf_level = info[0];
+    farm.availability = info[1];
+    farm.duration = info[2];
+
+    var perf_level = farm.perf_level;
+    var availability = farm.availability;
+    var duration = farm.duration;
+    var id = farm.id;
+
     farm.name = farm.name.substring(farm.name.indexOf(']')+1, farm.name.length);
     farm.new_name = farm.name;
     farm.show_advanced = false;
@@ -200,17 +211,43 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
 
     for (var i = 0; i < $scope.availableFarmSets.length; i ++) {
       if ($scope.availableFarmSets[i].name == farm.name) {
-        $scope.availableFarmSets[i].farms[id] = farm;
+        
+        // Add to this set and return
+        if (perf_level in $scope.availableFarmSets[i].farms) {
+          if (availability in $scope.availableFarmSets[i].farms[perf_level]) {
+            $scope.availableFarmSets[i].farms[perf_level][availability][duration] = farm;
+          } else {
+            $scope.availableFarmSets[i].farms[perf_level][availability] = {
+              [duration]: farm
+            }
+          }
+        } else {
+          $scope.availableFarmSets[i].farms[perf_level] = {
+            [availability]: {
+              [duration]: farm
+            }
+          };
+        }
+        $scope.$apply();
+        // Get settings in the background
+        $scope.getFarmSettings(farm);
         return;
       }
     }
-    var farms = {};
-    farms[id] = farm;
+    var farms = {
+      [perf_level]: {
+        [availability]: {
+          [duration]: farm
+        }
+      }
+    };
     $scope.availableFarmSets.push({
       'name': farm.name,
       'logo': farm.description.logo,
       'description': farm.description.description,
-      'selected': id,
+      'selected_perf': perf_level,
+      'selected_availability': availability,
+      'selected_duration': duration,
       'show_launch': false,
       'launching': false,
       'farms': farms,
@@ -229,6 +266,13 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
         farm.description = JSON.parse(farm.description);
         if (farm.name.startsWith('['+$scope.apiSettings.keyId+']')) {
           farm.name = farm.name.replace('['+$scope.apiSettings.keyId+']', '');
+          if (farm.name.startsWith('[PENDING_APPROVAL]')) {
+            farm.name = farm.name.replace('[PENDING_APPROVAL]', '');
+            farm.pending_approval = true;
+          } else {
+            farm.pending_approval = false;
+          }
+          farm.name = farm.name.substring(farm.name.indexOf(']')+1, farm.name.length);
           farm.showDetails = false;
           farm.working = false;
           farm.terminating_servers_count = 0;
@@ -240,7 +284,7 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
         }
       } catch (e) {
         // non-interesting farm, pass
-        console.log("Skipped farm: ", farm);
+        console.log("Skipped farm: ", farm, e);
       }
     }
     $scope.$apply();
@@ -248,21 +292,25 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
     $('#tab-control a[href="#my_farms"]').tab("show");
   };
 
-  $scope.cloneAndLaunch = function(farm) {
+  $scope.cloneAndLaunch = function(farm, with_approval=false) {
     farmId = farm.id;
-    newName = '[' + $scope.apiSettings.keyId + ']' + farm.new_name;
+    if (with_approval) {
+      var newName = '[' + $scope.apiSettings.keyId + '][PENDING_APPROVAL][' + farm.availability + ',' + farm.duration + ']' + farm.new_name;
+    } else {
+      var newName = '[' + $scope.apiSettings.keyId + '][' + farm.availability + ',' + farm.duration + ']' + farm.new_name;
+    }
     var path = '/api/v1beta0/user/{envId}/farms/{farmId}/actions/clone/';
     path = path.replace('{envId}', $scope.apiSettings.envId);
     path = path.replace('{farmId}', farmId);
     ScalrAPI.setSettings($scope.apiSettings);
-    ScalrAPI.create(path, {name: newName}, $scope.farmCloned(farm), $scope.cloneError);
+    ScalrAPI.create(path, {name: newName}, $scope.farmCloned(farm, with_approval), $scope.cloneError);
   }
 
   $scope.cloneError = function(response) {
     $scope.showError("Error cloning the Farm", response);
   };
 
-  $scope.farmCloned = function(farm) {
+  $scope.farmCloned = function(farm, with_approval) {
     return function(response) {
       //Start by updating the description
       /*var farmId = response.data.id;
@@ -276,46 +324,56 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
         'description': JSON.stringify(description)
       }, $scope.farmUpdated, $scope.updateError);*/
       console.log('Farm cloned, getting new farm roles');
-      var newId = response.data.id;
-      $scope.getNewFarmRoles(farm, newId);
+      var newFarm = response.data;
+      $scope.getNewFarmRoles(farm, newFarm, with_approval);
     }
   };
 
-  $scope.getNewFarmRoles = function(farm, newId) {
+  $scope.getNewFarmRoles = function(farm, newFarm, with_approval) {
     var path = '/api/v1beta0/user/{envId}/farms/{farmId}/farm-roles/';
     path = path.replace('{envId}', $scope.apiSettings.envId);
-    path = path.replace('{farmId}', newId);
-    ScalrAPI.scroll(path, '', $scope.configureFarm(farm, newId), $scope.getNewFarmRolesError);
+    path = path.replace('{farmId}', newFarm.id);
+    ScalrAPI.scroll(path, '', $scope.configureFarm(farm, newFarm, with_approval), $scope.getNewFarmRolesError);
   };
 
   $scope.getNewFarmRolesError = function(response) {
     $scope.showError('Unable to get new farm roles', response);
   };
 
-  $scope.configureFarm = function(farm, newId) {
+  $scope.configureFarm = function(farm, newFarm, with_approval) {
     return function(response) {
       // Set GVs and scaling rules
       var newFarmRoles = response.data;
       var deferreds = [];
-      for (var i = 0; i < farm.farmRoles.length; i ++) {
-        if ($scope.hasScaling(farm.farmRoles[i])) {
-          // Find new corresponding farm role
-          for (var j = 0; j < newFarmRoles.length; j ++) {
-            if (newFarmRoles[j].name == farm.farmRoles[i].name) {
-              deferreds.push($scope.setFarmRoleScaling(farm.farmRoles[i], newFarmRoles[j]));
-              break;
+      if ('farmRoles' in farm) {
+        for (var i = 0; i < farm.farmRoles.length; i ++) {
+          if ($scope.hasScaling(farm.farmRoles[i])) {
+            // Find new corresponding farm role
+            for (var j = 0; j < newFarmRoles.length; j ++) {
+              if (newFarmRoles[j].name == farm.farmRoles[i].name) {
+                deferreds.push($scope.setFarmRoleScaling(farm.farmRoles[i], newFarmRoles[j]));
+                break;
+              }
             }
           }
         }
       }
-      for (var name in farm.gv_options) {
-        if (farm.gv_options[name].value) {
-          deferreds.push($scope.setFarmGV(newId, name, farm.gv_options[name].value));
+      if ('gv_options' in farm) {
+        for (var name in farm.gv_options) {
+          if (farm.gv_options[name].value) {
+            deferreds.push($scope.setFarmGV(newFarm.id, name, farm.gv_options[name].value));
+          }
         }
       }
       $.when.apply(null, deferreds).done(function() {
-        console.log('config done, launching');
-        $scope.farmUpdated(newId);
+        console.log('config done, launching', with_approval);
+        if (with_approval) {
+          $scope.fetchAllFarms();
+          console.log('Done. Approval pending.')
+          $scope.sendApprovalEmail(newFarm);
+        } else {
+          $scope.farmUpdated(newId);
+        }
       });
     }
   };
@@ -435,6 +493,33 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
 
   $scope.deleteError = function(response) {
     $scope.showError('Error deleting farm', response);
+  };
+
+  // Approval mechanism
+  $scope.isApprovalRequired = function(farmSet) {
+    return farmSet.selected_perf == 'High' || farmSet.selected_duration == 'Forever' || farmSet.selected_availability == '24/7';
+  };
+
+  $scope.requestApproval = function(farm) {
+    $scope.cloneAndLaunch(farm, true);
+  };
+
+  $scope.sendApprovalEmail = function(farm) {
+    /*$.ajax({
+      type: 'POST',
+      url: 'https://api.mailgun.net/v3/sandbox8fdd69ee92db404db4a4454837aad7e4.mailgun.org/messages',
+      headers: {
+        "Authorization": "Basic YXBpOmtleS0xYTBjNzUzMWU0NzM1M2JkNmNhMTMxYThjZmVhYTAxOA=="
+      },
+      success: null,
+      error: null,
+      data: {
+        from: 'storefront@scalr.com',
+        to: 'aloys@scalr.com',
+        subject: 'Storefront request approval',
+        text: 'A new request arrived, please click on the following link to see it.'
+      }
+    });*/
   };
 
   /*
