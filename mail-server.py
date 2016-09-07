@@ -12,6 +12,9 @@ users = {
     'APIKU6XU0VDDDCWP28MF': 'aloys@scalr.com'
 }
 
+
+app = Flask(__name__)
+
 @app.route('/send/',methods=['POST'])
 def handle_query():
     try:
