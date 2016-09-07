@@ -90,6 +90,7 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
   $scope.duration = args['d'];
   $scope.farmId = args['f'];
   $scope.done = false;
+  $scope.internet_access = args['i'];
   $scope.apiSettings.apiUrl = args['s'];
   $scope.apiSettings.envId = args['e'];
   console.log($scope.apiSettings, args);

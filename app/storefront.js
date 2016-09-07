@@ -71,6 +71,7 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
   $scope.fetchAllFarms = function() {
     $scope.myFarms = [];
     $scope.availableFarmSets = [];
+    $scope.$apply();
     var path = '/api/v1beta0/user/{envId}/farms/';
     path = path.replace('{envId}', $scope.apiSettings.envId);
     ScalrAPI.setSettings($scope.apiSettings);
@@ -248,6 +249,7 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
       'selected_perf': perf_level,
       'selected_availability': availability,
       'selected_duration': duration,
+      'internet_access': false,
       'show_launch': false,
       'launching': false,
       'farms': farms,
@@ -369,7 +371,8 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
         console.log('config done, launching', with_approval);
         if (with_approval) {
           $scope.sendApprovalEmail(farm, newFarm);
-          $scope.fetchAllFarms();
+          //$scope.fetchAllFarms();
+          window.location.reload()
           console.log('Done. Approval pending.')
         } else {
           $scope.farmUpdated(newFarm.id);
@@ -429,7 +432,8 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
 
   $scope.farmLaunched = function(response) {
     console.log("Success!");
-    $scope.fetchAllFarms();
+    //$scope.fetchAllFarms();
+    window.location.reload()
   };
 
   /*
@@ -475,7 +479,7 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
     var path = '/api/v1beta0/user/{envId}/farms/{farmId}/actions/terminate/';
     path = path.replace('{envId}', $scope.apiSettings.envId);
     path = path.replace('{farmId}', farm.id);
-    ScalrAPI.create(path, '', $scope.fetchAllFarms, $scope.stopError);
+    ScalrAPI.create(path, '', function() {window.location.reload();}, $scope.stopError);
   };
 
   $scope.stopError = function(response) {
@@ -488,7 +492,7 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
     var path = '/api/v1beta0/user/{envId}/farms/{farmId}/';
     path = path.replace('{envId}', $scope.apiSettings.envId);
     path = path.replace('{farmId}', farm.id);
-    ScalrAPI.delete(path, $scope.fetchAllFarms, $scope.deleteError);
+    ScalrAPI.delete(path, function() {window.location.reload();}, $scope.deleteError);
   };
 
   $scope.deleteError = function(response) {
@@ -497,15 +501,17 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
 
   // Approval mechanism
   $scope.isApprovalRequired = function(farmSet) {
-    return farmSet.selected_perf == 'High' || farmSet.selected_duration == 'Forever' || farmSet.selected_availability == '24/7';
+    return farmSet.selected_perf == 'High' || farmSet.selected_duration == 'Forever' || farmSet.selected_availability == '24/7' || farmSet.internet_access;
   };
 
-  $scope.requestApproval = function(farm) {
+  $scope.requestApproval = function(farmSet, farm) {
+    farm.internet_access_required = farmSet.internet_access;
     $scope.cloneAndLaunch(farm, true);
   };
 
   $scope.sendApprovalEmail = function(template, newFarm) {
     console.log('sending email');
+    var internet_access = template.internet_access_required ? true : false;
     $.post('http://disney-portal.demo.scalr.com:5000/send/', JSON.stringify({
       user: $scope.apiSettings.keyId,
       farmId: newFarm.id,
@@ -514,7 +520,8 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
       appName: template.name,
       perf: template.perf_level,
       avail: template.availability,
-      duration: template.duration
+      duration: template.duration,
+      internet: internet_access
     }), function() {
       console.log('email sent');
     }, function() {
