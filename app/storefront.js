@@ -506,7 +506,7 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
 
   $scope.sendApprovalEmail = function(template, newFarm) {
     console.log('sending email');
-    $.post('http://disney-portal.demo.scalr.com:5000/send/', {
+    $.post('http://disney-portal.demo.scalr.com:5000/send/', JSON.stringify({
       user: $scope.apiSettings.keyId,
       farmId: newFarm.id,
       url: $scope.apiSettings.apiUrl,
@@ -515,7 +515,7 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
       perf: template.perf_level,
       avail: template.availability,
       duration: template.duration
-    }, function() {
+    }), function() {
       console.log('email sent');
     }, function() {
       console.log('email failed');
