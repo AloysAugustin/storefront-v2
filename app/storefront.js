@@ -523,9 +523,7 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
     }), function() {
       console.log('email sent');
       window.location.reload();
-    }, function() {
-      console.log('email failed');
-    })
+    });
   };
 
   /*

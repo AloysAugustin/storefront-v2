@@ -46,7 +46,7 @@ def handle_query():
                   "to": ["aloys@scalr.com"],
                   "subject": "Storefront approval required",
                   "text": "Hello,\n" + "Your approval is required. Please go to the following address to review:\n" + url_to_send,
-                  "html": "Hello,\n<br>\n" + "Your approval is required for a new "+data['appName']+" applicatin. Please click the following link to review:\n" + '<a href="' + url_to_send + '"> Review here </a>'})
+                  "html": "Hello,\n<br>\n" + "Your approval is required for a new "+data['appName']+" application. Please click the following link to review:\n" + '<a href="' + url_to_send + '"> Review here </a>'})
         return "OK!"
     except Exception as e:
         print(e)
