@@ -81,7 +81,10 @@
                           <h3 class="farm-name" ng-class="{'font-size-lg': farmSet.show_launch}">{{ farmSet.name }}</h3>
                           <p class="farm-description">{{ farmSet.description }}</p>
                           <br>
-                          <p><img class="running-farm-logo farm-image hidden-xs" src="{{farmSet.logo}}" /></p>
+                          <div class="farm-logo-container">
+                            <span class="helper"></span>
+                            <img class="running-farm-logo farm-image hidden-xs" src="{{farmSet.logo}}" />
+                          </div>
                         </div>
                       </div>
                       <div class="available-farm-launch col-xs-12" id="farm-{{farm.id}}-launch" ng-show="farmSet.show_launch">
@@ -192,7 +195,10 @@
                             <h3>{{farm.name}}</h3>
                             <!--p>{{farm.description.description}}</p-->
                             <br>
-                            <p><img class="running-farm-logo farm-image hidden-xs" src="{{farm.description.logo}}" /></p>
+                            <div class="farm-logo-container">
+                              <span class="helper"></span>
+                              <img class="running-farm-logo farm-image hidden-xs" src="{{farm.description.logo}}" />
+                            </div>
                           </div>
                           <ul class="list-inline farm-controls hidden-sm hidden-xs" ng-show="!farm.showDetails">
                             <li ng-show="farm.pending_approval">

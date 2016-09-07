@@ -368,9 +368,9 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
       $.when.apply(null, deferreds).done(function() {
         console.log('config done, launching', with_approval);
         if (with_approval) {
+          $scope.sendApprovalEmail(farm, newFarm);
           $scope.fetchAllFarms();
           console.log('Done. Approval pending.')
-          $scope.sendApprovalEmail(farm, newFarm);
         } else {
           $scope.farmUpdated(newFarm.id);
         }
@@ -505,9 +505,10 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
   };
 
   $scope.sendApprovalEmail = function(template, newFarm) {
+    console.log('sending email');
     $.post('http://disney-portal.demo.scalr.com:5000/send/', {
       user: $scope.apiSettings.keyId,
-      farmId: farm.id,
+      farmId: newFarm.id,
       url: $scope.apiSettings.apiUrl,
       env: $scope.apiSettings.envId,
       appName: template.name,

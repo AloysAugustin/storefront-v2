@@ -176,7 +176,10 @@ input[type='email']:focus, input[type='number']:focus, input[type='password']:fo
 
 /* farm image */
 .farm-image {
-  width: 80px;
+  max-width: 120px;
+  max-height: 80px;
+  margin: auto;
+  vertical-align: middle;
 }
 
 .farm-image-container {
@@ -259,6 +262,10 @@ input[type='email']:focus, input[type='number']:focus, input[type='password']:fo
 
 .full-width {
   width: 100%;
+}
+
+.farm-logo-container {
+  height: 80px;
 }
 
 .running-farm-details {
@@ -472,3 +479,10 @@ input[type='email']:focus, input[type='number']:focus, input[type='password']:fo
 .margin-auto {
   margin: auto;
 }
+
+.helper {
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+}
+
