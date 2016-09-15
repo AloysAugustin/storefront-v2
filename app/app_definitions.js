@@ -45,7 +45,9 @@ app.factory('appDefinitions', function(){
 			monitoring: "Monitoring",
 			backup: "Backup",
 			adminADGroup: "Admin AD Group",
-			jbcomponentVersion: "Version"
+			jbcomponentVersion: "Version",
+			mysqlcomponentVersionList: "Version",
+			apachecomponentVersionList: "Version"
 		}[identifier];
 	};
 	appDefinitions.isAdvancedUser = function(identifier){
@@ -55,7 +57,9 @@ app.factory('appDefinitions', function(){
 				"monitoring",
 				"backup",
 				"adminADGroup",
-				"jbcomponentVersion"
+				"jbcomponentVersion",
+				"mysqlcomponentVersionList",
+				"apachecomponentVersionList"
 			].indexOf(identifier) >= 0);
 	};
 	appDefinitions.isAdvancedOption = function(identifier){
@@ -63,7 +67,9 @@ app.factory('appDefinitions', function(){
 				"monitoring",
 				"backup",
 				"adminADGroup",
-				"jbcomponentVersion"
+				"jbcomponentVersion",
+				"mysqlcomponentVersionList",
+				"apachecomponentVersionList"
 			].indexOf(identifier) >= 0);
 	};
 	appDefinitions.isModifiable = function(identifier){
@@ -102,10 +108,10 @@ app.factory('appDefinitions', function(){
 		return res;
 	};
 
-	var defaultFlavorList = {small:"Small", medium:"Medium", large:"Large"};
+	var defaultFlavorList = {_01small:"Small", _02medium:"Medium", _03large:"Large"};
 	var defaultLocationList = {ssf:"SSF", basel:"Basel", shanghai:"Shanghai"};
 	var defaultYesNoList = {no:"No", yes:"Yes"};
-	var defaultStorageList = {no:"No", s: "10GB", m:"100GB"};
+	var defaultStorageList = {_01no:"No", _02s: "10GB", _03m:"100GB"};
 	var defaultAdminADGroupField = "Admin AD Group";
 
 	var ubuntuDef = {
@@ -129,7 +135,7 @@ app.factory('appDefinitions', function(){
 		name: "JBoss",
 		logoUrl: "https://avatars0.githubusercontent.com/u/1106024?v=3&s=200",
 		description: "A JBoss server",
-		distributionList: {ubnt14:"Ubuntu 14.04", ubnt16:"Ubuntu 16.04"},
+		distributionList: {ubnt14:"Ubuntu 14.04", ubnt16:"Ubuntu 16.04", rhel6: "RHEL 6", rhel7: "RHEL 7"},
 		flavorList: defaultFlavorList,
 		//Advanced User Options are here
 		locationList: defaultLocationList,
@@ -140,7 +146,43 @@ app.factory('appDefinitions', function(){
 		backupList: defaultYesNoList,
 		adminADGroupField: defaultAdminADGroupField
 	};
+
+	var mysqlDef = {
+		name: "MySQL",
+		logoUrl: "https://www.mysql.fr/common/logos/logo-mysql-170x115.png",
+		description: "A MySQL server",
+		distributionList: {ubnt14:"Ubuntu 14.04", ubnt16:"Ubuntu 16.04", rhel6: "RHEL 6", rhel7: "RHEL 7"},
+		flavorList: defaultFlavorList,
+		//Advanced User Options are here
+		locationList: defaultLocationList,
+		addMoreStorageList: defaultStorageList,
+		//Advanced Options are here
+		mysqlcomponentVersionList: {mysql5714:"MySQL 5.7.14", mysql5715:"MySQL 5.7.15", mysql5716: "MySQL 5.7.16"},
+		monitoringList: defaultYesNoList,
+		backupList: defaultYesNoList,
+		adminADGroupField: defaultAdminADGroupField
+	};
+
+	var apacheDef = {
+		name: "Apache",
+		logoUrl: "https://goodlogo.com/images/logos/apache_software_foundation_logo_3074.gif",
+		description: "An Apache server",
+		distributionList: {ubnt14:"Ubuntu 14.04", ubnt16:"Ubuntu 16.04", rhel6: "RHEL 6", rhel7: "RHEL 7"},
+		flavorList: defaultFlavorList,
+		//Advanced User Options are here
+		locationList: defaultLocationList,
+		addMoreStorageList: defaultStorageList,
+		//Advanced Options are here
+		apachecomponentVersionList: {apache24:"Apache 2.4", apache26:"Apache 2.6"},
+		monitoringList: defaultYesNoList,
+		backupList: defaultYesNoList,
+		adminADGroupField: defaultAdminADGroupField
+	};
+
 	appDefinitions.registerDef(ubuntuDef);
 	appDefinitions.registerDef(jBossDef);
+	appDefinitions.registerDef(mysqlDef);
+	appDefinitions.registerDef(apacheDef);
+
 	return appDefinitions;
 });
