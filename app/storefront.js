@@ -102,16 +102,29 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
     var r = {name: name};
     for (var i = 0; i < form.length; i ++) {
       if (form[i].type == 'option') {
-        for (k in form[i].options) {
-          r[form[i].identifier] = k;
-          break;
+        if (localStorageService.get("userPrefs." + form[i].identifier) == null){
+          for (k in form[i].options) {
+            r[form[i].identifier] = k;
+            break;
+          }
         }
+        else {
+          r[form[i].identifier] = localStorageService.get("userPrefs." + form[i].identifier);
+        }
+      }
+      if (form[i].type == 'text' && localStorageService.get("userPrefs." + form[i].identifier) != null){
+        r[form[i].identifier] = localStorageService.get("userPrefs." + form[i].identifier);
       }
     }
     return r;
   };
 
   $scope.launch = function(app) {
+    for (k in app.settings){
+      if (k != 'name'){
+        localStorageService.set('userPrefs.' + k, app.settings[k]);
+      }
+    }
     back.runAppDef($scope.apiSettings.keyId, app.model, app.settings, function() {
       app.launching = false;
       $scope.fetchAllFarms();
