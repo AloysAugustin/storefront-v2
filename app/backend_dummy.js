@@ -26,10 +26,28 @@ app.factory('backend', ['appDefinitions','localStorageService',function(appDefin
 		success_cb();
 	};
 
-	backend.listAppsByAPIKey = function(apiKey) {
-		return backend.users[apiKey].runningInstances;
+	backend.listAppsByAPIKey = function(apiKey, success_cb, failure_cb) {
+		success_cb(backend.users[apiKey].runningInstances);
+	};
+
+	backend.stopApp = function(apiKey, instId, success_cb, failure_cb) {
+		backend.users[apiKey].runningInstances[instId].status = "stopped";
+		backend.saveToStorage();
+		success_cb();
+	};
+
+	backend.deleteApp = function(apiKey, instId, success_cb, failure_cb) {
+		delete backend.users[apiKey].runningInstances[instId];
+		backend.saveToStorage();
+		success_cb();
+	};
+
+	backend.updateApp = function(apiKey, instId, newData, success_cb, failure_cb) {
+		backend.users[apiKey].runningInstances[instId].defData = newData;
+		backend.saveToStorage();
+		success_cb();
 	}
-	
+
 	//Load userbase from localStorage if it exists
 	if (localStorageService.get("backend.users") == null) {
 		backend.users['APITEST'] = {
