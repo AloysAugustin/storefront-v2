@@ -41,7 +41,7 @@ app.factory('appDefinitions', function(){
 			distribution: "Distribution",
 			flavor: "Flavor",
 			location: "Location",
-			addMoreStorage: "Add more storage",
+			addMoreStorage: "Add persistent storage",
 			monitoring: "Monitoring",
 			backup: "Backup",
 			adminADGroup: "Admin AD Group",
@@ -97,7 +97,8 @@ app.factory('appDefinitions', function(){
 
 	var defaultFlavorList = {small:"Small", medium:"Medium", large:"Large"};
 	var defaultLocationList = {ssf:"SSF", basel:"Basel", shanghai:"Shanghai"};
-	var defaultYesNoList = {yes:"Yes", no:"No"};
+	var defaultYesNoList = {no:"No", yes:"Yes"};
+	var defaultStorageList = {no:"No", s: "10GB", m:"100GB"};
 	var defaultAdminADGroupField = "Admin AD Group";
 	var ubuntuDef = {
 		name: "Ubuntu",
@@ -107,7 +108,7 @@ app.factory('appDefinitions', function(){
 		flavorList: defaultFlavorList,
 		//Advanced User Options are here
 		locationList: defaultLocationList,
-		addMoreStorageList: defaultYesNoList,
+		addMoreStorageList: defaultStorageList,
 		//Advanced Options are here
 		//componentVersionList: [],
 		monitoringList: defaultYesNoList,

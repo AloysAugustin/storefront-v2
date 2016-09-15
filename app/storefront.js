@@ -1,7 +1,7 @@
 var app = angular.module('ScalrStorefront', ['LocalStorageModule', 'angular.filter', 'ui.bootstrap']);
 
-app.controller('StorefrontController', ["appDefinitions", "$scope", "$location", "$filter", "localStorageService",
-  function (apps, $scope, $location, $filter, localStorageService) {
+app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "$location", "$filter", "localStorageService",
+  function (back, apps, $scope, $location, $filter, localStorageService) {
 
   /*
    * Credentials management
@@ -107,6 +107,7 @@ app.controller('StorefrontController', ["appDefinitions", "$scope", "$location",
   $scope.loadApiSettings();
 
   $scope.settings = {
+    advanced_user: true,
     show_advanced: false,
   }
 
@@ -146,9 +147,12 @@ app.controller('StorefrontController', ["appDefinitions", "$scope", "$location",
   }
 
   $scope.sortIndex = function(v) {
+    console.log(v);
     if (v == 'Low') return 1;
+    if (v == 'Small') return 1;
     if (v == 'Medium') return 2;
     if (v == 'High') return 3;
+    if (v == 'Large') return 3;
     if (v == 'Business hours') return 1;
     if (v == '24/7') return 2;
     if (v == 'HA') return 3;

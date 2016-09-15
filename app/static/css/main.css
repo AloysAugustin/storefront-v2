@@ -6,6 +6,10 @@ body {
   padding: 0;
 }
 
+.form-group {
+  margin-bottom: 30px;
+}
+
 #pills {
   margin-bottom: 40px;
   margin-left: 10px;
