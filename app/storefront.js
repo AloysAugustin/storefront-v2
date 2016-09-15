@@ -83,19 +83,27 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
       });
     }
 
-    back.listAppsByAPIKey($scope.apiSettings.keyId, function(apps) {
-      for (var i in apps) {
+    back.listAppsByAPIKey($scope.apiSettings.keyId, function(runningApps) {
+      for (var i in runningApps) {
         $scope.myApps.push({
           id: i,
-          model: angular.copy(apps[i].def),
-          settings: angular.copy(apps[i].defData),
-          status: angular.copy(apps[i].status),
-          props: angular.copy(apps[i].readOnlyProperties),
+          model: angular.copy(runningApps[i].def),
+          settings: angular.copy(runningApps[i].defData),
+          orig_settings: angular.copy(runningApps[i].defData),
+          status: angular.copy(runningApps[i].status),
+          form: apps.parseDefToDict(runningApps[i].def),
+          props: angular.copy(runningApps[i].readOnlyProperties),
           showDetails: false,
           working: false
         });
       }
     }, null);
+  };
+
+  $scope.applyChanges = function(app) {
+    back.updateApp($scope.apiSettings.keyId, app.id, app.settings, function() {
+      $scope.fetchAllFarms();
+    }, null)
   };
 
   $scope.default_settings = function(form, name) {
@@ -188,8 +196,8 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
   };
 
   $scope.resetApps = function() {
-    for (var i = 0; i < $scope.myFarms.length; i ++) {
-      $scope.myFarms[i].showDetails = false;
+    for (var i = 0; i < $scope.myApps.length; i ++) {
+      $scope.myApps[i].showDetails = false;
     }
   };
 

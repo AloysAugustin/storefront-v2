@@ -111,9 +111,10 @@
                           <img src="static/throbber.gif" ng-show="app.working"/>
                         </div>
                         <div>
+                        <br/>
                         <h3>Edit this application</h3>
                         <form class="form-horizontal padding-sm-top">
-                        <div class="form-group" ng-repeat="option in app.form | filter:{isModifiable: false}" ng-show="settings.advanced_user || !option.advUser">
+                        <div class="form-group" ng-repeat="option in app.form | filter:{isModifiable: true}" ng-show="settings.advanced_user || !option.advUser">
                           <div class='label-settings-form'><h5>{{option.label}}</h5></div>
                             <!-- <label for="platform-select-{{app.selected}}" class="control-label col-sm-3">Platform:</label> -->
                             <div class="col-sm-12 text-center" ng-show="option.type == 'option'">
