@@ -89,18 +89,7 @@ app.factory('backend', ['appDefinitions','localStorageService',function(appDefin
 		backend.users['APITEST'] = {
 			username: "Test User",
 			advancedUser: true,
-			runningInstances: {
-				inst1: {
-					def: appDefinitions.defs[0],
-					defData: {
-
-					},
-					status: "running",
-					readOnlyProperties: {
-						address: "192.168.0.1"
-					}
-				}
-			}	
+			runningInstances: {}	
 		};
 
 	}
