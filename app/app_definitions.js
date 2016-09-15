@@ -71,7 +71,7 @@ app.factory('appDefinitions', function(){
 		var res = [];
 		for (var key in def){
 			if (key.endsWith("List")){
-				var k = key.splice(0,-4);
+				var k = key.slice(0,-4);
 				res.push({
 					type: "option",
 					identifier: k,
@@ -82,7 +82,7 @@ app.factory('appDefinitions', function(){
 				});
 			}
 			if (key.endsWith("Field")){
-				var k = key.splice(0,-5);
+				var k = key.slice(0,-5);
 				res.push({
 					type: "text",
 					identifier: k,
