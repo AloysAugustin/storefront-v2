@@ -16,11 +16,22 @@ app.factory('backend', ['appDefinitions','localStorageService',function(appDefin
 	};
 
 	backend.getUserByAPIKey = function(apiKey){
-		return users[apiKey];
+		return backend.users[apiKey];
 	};
+
+	backend.validateAPIKey = function(apiKey){
+		if (!apiKey in backend.users){
+			backend.users[apiKey] = {
+				username: apiKey,
+				runningInstances: {}
+			};
+			backend.saveToStorage();
+		}
+	}
 
 	backend.runAppDef = function(apiKey, def, defData, success_cb, failure_cb){
 		backend.uuidCtr++;
+		backend.validateAPIKey(apiKey);
 		backend.users[apiKey].runningInstances[backend.uuidCtr] =
 		{
 			def: def,
@@ -35,28 +46,33 @@ app.factory('backend', ['appDefinitions','localStorageService',function(appDefin
 	};
 
 	backend.listAppsByAPIKey = function(apiKey, success_cb, failure_cb) {
+		backend.validateAPIKey(apiKey);
 		success_cb(backend.users[apiKey].runningInstances);
 	};
 
 	backend.stopApp = function(apiKey, instId, success_cb, failure_cb) {
+		backend.validateAPIKey(apiKey);
 		backend.users[apiKey].runningInstances[instId].status = "stopped";
 		backend.saveToStorage();
 		success_cb();
 	};
 
 	backend.deleteApp = function(apiKey, instId, success_cb, failure_cb) {
+		backend.validateAPIKey(apiKey);
 		delete backend.users[apiKey].runningInstances[instId];
 		backend.saveToStorage();
 		success_cb();
 	};
 
 	backend.updateApp = function(apiKey, instId, newData, success_cb, failure_cb) {
+		backend.validateAPIKey(apiKey);
 		backend.users[apiKey].runningInstances[instId].defData = newData;
 		backend.saveToStorage();
 		success_cb();
 	}
 
 	backend.startApp = function(apiKey, instId, success_cb, failure_cb) {
+		backend.validateAPIKey(apiKey);
 		backend.users[apiKey].runningInstances[instId].status = "running";
 		backend.saveToStorage();
 		success_cb();
