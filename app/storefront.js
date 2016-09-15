@@ -61,7 +61,7 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
   /*
    * Farms
    */
-  $scope.myFarms = [];
+  $scope.myApps = [];
   $scope.apps = [];
 
   $scope.showError = function(reason, obj) {
@@ -70,6 +70,7 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
 
   $scope.fetchAllFarms = function() {
     $scope.apps = [];
+    $scope.myApps = [];
     for (var i = 0; i < apps.defs.length; i ++) {
       var form = apps.parseDefToDict(apps.defs[i]);
       $scope.apps.push({
@@ -77,15 +78,27 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
         form: form,
         show_launch: false,
         launching: false,
-        new_name: apps.defs[i].name,
-        settings: $scope.default_settings(form)
+        settings: $scope.default_settings(form, apps.defs[i].name)
       });
     }
     console.log($scope.apps);
+    back.listAppsByAPIKey($scope.apiSettings.keyId, function(apps) {
+      for (var i in apps) {
+        $scope.myApps.push({
+          id: i,
+          model: apps[i].def,
+          settings: apps[i].defData,
+          status: apps[i].status,
+          props: apps[i].readOnlyProperties,
+          showDetails: false,
+          working: false
+        });
+      }
+    }, null);
   };
 
-  $scope.default_settings = function(form) {
-    var r = {};
+  $scope.default_settings = function(form, name) {
+    var r = {name: name};
     for (var i = 0; i < form.length; i ++) {
       if (form[i].type == 'option') {
         for (k in form[i].options) {
@@ -97,6 +110,30 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
     return r;
   };
 
+  $scope.launch = function(app) {
+    back.runAppDef($scope.apiSettings.keyId, app.model, app.settings, function() {
+      app.launching = false;
+      $scope.fetchAllFarms();
+    }, null);
+  };
+
+  $scope.startApp = function(app) {
+    back.startApp($scope.apiSettings.keyId, app.id, function() {
+      $scope.fetchAllFarms();
+    }, null)
+  };
+
+  $scope.stopApp = function(app) {
+    back.stopApp($scope.apiSettings.keyId, app.id, function() {
+      $scope.fetchAllFarms();
+    }, null)
+  };
+
+  $scope.deleteApp = function(app) {
+    back.deleteApp($scope.apiSettings.keyId, app.id, function() {
+      $scope.fetchAllFarms();
+    }, null)
+  };
 
   /*
    * Initialisation
