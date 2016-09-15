@@ -48,6 +48,12 @@ app.factory('backend', ['appDefinitions','localStorageService',function(appDefin
 		success_cb();
 	}
 
+	backend.startApp = function(apiKey, instId, success_cb, failure_cb) {
+		backend.users[apiKey].runningInstances[instId].status = "running";
+		backend.saveToStorage();
+		success_cb();
+	}
+
 	//Load userbase from localStorage if it exists
 	if (localStorageService.get("backend.users") == null) {
 		backend.users['APITEST'] = {
