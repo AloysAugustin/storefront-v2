@@ -95,15 +95,15 @@ app.factory('appDefinitions', function(){
 		return res;
 	};
 
-	var defaultFlavorList = ["Small","Medium","Large"];
-	var defaultLocationList = ["SSF","Basel","Shanghai"];
-	var defaultYesNoList = ["Yes", "No"];
+	var defaultFlavorList = {small:"Small", medium:"Medium", large:"Large"};
+	var defaultLocationList = {ssf:"SSF", basel:"Basel", shanghai:"Shanghai"};
+	var defaultYesNoList = {yes:"Yes", no:"No"};
 	var defaultAdminADGroupField = "Admin AD Group";
 	var ubuntuDef = {
 		name: "Ubuntu",
-		logoUrl: "TBD",
+		logoUrl: "http://design.ubuntu.com/wp-content/uploads/ubuntu-logo112.png",
 		description: "An Ubuntu Server",
-		distributionList: ["Ubuntu 14.04", "Ubuntu 16.04"],
+		distributionList: {ubnt14:"Ubuntu 14.04", ubnt16:"Ubuntu 16.04"},
 		flavorList: defaultFlavorList,
 		//Advanced User Options are here
 		locationList: defaultLocationList,
