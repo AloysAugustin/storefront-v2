@@ -110,6 +110,30 @@
                           <button type="button" ng-disabled="app.working" ng-click="app.working=true; stopApp(app)" class="btn btn-danger" id="farm-{{app.id}}-button-stop">Stop application</button>
                           <img src="static/throbber.gif" ng-show="app.working"/>
                         </div>
+                        <div>
+                        <h3>Edit this application</h3>
+                        <form class="form-horizontal padding-sm-top">
+                        <div class="form-group" ng-repeat="option in app.form | filter:{isModifiable: false}" ng-show="settings.advanced_user || !option.advUser">
+                          <div class='label-settings-form'><h5>{{option.label}}</h5></div>
+                            <!-- <label for="platform-select-{{app.selected}}" class="control-label col-sm-3">Platform:</label> -->
+                            <div class="col-sm-12 text-center" ng-show="option.type == 'option'">
+                              <div class="btn-group text-center" data-toggle="buttons">
+                                <label class="btn btn-primary btn-cloud" ng-repeat="(k,v) in option.options | orderBy:sortIndex()" ng-model="app.settings[option.identifier]" btn-radio="'{{k}}'">{{v}}</label>
+                              </div>
+                            </div>
+                            <div class="col-sm-12 text-center" ng-show="option.type == 'text'">
+                              <div class="server-input">
+                                <input class="launch-farm-input text-center form-control server-name-input" ng-model="app.settings[option.identifier]" type="text"/>
+                              </div>
+                            </div>
+                          </div>
+                          <div class='form-group padding-sm-top' id="button-container">
+                            <div class="text-center">
+                              <button type="button" ng-disabled="app.working" class="auth-button btn btn-success" id="button-farm-{{app.id}}-done" ng-click="app.working = true; applyChanges(app);">Apply changes</button>
+                            </div>
+                          </div>
+                        </form>
+                        </div>
                       </div>
                   </div>
                 </div>
@@ -147,7 +171,6 @@
                                 <input required id="launch-farm-{{app.selected}}-name" class="launch-farm-input text-center form-control server-name-input" ng-model="app.settings.name" type="text"/>
                               </div>
                             </div>
-                            <br/>
                           </div>
                           <div class="form-group" ng-repeat="option in app.form | filter:{advOption: false}" ng-show="settings.advanced_user || !option.advUser">
                             <div class='label-settings-form'><h5>{{option.label}}</h5></div>
@@ -162,7 +185,6 @@
                                 <input class="launch-farm-input text-center form-control server-name-input" ng-model="app.settings[option.identifier]" type="text"/>
                               </div>
                             </div>
-                            <br/>
                           </div>
                           <div class="text-center underline pointer" ng-show="settings.advanced_user && !settings.show_advanced">
                             <p class='advanded-settings' ng-click="settings.show_advanced = ! settings.show_advanced">Advanced Settings</h3>
