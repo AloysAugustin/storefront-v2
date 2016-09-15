@@ -5,6 +5,11 @@ var app = angular.module('ScalrStorefront');
 app.factory('backend', ['appDefinitions','localStorageService',function(appDefinitions,localStorageService) {
 	var backend = {};
 	backend.users = {};
+	//Utilities
+	function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+	}
+
 	backend.saveToStorage = function(){
 		localStorageService.set("backend.users", angular.toJson(backend.users));
 		localStorageService.set("backend.uuidCtr", backend.uuidCtr.toString());
@@ -21,6 +26,9 @@ app.factory('backend', ['appDefinitions','localStorageService',function(appDefin
 			def: def,
 			defData: defData,
 			status: "running",
+			readOnlyProperties: {
+				address: getRandomInt(1,100) + "." getRandomInt(0,255) + "." + getRandomInt(0,255) + "." + getRandomInt(1,254); 
+			}
 		};
 		backend.saveToStorage();
 		success_cb();
@@ -64,7 +72,10 @@ app.factory('backend', ['appDefinitions','localStorageService',function(appDefin
 					defData: {
 
 					},
-					status: "running"
+					status: "running",
+					readOnlyProperties: {
+						address: "192.168.0.1"
+					}
 				}
 			}
 		};
