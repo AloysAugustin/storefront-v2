@@ -77,7 +77,7 @@
                   <div ng-repeat="row in myApps | chunkBy:3">
                     <div ng-repeat="app in row" class="running-farm-desc">
                       <div class="farm-wrap">
-                        <div class="farm running-farm col-xs-6 {{shouldHideRunning(!app.showDetails)}}" ng-click="toggleDetails(app);" ng-class="{'full-width': app.showDetails}">
+                        <div class="farm running-farm col-xs-6 {{shouldHideRunning(!app.showDetails)}}" ng-click="app.showDetails = ! app.showDetails" ng-class="{'full-width': app.showDetails}">
                           <div class='farm-body text-center'>
                             <h3>{{app.settings.name}}</h3>
                             <!--p>{{farm.description.description}}</p-->

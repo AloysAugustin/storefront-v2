@@ -94,7 +94,7 @@ app.factory('appDefinitions', function(){
 					identifier: k,
 					label: appDefinitions.identifierToLabel(k),
 					advUser: appDefinitions.isAdvancedUser(k),
-					advOption: appDefinitions.isAdvancedOption(k)
+					advOption: appDefinitions.isAdvancedOption(k),
 					isModifiable: appDefinitions.isModifiable(k)
 				});
 			}

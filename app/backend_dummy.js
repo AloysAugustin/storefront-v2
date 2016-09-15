@@ -20,7 +20,7 @@ app.factory('backend', ['appDefinitions','localStorageService',function(appDefin
 	};
 
 	backend.validateAPIKey = function(apiKey){
-		if (!apiKey in backend.users){
+		if (!(apiKey in backend.users)){
 			backend.users[apiKey] = {
 				username: apiKey,
 				runningInstances: {}
@@ -38,7 +38,7 @@ app.factory('backend', ['appDefinitions','localStorageService',function(appDefin
 			defData: defData,
 			status: "running",
 			readOnlyProperties: {
-				address: getRandomInt(1,100) + "." getRandomInt(0,255) + "." + getRandomInt(0,255) + "." + getRandomInt(1,254); 
+				address: getRandomInt(1,100) + "." + getRandomInt(0,255) + "." + getRandomInt(0,255) + "." + getRandomInt(1,254)
 			}
 		};
 		backend.saveToStorage();
@@ -105,7 +105,7 @@ app.factory('backend', ['appDefinitions','localStorageService',function(appDefin
 		backend.uuidCtr = 1;
 	}
 	else {
-		backend.uuidCtr = localStorageService.get("backend.uuidCtr").parseInt();
+		parseInt(backend.uuidCtr = localStorageService.get("backend.uuidCtr"));
 	}
 	return backend;
 }]);

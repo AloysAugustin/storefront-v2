@@ -81,8 +81,9 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
         settings: $scope.default_settings(form, apps.defs[i].name)
       });
     }
-    console.log($scope.apps);
+
     back.listAppsByAPIKey($scope.apiSettings.keyId, function(apps) {
+      console.log(apps);
       for (var i in apps) {
         $scope.myApps.push({
           id: i,
@@ -94,6 +95,7 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
           working: false
         });
       }
+      console.log($scope.myApps);
     }, null);
   };
 
@@ -161,8 +163,8 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
 
   $scope.shouldHideRunning = function(this_hidden) {
     if (!this_hidden) return '';
-    for (var i = 0; i < $scope.myFarms.length; i ++) {
-      if ($scope.myFarms[i].showDetails) return 'hide';
+    for (var i = 0; i < $scope.myApps.length; i ++) {
+      if ($scope.myApps[i].showDetails) return 'hide';
     }
     return '';
   };
@@ -184,7 +186,6 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
   }
 
   $scope.sortIndex = function(v) {
-    console.log(v);
     if (v == 'Low') return 1;
     if (v == 'Small') return 1;
     if (v == 'Medium') return 2;
