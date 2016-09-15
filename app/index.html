@@ -74,8 +74,7 @@
                   </p>
                 </div>
                 <div ng-hide="myApps.length == 0" class="ng-hide">
-                  <div ng-repeat="row in myApps | chunkBy:3">
-                    <div ng-repeat="app in row" class="running-farm-desc">
+                  <div ng-repeat="app in myApps" class="running-farm-desc">
                       <div class="farm-wrap">
                         <div class="farm running-farm col-xs-6 {{shouldHideRunning(!app.showDetails)}}" ng-click="app.showDetails = ! app.showDetails" ng-class="{'full-width': app.showDetails}">
                           <div class='farm-body text-center'>
@@ -112,7 +111,6 @@
                           <img src="static/throbber.gif" ng-show="app.working"/>
                         </div>
                       </div>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -127,8 +125,7 @@
               </div>
               <div ng-hide="apps.length == 0" class="ng-hide">
                 <div class="farm-group">
-                  <div ng-repeat="(i1, row) in apps | chunkBy:3 track by i1">
-                    <div ng-repeat="(i2, app) in row track by i2" class="available-farm-desc">
+                  <div ng-repeat="app in apps" class="available-farm-desc">
                       <div class="farm catalog-farm col-xs-6 {{shouldHideFarmSet(!app.show_launch)}}" ng-class="{'full-width': app.show_launch}" ng-click="app.show_launch = ! app.show_launch">
                         <div class='farm-body text-center'>
                           <h3 class="farm-name" ng-class="{'font-size-lg': app.show_launch}">{{ app.model.name }}</h3>
@@ -199,7 +196,6 @@
                           </div>
                         </form>
                       </div>
-                    </div>
                   </div>
                 </div>
               </div>

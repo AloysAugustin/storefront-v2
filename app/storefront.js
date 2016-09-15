@@ -72,7 +72,6 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
     $scope.apps = [];
     $scope.myApps = [];
 
-
     for (var i = 0; i < apps.defs.length; i ++) {
       var form = angular.copy(apps.parseDefToDict(apps.defs[i]));
       $scope.apps.push({
