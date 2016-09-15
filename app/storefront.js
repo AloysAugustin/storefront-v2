@@ -54,6 +54,7 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
     $scope.fetchAllFarms();
     $scope.credentialsSaved = false;
     $scope.loggedIn = true;
+    $scope.settings.advanced_user = back.isUserAdvanced($scope.apiSettings.keyId);
   }
 
   // TODO: validation
@@ -163,12 +164,15 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
   $scope.loggedIn = false;
   $scope.autoLoggedIn = false;
   $scope.credentialsSaved = false;
-  $scope.loadApiSettings();
 
   $scope.settings = {
     advanced_user: true,
     show_advanced: false,
   }
+
+  $scope.loadApiSettings();
+
+
 
   /*
    * Front
