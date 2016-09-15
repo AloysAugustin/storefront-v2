@@ -112,30 +112,32 @@
                         </div>
                         <div>
                         <br/>
-                        <h3>Edit this application</h3>
-                        <form class="form-horizontal padding-sm-top">
-                        <div class="form-group" ng-repeat="option in app.form | filter:{isModifiable: true}" ng-show="settings.advanced_user || !option.advUser">
-                          <div class='label-settings-form'><h5>{{option.label}}</h5></div>
-                            <!-- <label for="platform-select-{{app.selected}}" class="control-label col-sm-3">Platform:</label> -->
-                            <div class="col-sm-12 text-center" ng-show="option.type == 'option'">
-                              <div class="btn-group text-center" data-toggle="buttons">
-                                <label class="btn btn-primary btn-cloud" ng-repeat="(k,v) in option.options | orderBy:sortIndex()" ng-model="app.settings[option.identifier]" btn-radio="'{{k}}'">{{v}}</label>
+                        <h4><a ng-click="app.show_edition = ! app.show_edition">Application services</a></h4>
+                        <div class="app-edit" ng-show="app.show_edition">
+                          <form class="form-horizontal padding-sm-top">
+                            <div class="form-group" ng-repeat="option in app.form | filter:{isModifiable: true}" ng-show="settings.advanced_user || !option.advUser">
+                            <div class='label-settings-form'><h5>{{option.label}}</h5></div>
+                              <!-- <label for="platform-select-{{app.selected}}" class="control-label col-sm-3">Platform:</label> -->
+                              <div class="col-sm-12 text-center" ng-show="option.type == 'option'">
+                                <div class="btn-group text-center" data-toggle="buttons">
+                                  <label class="btn btn-primary btn-cloud" ng-repeat="(k,v) in option.options | orderBy:sortIndex()" ng-model="app.settings[option.identifier]" btn-radio="'{{k}}'">{{v}}</label>
+                                </div>
+                              </div>
+                              <div class="col-sm-12 text-center" ng-show="option.type == 'text'">
+                                <div class="server-input">
+                                  <input class="launch-farm-input text-center form-control server-name-input" ng-model="app.settings[option.identifier]" type="text"/>
+                                </div>
                               </div>
                             </div>
-                            <div class="col-sm-12 text-center" ng-show="option.type == 'text'">
-                              <div class="server-input">
-                                <input class="launch-farm-input text-center form-control server-name-input" ng-model="app.settings[option.identifier]" type="text"/>
+                            <div class='form-group padding-sm-top' id="button-container">
+                              <div class="text-center">
+                                <button type="button" ng-disabled="app.working" class="auth-button btn btn-success" id="button-farm-{{app.id}}-done" ng-click="app.working = true; applyChanges(app);">Apply changes</button>
                               </div>
                             </div>
-                          </div>
-                          <div class='form-group padding-sm-top' id="button-container">
-                            <div class="text-center">
-                              <button type="button" ng-disabled="app.working" class="auth-button btn btn-success" id="button-farm-{{app.id}}-done" ng-click="app.working = true; applyChanges(app);">Apply changes</button>
-                            </div>
-                          </div>
-                        </form>
+                          </form>
                         </div>
                       </div>
+                    </div>
                   </div>
                 </div>
               </div>

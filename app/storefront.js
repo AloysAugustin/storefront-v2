@@ -95,7 +95,8 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
           form: apps.parseDefToDict(runningApps[i].def),
           props: angular.copy(runningApps[i].readOnlyProperties),
           showDetails: false,
-          working: false
+          working: false,
+          show_edition: false
         });
       }
     }, null);
