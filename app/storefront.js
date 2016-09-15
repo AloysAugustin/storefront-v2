@@ -71,15 +71,32 @@ app.controller('StorefrontController', ["appDefinitions", "$scope", "$location",
   $scope.fetchAllFarms = function() {
     $scope.apps = [];
     for (var i = 0; i < apps.defs.length; i ++) {
+      var form = apps.parseDefToDict(apps.defs[i]);
       $scope.apps.push({
         model: apps.defs[i],
-        form: apps.parseDefToDict(apps.defs[i]),
+        form: form,
         show_launch: false,
         launching: false,
         new_name: apps.defs[i].name,
+        settings: $scope.default_settings(form)
       });
     }
+    console.log($scope.apps);
   };
+
+  $scope.default_settings = function(form) {
+    var r = {};
+    for (var i = 0; i < form.length; i ++) {
+      if (form[i].type == 'option') {
+        for (k in form[i].options) {
+          r[form[i].identifier] = k;
+          break;
+        }
+      }
+    }
+    return r;
+  };
+
 
   /*
    * Initialisation

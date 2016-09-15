@@ -76,7 +76,7 @@ app.factory('appDefinitions', function(){
 					type: "option",
 					identifier: k,
 					label: appDefinitions.identifierToLabel(k),
-					options: def[k],
+					options: def[key],
 					advUser: appDefinitions.isAdvancedUser(k),
 					advOption: appDefinitions.isAdvancedOption(k)
 				});
