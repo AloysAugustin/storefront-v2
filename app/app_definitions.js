@@ -45,7 +45,7 @@ app.factory('appDefinitions', function(){
 			monitoring: "Monitoring",
 			backup: "Backup",
 			adminADGroup: "Admin AD Group",
-			componentVersion: "Component Version"
+			jbcomponentVersion: "Version"
 		}[identifier];
 	};
 	appDefinitions.isAdvancedUser = function(identifier){
@@ -55,7 +55,7 @@ app.factory('appDefinitions', function(){
 				"monitoring",
 				"backup",
 				"adminADGroup",
-				"componentVersion"
+				"jbcomponentVersion"
 			].indexOf(identifier) >= 0);
 	};
 	appDefinitions.isAdvancedOption = function(identifier){
@@ -63,7 +63,7 @@ app.factory('appDefinitions', function(){
 				"monitoring",
 				"backup",
 				"adminADGroup",
-				"componentVersion"
+				"jbcomponentVersion"
 			].indexOf(identifier) >= 0);
 	};
 	appDefinitions.isModifiable = function(identifier){
@@ -107,6 +107,7 @@ app.factory('appDefinitions', function(){
 	var defaultYesNoList = {no:"No", yes:"Yes"};
 	var defaultStorageList = {no:"No", s: "10GB", m:"100GB"};
 	var defaultAdminADGroupField = "Admin AD Group";
+
 	var ubuntuDef = {
 		name: "Ubuntu",
 		logoUrl: "http://design.ubuntu.com/wp-content/uploads/ubuntu-logo112.png",
@@ -123,6 +124,23 @@ app.factory('appDefinitions', function(){
 		adminADGroupField: defaultAdminADGroupField
 
 	};
+
+	var jBossDef = {
+		name: "JBoss",
+		logoUrl: "https://avatars0.githubusercontent.com/u/1106024?v=3&s=200",
+		description: "A JBoss server",
+		distributionList: {ubnt14:"Ubuntu 14.04", ubnt16:"Ubuntu 16.04"},
+		flavorList: defaultFlavorList,
+		//Advanced User Options are here
+		locationList: defaultLocationList,
+		addMoreStorageList: defaultStorageList,
+		//Advanced Options are here
+		jbcomponentVersionList: {jb604:"JBoss 6.0.4", jb64:"JBoss 6.4"},
+		monitoringList: defaultYesNoList,
+		backupList: defaultYesNoList,
+		adminADGroupField: defaultAdminADGroupField
+	};
 	appDefinitions.registerDef(ubuntuDef);
+	appDefinitions.registerDef(jBossDef);
 	return appDefinitions;
 });
