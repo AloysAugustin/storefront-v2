@@ -23,10 +23,16 @@ app.factory('backend', ['appDefinitions','localStorageService',function(appDefin
 		if (!(apiKey in backend.users)){
 			backend.users[apiKey] = {
 				username: apiKey,
+				advancedUser: false,
 				runningInstances: {}
 			};
 			backend.saveToStorage();
 		}
+	}
+
+	backend.isUserAdvanced = function(apiKey){
+		backend.validateAPIKey(apiKey);
+		return backend.users[apiKey].advancedUser;
 	}
 
 	backend.runAppDef = function(apiKey, def, defData, success_cb, failure_cb){
@@ -82,6 +88,7 @@ app.factory('backend', ['appDefinitions','localStorageService',function(appDefin
 	if (localStorageService.get("backend.users") == null) {
 		backend.users['APITEST'] = {
 			username: "Test User",
+			advancedUser: true,
 			runningInstances: {
 				inst1: {
 					def: appDefinitions.defs[0],
@@ -93,7 +100,7 @@ app.factory('backend', ['appDefinitions','localStorageService',function(appDefin
 						address: "192.168.0.1"
 					}
 				}
-			}
+			}	
 		};
 
 	}
