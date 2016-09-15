@@ -66,6 +66,11 @@ app.factory('appDefinitions', function(){
 				"componentVersion"
 			].indexOf(identifier) >= 0);
 	};
+	appDefinitions.isModifiable = function(identifier){
+		return ([
+				"flavor"
+			].indexOf(identifier) >= 0);
+	};
 
 	appDefinitions.parseDefToDict = function(def){
 		var res = [];
@@ -78,7 +83,8 @@ app.factory('appDefinitions', function(){
 					label: appDefinitions.identifierToLabel(k),
 					options: def[key],
 					advUser: appDefinitions.isAdvancedUser(k),
-					advOption: appDefinitions.isAdvancedOption(k)
+					advOption: appDefinitions.isAdvancedOption(k),
+					isModifiable: appDefinitions.isModifiable(k)
 				});
 			}
 			if (key.endsWith("Field")){
@@ -89,6 +95,7 @@ app.factory('appDefinitions', function(){
 					label: appDefinitions.identifierToLabel(k),
 					advUser: appDefinitions.isAdvancedUser(k),
 					advOption: appDefinitions.isAdvancedOption(k)
+					isModifiable: appDefinitions.isModifiable(k)
 				});
 			}
 		}
