@@ -114,9 +114,19 @@ app.factory('appDefinitions', function(){
 	var defaultStorageList = {_01no:"No", _02s: "10GB", _03m:"100GB"};
 	var defaultAdminADGroupField = "Admin AD Group";
 
+	var defaultPriceFunction = function(settings){
+		console.log(settings);
+		return {
+		 	_01small: "1.5",
+		 	_02medium: "2.6",
+		 	_03large: "3.8"
+		}[settings.flavor];
+	}
+
 	var ubuntuDef = {
 		name: "Ubuntu",
 		logoUrl: "http://design.ubuntu.com/wp-content/uploads/ubuntu-logo112.png",
+		price: defaultPriceFunction,
 		description: "An Ubuntu Server",
 		distributionList: {ubnt14:"Ubuntu 14.04", ubnt16:"Ubuntu 16.04"},
 		flavorList: defaultFlavorList,
@@ -134,6 +144,7 @@ app.factory('appDefinitions', function(){
 	var jBossDef = {
 		name: "JBoss",
 		logoUrl: "https://avatars0.githubusercontent.com/u/1106024?v=3&s=200",
+		price: defaultPriceFunction,
 		description: "A JBoss server",
 		distributionList: {ubnt14:"Ubuntu 14.04", ubnt16:"Ubuntu 16.04", rhel6: "RHEL 6", rhel7: "RHEL 7"},
 		flavorList: defaultFlavorList,
@@ -150,6 +161,7 @@ app.factory('appDefinitions', function(){
 	var mysqlDef = {
 		name: "MySQL",
 		logoUrl: "https://www.mysql.fr/common/logos/logo-mysql-170x115.png",
+		price: defaultPriceFunction,
 		description: "A MySQL server",
 		distributionList: {ubnt14:"Ubuntu 14.04", ubnt16:"Ubuntu 16.04", rhel6: "RHEL 6", rhel7: "RHEL 7"},
 		flavorList: defaultFlavorList,
@@ -166,6 +178,7 @@ app.factory('appDefinitions', function(){
 	var apacheDef = {
 		name: "Apache",
 		logoUrl: "https://goodlogo.com/images/logos/apache_software_foundation_logo_3074.gif",
+		price: defaultPriceFunction,
 		description: "An Apache server",
 		distributionList: {ubnt14:"Ubuntu 14.04", ubnt16:"Ubuntu 16.04", rhel6: "RHEL 6", rhel7: "RHEL 7"},
 		flavorList: defaultFlavorList,
