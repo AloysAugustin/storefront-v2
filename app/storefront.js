@@ -69,8 +69,8 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
   };
 
   $scope.fetchAllFarms = function() {
-    $scope.apps = [];
-    $scope.myApps = [];
+    $scope.apps.length = 0;
+    $scope.myApps.length = 0;
 
     for (var i = 0; i < apps.defs.length; i ++) {
       var form = angular.copy(apps.parseDefToDict(apps.defs[i]));
@@ -205,10 +205,10 @@ app.directive('ngConfirmClick', [
                 terminal: true,
                 link: function (scope, element, attr) {
                     var msg = attr.ngConfirmClick || "Are you sure?";
-                    var clickAction = attr.ngClick;
+                    var clickAction = attr.confirmedClick;
                     element.bind('click',function (event) {
                         if ( window.confirm(msg) ) {
-                            scope.$eval(clickAction)
+                            scope.$apply(clickAction);
                         }
                     });
                 }

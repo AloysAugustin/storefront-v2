@@ -101,7 +101,7 @@
                         <div ng-hide="app.status == 'running'">
                           <p>This application is not running.</p>
                           <button type="button" ng-disabled="app.working" ng-click="app.working=true; startApp(app)" class="btn btn-success" id="farm-{{app.id}}-button-start">Start application</button>
-                          <button type="button" ng-disabled="app.working" ng-click="deleteApp(app);" ng-confirm-click="Are you sure that you want to delete this application? This cannot be undone." class="btn btn-danger" id="farm-{{app.id}}-button-delete">Delete application</button>
+                          <button type="button" ng-disabled="app.working" confirmed-click="deleteApp(app);" ng-confirm-click="Are you sure that you want to delete this application? This cannot be undone." class="btn btn-danger" id="farm-{{app.id}}-button-delete">Delete application</button>
                           <img src="static/throbber.gif" ng-show="app.working"/>
                         </div>
                         <div ng-show="app.status == 'running'">
