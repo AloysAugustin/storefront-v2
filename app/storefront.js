@@ -71,10 +71,12 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
   $scope.fetchAllFarms = function() {
     $scope.apps = [];
     $scope.myApps = [];
+
+
     for (var i = 0; i < apps.defs.length; i ++) {
-      var form = apps.parseDefToDict(apps.defs[i]);
+      var form = angular.copy(apps.parseDefToDict(apps.defs[i]));
       $scope.apps.push({
-        model: apps.defs[i],
+        model: angular.copy(apps.defs[i]),
         form: form,
         show_launch: false,
         launching: false,
@@ -83,19 +85,17 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
     }
 
     back.listAppsByAPIKey($scope.apiSettings.keyId, function(apps) {
-      console.log(apps);
       for (var i in apps) {
         $scope.myApps.push({
           id: i,
-          model: apps[i].def,
-          settings: apps[i].defData,
-          status: apps[i].status,
-          props: apps[i].readOnlyProperties,
+          model: angular.copy(apps[i].def),
+          settings: angular.copy(apps[i].defData),
+          status: angular.copy(apps[i].status),
+          props: angular.copy(apps[i].readOnlyProperties),
           showDetails: false,
           working: false
         });
       }
-      console.log($scope.myApps);
     }, null);
   };
 

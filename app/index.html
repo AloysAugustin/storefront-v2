@@ -99,13 +99,14 @@
                       </div>
                       <div class="padding-md text-center running-farm-{{app.id}}-details running-farm-details col-xs-12" ng-show="app.showDetails">
                         <h3>{{app.settings.name}} details:</h3>
-                        <div class='' ng-show="app.status != 'runnning'">
+                        <div ng-hide="app.status == 'running'">
                           <p>This application is not running.</p>
                           <button type="button" ng-disabled="app.working" ng-click="app.working=true; startApp(app)" class="btn btn-success" id="farm-{{app.id}}-button-start">Start application</button>
                           <button type="button" ng-disabled="app.working" ng-click="deleteApp(app);" ng-confirm-click="Are you sure that you want to delete this application? This cannot be undone." class="btn btn-danger" id="farm-{{app.id}}-button-delete">Delete application</button>
                           <img src="static/throbber.gif" ng-show="app.working"/>
                         </div>
                         <div ng-show="app.status == 'running'">
+                          <p>Application running</p>
                           <p>Endpoint: <a target="_blank" href="http://{{app.props.address}}">{{app.props.address}}</a></p>
                           <button type="button" ng-disabled="app.working" ng-click="app.working=true; stopApp(app)" class="btn btn-danger" id="farm-{{app.id}}-button-stop">Stop application</button>
                           <img src="static/throbber.gif" ng-show="app.working"/>
