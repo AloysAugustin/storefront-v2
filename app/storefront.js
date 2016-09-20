@@ -198,11 +198,17 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
     farm.perf_level = info[0];
     farm.availability = info[1];
     farm.duration = info[2];
+    if (info.length > 3) {
+      farm.platform = info[3];
+    } else {
+      farm.platform = "Amazon EC2"
+    }
 
     var perf_level = farm.perf_level;
     var availability = farm.availability;
     var duration = farm.duration;
     var id = farm.id;
+    var platform = farm.platform;
 
     farm.name = farm.name.substring(farm.name.indexOf(']')+1, farm.name.length);
     farm.new_name = farm.name;
@@ -215,16 +221,26 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
         // Add to this set and return
         if (perf_level in $scope.availableFarmSets[i].farms) {
           if (availability in $scope.availableFarmSets[i].farms[perf_level]) {
-            $scope.availableFarmSets[i].farms[perf_level][availability][duration] = farm;
+            if (duration in $scope.availableFarmSets[i].farms[perf_level][availability]) {
+              $scope.availableFarmSets[i].farms[perf_level][availability][duration][platform] = farm;
+            } else {
+              $scope.availableFarmSets[i].farms[perf_level][availability][duration] = {
+                [platform]: farm
+              };
+            }
           } else {
             $scope.availableFarmSets[i].farms[perf_level][availability] = {
-              [duration]: farm
-            }
+              [duration]: {
+                [platform]: farm
+              }
+            };
           }
         } else {
           $scope.availableFarmSets[i].farms[perf_level] = {
             [availability]: {
-              [duration]: farm
+              [duration]: {
+                [platform]: farm
+              } 
             }
           };
         }
@@ -237,7 +253,9 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
     var farms = {
       [perf_level]: {
         [availability]: {
-          [duration]: farm
+          [duration]: {
+            [platform]: farm
+          }
         }
       }
     };
@@ -248,6 +266,7 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
       'selected_perf': perf_level,
       'selected_availability': availability,
       'selected_duration': duration,
+      'selected_platform': platform,
       'internet_access': false,
       'show_launch': false,
       'launching': false,
