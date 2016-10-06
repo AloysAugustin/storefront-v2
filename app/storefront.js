@@ -54,7 +54,7 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
     $scope.fetchAllFarms();
     $scope.credentialsSaved = false;
     $scope.loggedIn = true;
-    $scope.settings.advanced_user = back.isUserAdvanced($scope.apiSettings.keyId);
+    $scope.settings.advanced_user = back.isUserAdvanced($scope.apiSettings);
   }
 
   // TODO: validation
@@ -84,26 +84,48 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
       });
     }
 
-    back.listAppsByAPIKey($scope.apiSettings.keyId, function(runningApps) {
-      for (var i in runningApps) {
+    back.listAppsByAPIKey($scope.apiSettings, function(myFarms) {
+      console.log(myFarms);
+      for (var i = 0; i < myFarms.length; i ++) {
+        var farm = myFarms[i];
+        farm.description = JSON.parse(farm.description);
+        if (! 'settings' in farm.description) {
+          continue;
+        }
+        var def_name = farm.description.def_name;
+        delete farm.description.def_name;
+        var def = {};
+        for (var j = 0; j < apps.defs.length; j ++) {
+          if (apps.defs[j].name == def_name) {
+            def == apps.defs[j];
+            break;
+          }
+        }
+
+        // TODO
+        var readOnlyProperties = [];
+        var status = 'todo';
+
         $scope.myApps.push({
-          id: i,
-          model: angular.copy(runningApps[i].def),
-          settings: angular.copy(runningApps[i].defData),
-          orig_settings: angular.copy(runningApps[i].defData),
-          status: angular.copy(runningApps[i].status),
-          form: apps.parseDefToDict(runningApps[i].def),
-          props: angular.copy(runningApps[i].readOnlyProperties),
+          id: farm.id,
+          model: angular.copy(def),
+          settings: angular.copy(farm.description.settings),
+          orig_settings: angular.copy(farm.description.settings),
+          status: angular.copy(status),
+          form: apps.parseDefToDict(def),
+          props: angular.copy(readOnlyProperties),
           showDetails: false,
           working: false,
           show_edition: false
         });
       }
+      console.log($scope.myApps);
+      $scope.$apply();
     }, null);
   };
 
   $scope.applyChanges = function(app) {
-    back.updateApp($scope.apiSettings.keyId, app.id, app.settings, function() {
+    back.updateApp($scope.apiSettings, app.id, app.settings, function() {
       $scope.fetchAllFarms();
     }, null)
   };
@@ -135,26 +157,26 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
         localStorageService.set('userPrefs.' + k, app.settings[k]);
       }
     }
-    back.runAppDef($scope.apiSettings.keyId, app.model, app.settings, function() {
+    back.runAppDef($scope.apiSettings, app.model, app.settings, function() {
       app.launching = false;
       $scope.fetchAllFarms();
     }, null);
   };
 
   $scope.startApp = function(app) {
-    back.startApp($scope.apiSettings.keyId, app.id, function() {
+    back.startApp($scope.apiSettings, app.id, function() {
       $scope.fetchAllFarms();
     }, null)
   };
 
   $scope.stopApp = function(app) {
-    back.stopApp($scope.apiSettings.keyId, app.id, function() {
+    back.stopApp($scope.apiSettings, app.id, function() {
       $scope.fetchAllFarms();
     }, null)
   };
 
   $scope.deleteApp = function(app) {
-    back.deleteApp($scope.apiSettings.keyId, app.id, function() {
+    back.deleteApp($scope.apiSettings, app.id, function() {
       $scope.fetchAllFarms();
     }, null)
   };
