@@ -89,15 +89,15 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
       for (var i = 0; i < myFarms.length; i ++) {
         var farm = myFarms[i];
         farm.description = JSON.parse(farm.description);
-        if (! 'settings' in farm.description) {
+        if (!farm.description.settings) {
           continue;
         }
-        var def_name = farm.description.def_name;
-        delete farm.description.def_name;
+        var def_name = farm.description.settings.def_name;
+        delete farm.description.settings.def_name;
         var def = {};
         for (var j = 0; j < apps.defs.length; j ++) {
           if (apps.defs[j].name == def_name) {
-            def == apps.defs[j];
+            def = apps.defs[j];
             break;
           }
         }
