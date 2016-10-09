@@ -94,9 +94,23 @@
   // Note: with this function the response object passed to the onSuccess will be the one returned by the last API call
   // of the scroll, to which a new property all_data is added, containing the parsed representation of all the results.
   ScalrAPI.scroll = function(path, params, onSuccess, onError) {
+    var dfd = new $.Deferred();
+
+    var err = function(response) {
+      onError(response);
+      dfd.reject(response);
+    };
+
+    var ok = function(response) {
+      onSuccess(response);
+      dfd.resolve(response);
+    }
+
     this.makeApiCall('GET', path, params, '',
-      this.makeOnScrollSuccess(path, onSuccess, onError, [], this),
-      onError);
+      this.makeOnScrollSuccess(dfd, path, ok, err, [], this),
+      err);
+
+    return dfd.promise();
   }
 
   ScalrAPI.makeOnScrollSuccess = function(path, onSuccess, onError, previousData, that) {

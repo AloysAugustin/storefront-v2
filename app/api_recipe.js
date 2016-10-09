@@ -23,13 +23,33 @@ app.factory('apiRecipes', function() {
         }
         var step = recipe.steps[stepNb];
         console.log(stepNb, step);
-        makeCall(recipe.data, recipe.params, step, function(response) {
-            step.done(response, recipe.data, recipe.params);
-            doStep(recipe, stepNb+1, onSuccess, onError);
-        }, function(response) {
-            // API call failed, start reverting from previous step.
-            revert(recipe, stepNb-1, onError);
-        });
+        if ('type' in step) {
+            if (step.type == 'parallel-for') {
+                var deferreds = [];
+                for (var i = 0; i < step.iterations(recipe.data, recipe.params); i ++) {
+                    deferreds.push(makeCall(recipe.data, recipe.params, step, function(response) {
+                        step.done(response, recipe.data, recipe.params, i);
+                    }, function() {}, i));
+                }
+                $.when.apply(null, deferreds).done(function() {
+                    console.log('parallel for step done');
+                    doStep(recipe, stepNb+1, onSuccess, onError);
+                }).fail(function() {
+                    console.log('parralel for step failed');
+                    revert(recipe, stepNb-1, onError);
+                });
+            } else {
+                console.log('unrecognised step type:', step);
+            }
+        } else {
+            makeCall(recipe.data, recipe.params, step, function(response) {
+                step.done(response, recipe.data, recipe.params);
+                doStep(recipe, stepNb+1, onSuccess, onError);
+            }, function(response) {
+                // API call failed, start reverting from previous step.
+                revert(recipe, stepNb-1, onError);
+            });
+        }
     };
 
     var revert = function(recipe, stepNb, onError) {
@@ -43,29 +63,28 @@ app.factory('apiRecipes', function() {
         // Keep reverting whether or not this call succeeded
         if ('undo' in step) {
             makeCall(recipe.data, recipe.params, step.undo, nextRevert, nextRevert);
-            return;
         } else {
             nextRevert();            
         }
     };
 
-    var makeCall = function(data, params, obj, onSuccess, onError) {
+    var makeCall = function(data, params, obj, onSuccess, onError, index) {
         var method = obj.method;
-        var path = obj.url(data, params);
+        var path = obj.url(data, params, index);
         if ('params' in obj) {
-            var params = obj.params(data, params);
+            var params = obj.params(data, params, index);
         } else {
             var params = '';
         }
         if ('body' in obj) {
-            var body = obj.body(data, params);
+            var body = obj.body(data, params, index);
         } else {
             var body = '';
         }
         if (method == 'scroll') {
-            ScalrAPI.scroll(path, params, onSuccess, onError);
+            return ScalrAPI.scroll(path, params, onSuccess, onError);
         } else {
-            ScalrAPI.makeApiCall(method, path, params, body, onSuccess, onError);
+            return ScalrAPI.makeApiCall(method, path, params, body, onSuccess, onError);
         }
     };
 
@@ -113,7 +132,7 @@ app.factory('apiRecipes', function() {
     apiRecipes.register('listFarms', {
         data: {},
         validateParams: function(data, params) {
-            var paramsList = ['envId'];
+            var paramsList = ['envId', 'keyId'];
             for (p in paramsList) {
                 if (!p in params) {
                     return false;
@@ -130,8 +149,31 @@ app.factory('apiRecipes', function() {
                 },
                 done: function(response, data, params) {
                     data.farms = response.all_data;
+                    var myFarms = [];
+                    // Filter farms by key id
+                    for (var i = 0; i < data.farms.length; i ++) {
+                        if (data.farms[i].name.startsWith('['+params.keyId+']')) {
+                            myFarms.push(data.farms[i]);
+                        }
+                    }
+                    data.myFarms = myFarms;
                 }
-                // Undo not needed for last step (never executed)
+                // Nothing to undo
+            },
+            {
+                description: 'Get server list for each farm',
+                type: 'parallel-for',
+                iterations: function(data, params) {
+                    return data.myFarms.length;
+                },
+                method: 'scroll',
+                url: function(data, params, index) {
+                    return '/api/v1beta0/user/{envId}/farms/{farmId}/servers/'.replace('{envId}', params.envId).replace('{farmId}', data.myFarms[index].id);
+                },
+                done: function(response, data, params, index) {
+                    data.myFarms[index].servers = response.all_data;
+                }
+                // Nothing to undo
             }
         ]
     });

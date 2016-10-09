@@ -21,16 +21,7 @@ app.factory('backend', ['appDefinitions', 'apiRecipes', 'localStorageService', f
          var params = {
             envId: credentials.envId
         };
-        apiRecipes.run('listFarms', params, function(data) {
-            var myFarms = [];
-            // Filter farms by key id
-            for (var i = 0; i < data.farms.length; i ++) {
-                if (data.farms[i].name.startsWith('['+credentials.keyId+']')) {
-                    myFarms.push(data.farms[i]);
-                }
-            }
-            success_cb(myFarms);
-        }, failure_cb);
+        apiRecipes.run('listFarms', params, success_cb, failure_cb);
     };
 
     backend.stopApp = function(credentials, instId, success_cb, failure_cb) {
