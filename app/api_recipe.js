@@ -98,7 +98,7 @@ app.factory('apiRecipes', function() {
         return recipes[name];
     };
 
-    var mkValidateParams = function(required) {
+    apiRecipes.mkValidateParams = function(required) {
         return function(data, params) {
             for (var i = 0; i < required.length; i ++) {
                 if (!(required[i] in params)) {
@@ -112,7 +112,7 @@ app.factory('apiRecipes', function() {
     makeFarmOp = function(method, operation) {
         return {
             data: {},   //Used to store data that needs to be saved across steps, and is passed to the success callback
-            validateParams: mkValidateParams(['envId', 'farmId']),
+            validateParams: apiRecipes.mkValidateParams(['envId', 'farmId']),
             steps: [
                 {
                     description: method + ' farm',
@@ -135,7 +135,7 @@ app.factory('apiRecipes', function() {
 
     apiRecipes.register('listFarms', {
         data: {},
-        validateParams: mkValidateParams(['envId', 'keyId']),
+        validateParams: apiRecipes.mkValidateParams(['envId', 'keyId']),
         steps: [
             {
                 description: 'List all farms',
