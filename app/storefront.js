@@ -84,7 +84,8 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
       });
     }
 
-    back.listAppsByAPIKey($scope.apiSettings, function(myFarms) {
+    back.listAppsByAPIKey($scope.apiSettings, function(data) {
+      var myFarms = data.myFarms;
       console.log(myFarms);
       for (var i = 0; i < myFarms.length; i ++) {
         var farm = myFarms[i];
