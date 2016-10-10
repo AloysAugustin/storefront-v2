@@ -19,7 +19,8 @@ app.factory('backend', ['appDefinitions', 'apiRecipes', 'localStorageService', f
     backend.listAppsByAPIKey = function(credentials, success_cb, failure_cb) {
         ScalrAPI.setSettings(credentials);
          var params = {
-            envId: credentials.envId
+            envId: credentials.envId,
+            keyId: credentials.keyId
         };
         apiRecipes.run('listFarms', params, success_cb, failure_cb);
     };

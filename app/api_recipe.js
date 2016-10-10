@@ -27,15 +27,16 @@ app.factory('apiRecipes', function() {
             if (step.type == 'parallel-for') {
                 var deferreds = [];
                 for (var i = 0; i < step.iterations(recipe.data, recipe.params); i ++) {
-                    deferreds.push(makeCall(recipe.data, recipe.params, step, function(response) {
-                        step.done(response, recipe.data, recipe.params, i);
-                    }, function() {}, i));
+                    deferreds.push(makeCall(recipe.data, recipe.params, step, function(index) {
+                        return function(response) {
+                            step.done(response, recipe.data, recipe.params, index);
+                        }
+                    }(i), function() {}, i));
                 }
                 $.when.apply(null, deferreds).done(function() {
-                    console.log('parallel for step done');
                     doStep(recipe, stepNb+1, onSuccess, onError);
                 }).fail(function() {
-                    console.log('parralel for step failed');
+                    console.log('parralel for step failed:', step);
                     revert(recipe, stepNb-1, onError);
                 });
             } else {
@@ -97,18 +98,21 @@ app.factory('apiRecipes', function() {
         return recipes[name];
     };
 
+    var mkValidateParams = function(required) {
+        return function(data, params) {
+            for (var i = 0; i < required.length; i ++) {
+                if (!(required[i] in params)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
+
     makeFarmOp = function(method, operation) {
         return {
             data: {},   //Used to store data that needs to be saved across steps, and is passed to the success callback
-            validateParams: function(data, params) {
-                var paramsList = ['envId', 'farmId'];
-                for (p in paramsList) {
-                    if (!p in params) {
-                        return false;
-                    }
-                }
-                return true;
-            },
+            validateParams: mkValidateParams(['envId', 'farmId']),
             steps: [
                 {
                     description: method + ' farm',
@@ -131,15 +135,7 @@ app.factory('apiRecipes', function() {
 
     apiRecipes.register('listFarms', {
         data: {},
-        validateParams: function(data, params) {
-            var paramsList = ['envId', 'keyId'];
-            for (p in paramsList) {
-                if (!p in params) {
-                    return false;
-                }
-            }
-            return true;
-        },
+        validateParams: mkValidateParams(['envId', 'keyId']),
         steps: [
             {
                 description: 'List all farms',
@@ -171,59 +167,10 @@ app.factory('apiRecipes', function() {
                     return '/api/v1beta0/user/{envId}/farms/{farmId}/servers/'.replace('{envId}', params.envId).replace('{farmId}', data.myFarms[index].id);
                 },
                 done: function(response, data, params, index) {
+                    console.log(data.myFarms, index);
                     data.myFarms[index].servers = response.all_data;
                 }
                 // Nothing to undo
-            }
-        ]
-    });
-
-    apiRecipes.register('ubuntu', {
-        data: {
- 
-        },
-        validateParams: function(data, params) {
-            var paramsList = ['envId', 'cloudImageId', 'name'];
-            for (p in paramsList) {
-                if (!p in params) {
-                    return false;
-                }
-            }
-            return true;
-        },
-        steps: [
-            {
-                description: 'Create image',
-                method: 'POST',
-                url: function(data, params) {
-                    return '/api/v1beta0/user/{envId}/images/'.replace('{envId}', params.envId);
-                },
-                body: function(data, params) {
-                    return JSON.stringify({
-                        architecture: 'i386',
-                        cloudImageId: params.cloudImageId,
-                        cloudPlatform: 'ec2',
-                        name: params.name,
-                        os: {
-                             id: 'ubuntu-16-04'
-                        },
-                        cloudInitInstalled: true,
-                        cloudLocation: 'us-east-1',
-                        scalrAgentInstalled: false
-                    });
-                },
-                done: function(response, data, params) {
-                    data.createdImage = reponse.data;
-                },
-                undo: {
-                    method: 'DELETE',
-                    url: function(data, params) {
-                        return '/api/v1beta0/user/{envId}/images/{imageId}/'.replace('{envId}', params.envId).replace('{imageId}', data.createdImage.id);
-                    }
-                },
-            },
-            {
-
             }
         ]
     });

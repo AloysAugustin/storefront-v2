@@ -107,7 +107,7 @@
     }
 
     this.makeApiCall('GET', path, params, '',
-      this.makeOnScrollSuccess(dfd, path, ok, err, [], this),
+      this.makeOnScrollSuccess(path, ok, err, [], this),
       err);
 
     return dfd.promise();
