@@ -39,15 +39,18 @@ app.factory('appDefinitions', function(){
 	appDefinitions.identifierToLabel = function(identifier){
 		return {
 			distribution: "Distribution",
-			flavor: "Flavor",
+			internet: "Internet accesss",
+			flavor: "Performance level",
 			location: "Location",
 			addMoreStorage: "Add persistent storage",
+			availability: "Availability level",
+			runtime: "Application lifetime",
 			monitoring: "Monitoring",
 			backup: "Backup",
 			adminADGroup: "Admin AD Group",
 			jbcomponentVersion: "Version",
-			mysqlcomponentVersionList: "Version",
-			apachecomponentVersionList: "Version"
+			mysqlcomponentVersion: "Version",
+			apachecomponentVersion: "Version"
 		}[identifier];
 	};
 	appDefinitions.isAdvancedUser = function(identifier){
@@ -58,8 +61,8 @@ app.factory('appDefinitions', function(){
 				"backup",
 				"adminADGroup",
 				"jbcomponentVersion",
-				"mysqlcomponentVersionList",
-				"apachecomponentVersionList"
+				"mysqlcomponentVersion",
+				"apachecomponentVersion"
 			].indexOf(identifier) >= 0);
 	};
 	appDefinitions.isAdvancedOption = function(identifier){
@@ -68,8 +71,8 @@ app.factory('appDefinitions', function(){
 				"backup",
 				"adminADGroup",
 				"jbcomponentVersion",
-				"mysqlcomponentVersionList",
-				"apachecomponentVersionList"
+				"mysqlcomponentVersion",
+				"apachecomponentVersion"
 			].indexOf(identifier) >= 0);
 	};
 	appDefinitions.isModifiable = function(identifier){
@@ -104,15 +107,28 @@ app.factory('appDefinitions', function(){
 					isModifiable: appDefinitions.isModifiable(k)
 				});
 			}
+			if (key.endsWith("Box")) {
+				var k = key.slice(0, -3);
+				res.push({
+					type: 'checkbox',
+					identifer: k,
+					label: appDefinitions.identifierToLabel(k),
+					text: def[key],
+					advUser: appDefinitions.isAdvancedUser(k),
+					advOption: appDefinitions.isAdvancedOption(k),
+					isModifiable: appDefinitions.isModifiable(k)
+				})
+			}
 		}
 		return res;
 	};
 
-	var defaultFlavorList = {_01small:"Small", _02medium:"Medium", _03large:"Large"};
+	var defaultFlavorList = {_01small:"Low", _02medium:"Medium", _03large:"High"};
+	var defaultAvailabilityList = {_01bh: "Business hours", _02_247: "24/7", _03ha: "HA"};
+	var defaultRuntimeList = {_01_7days: "7 days", _02forever: "Forever"}
 	var defaultLocationList = {ssf:"SSF", basel:"Basel", shanghai:"Shanghai"};
 	var defaultYesNoList = {no:"No", yes:"Yes"};
 	var defaultStorageList = {_01no:"No", _02s: "10GB", _03m:"100GB"};
-	var defaultAdminADGroupField = "Admin AD Group";
 
 	var defaultPriceFunction = function(settings){
 		return {
@@ -123,82 +139,102 @@ app.factory('appDefinitions', function(){
 	}
 
 	var ubuntuDef = {
-		name: "Ubuntu",
+		name: "Ubuntu instance",
 		logoUrl: "http://design.ubuntu.com/wp-content/uploads/ubuntu-logo112.png",
 		price: defaultPriceFunction,
 		recipeId: 'ubuntu',
-		description: "An Ubuntu Server",
-		distributionList: {ubnt14:"Ubuntu 14.04", ubnt16:"Ubuntu 16.04"},
+		description: "Just an Ubuntu Server",
 		flavorList: defaultFlavorList,
+		availabilityList: defaultAvailabilityList,
+		runtimeList: defaultRuntimeList,
+		internetBox: 'Make this application accessible from the internet',
 		//Advanced User Options are here
-		locationList: defaultLocationList,
-		addMoreStorageList: defaultStorageList,
-		//Advanced Options are here
-		//componentVersionList: [],
-		monitoringList: defaultYesNoList,
-		backupList: defaultYesNoList,
-		adminADGroupField: defaultAdminADGroupField
-
 	};
+	appDefinitions.registerDef(ubuntuDef);
 
-	var jBossDef = {
-		name: "JBoss",
-		logoUrl: "https://avatars0.githubusercontent.com/u/1106024?v=3&s=200",
+	var railsDef = {
+		name: "Apache rails",
+		logoUrl: "https://upload.wikimedia.org/wikipedia/commons/1/16/Ruby_on_Rails-logo.png",
 		price: defaultPriceFunction,
-		recipeId: 'jBoss',
-		description: "A JBoss server",
-		distributionList: {ubnt14:"Ubuntu 14.04", ubnt16:"Ubuntu 16.04", rhel6: "RHEL 6", rhel7: "RHEL 7"},
+		recipeId: 'rails',
+		description: "A Rails / Apache server",
 		flavorList: defaultFlavorList,
+		availabilityList: defaultAvailabilityList,
+		runtimeList: defaultRuntimeList,
+		internetBox: 'Make this application accessible from the internet',
 		//Advanced User Options are here
-		locationList: defaultLocationList,
-		addMoreStorageList: defaultStorageList,
-		//Advanced Options are here
-		jbcomponentVersionList: {jb604:"JBoss 6.0.4", jb64:"JBoss 6.4"},
-		monitoringList: defaultYesNoList,
-		backupList: defaultYesNoList,
-		adminADGroupField: defaultAdminADGroupField
 	};
+	appDefinitions.registerDef(railsDef);
+
+	var djangoDef = {
+		name: "Apache Django",
+		logoUrl: "http://www.unixstickers.com/image/data/stickers/django/django-neg.sh.png",
+		price: defaultPriceFunction,
+		recipeId: 'django',
+		description: "A Django / Apache server",
+		flavorList: defaultFlavorList,
+		availabilityList: defaultAvailabilityList,
+		runtimeList: defaultRuntimeList,
+		internetBox: 'Make this application accessible from the internet',
+		//Advanced User Options are here
+	};
+	appDefinitions.registerDef(djangoDef);
+
+	var nodeDef = {
+		name: "Node.JS",
+		logoUrl: "https://node-os.com/images/nodejs.png",
+		price: defaultPriceFunction,
+		recipeId: 'node',
+		description: "A Node.JS server",
+		flavorList: defaultFlavorList,
+		availabilityList: defaultAvailabilityList,
+		runtimeList: defaultRuntimeList,
+		internetBox: 'Make this application accessible from the internet',
+		//Advanced User Options are here
+	};
+	appDefinitions.registerDef(nodeDef);
 
 	var mysqlDef = {
 		name: "MySQL",
 		logoUrl: "https://www.mysql.fr/common/logos/logo-mysql-170x115.png",
 		price: defaultPriceFunction,
 		recipeId: 'mysql',
-		description: "A MySQL server",
-		distributionList: {ubnt14:"Ubuntu 14.04", ubnt16:"Ubuntu 16.04", rhel6: "RHEL 6", rhel7: "RHEL 7"},
+		description: "A MySQL server, on Ubuntu 14.04",
 		flavorList: defaultFlavorList,
+		availabilityList: defaultAvailabilityList,
+		runtimeList: defaultRuntimeList,
+		internetBox: 'Make this application accessible from the internet',
 		//Advanced User Options are here
-		locationList: defaultLocationList,
-		addMoreStorageList: defaultStorageList,
-		//Advanced Options are here
-		mysqlcomponentVersionList: {mysql5714:"MySQL 5.7.14", mysql5715:"MySQL 5.7.15", mysql5716: "MySQL 5.7.16"},
-		monitoringList: defaultYesNoList,
-		backupList: defaultYesNoList,
-		adminADGroupField: defaultAdminADGroupField
 	};
-
-	var apacheDef = {
-		name: "Apache",
-		logoUrl: "https://goodlogo.com/images/logos/apache_software_foundation_logo_3074.gif",
-		price: defaultPriceFunction,
-		recipeId: 'apache',
-		description: "An Apache server",
-		distributionList: {ubnt14:"Ubuntu 14.04", ubnt16:"Ubuntu 16.04", rhel6: "RHEL 6", rhel7: "RHEL 7"},
-		flavorList: defaultFlavorList,
-		//Advanced User Options are here
-		locationList: defaultLocationList,
-		addMoreStorageList: defaultStorageList,
-		//Advanced Options are here
-		apachecomponentVersionList: {apache24:"Apache 2.4", apache26:"Apache 2.6"},
-		monitoringList: defaultYesNoList,
-		backupList: defaultYesNoList,
-		adminADGroupField: defaultAdminADGroupField
-	};
-
-	appDefinitions.registerDef(ubuntuDef);
-	appDefinitions.registerDef(jBossDef);
 	appDefinitions.registerDef(mysqlDef);
-	appDefinitions.registerDef(apacheDef);
+
+	var redisDef = {
+		name: "Redis",
+		logoUrl: "https://upload.wikimedia.org/wikipedia/en/thumb/6/6b/Redis_Logo.svg/1280px-Redis_Logo.svg.png",
+		price: defaultPriceFunction,
+		recipeId: 'redis',
+		description: "A Redis server",
+		flavorList: defaultFlavorList,
+		availabilityList: defaultAvailabilityList,
+		runtimeList: defaultRuntimeList,
+		internetBox: 'Make this application accessible from the internet',
+		//Advanced User Options are here
+	};
+	appDefinitions.registerDef(redisDef);
+
+	var windowsDef = {
+		name: "Windows instance",
+		logoUrl: "http://itiscloudy.com/wp-content/uploads/2015/08/logo_winserver2012R2.png",
+		price: defaultPriceFunction,
+		recipeId: 'windows',
+		description: "Just a Windows 2012 Server",
+		flavorList: defaultFlavorList,
+		availabilityList: defaultAvailabilityList,
+		runtimeList: defaultRuntimeList,
+		internetBox: 'Make this application accessible from the internet',
+		//Advanced User Options are here
+	};
+	appDefinitions.registerDef(windowsDef);
 
 	return appDefinitions;
 });

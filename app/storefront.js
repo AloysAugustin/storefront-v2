@@ -170,6 +170,16 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
     return r;
   };
 
+  $scope.numAdvancedSettings = function(form) {
+    var count = 0;
+    for (var i = 0; i < form.length; i ++) {
+      if (form[i].advOption) {
+        count += 1;
+      }
+    }
+    return count;
+  }
+
   $scope.launch = function(app) {
     for (k in app.settings){
       if (k != 'name'){
