@@ -89,7 +89,6 @@ app.factory('apiRecipes', function() {
         }
     };
 
-
     apiRecipes.register = function(name, recipe) {
         recipes[name] = recipe;
     };
@@ -115,7 +114,7 @@ app.factory('apiRecipes', function() {
             validateParams: apiRecipes.mkValidateParams(['envId', 'farmId']),
             steps: [
                 {
-                    description: method + ' farm',
+                    description: method + ' farm ' + operation,
                     method: method,
                     url: function(data, params) {
                         return '/api/v1beta0/user/{envId}/farms/{farmId}/{op}'.replace('{envId}', params.envId).replace('{farmId}', params.farmId).replace('{op}', operation);
@@ -167,7 +166,6 @@ app.factory('apiRecipes', function() {
                     return '/api/v1beta0/user/{envId}/farms/{farmId}/servers/'.replace('{envId}', params.envId).replace('{farmId}', data.myFarms[index].id);
                 },
                 done: function(response, data, params, index) {
-                    console.log(data.myFarms, index);
                     data.myFarms[index].servers = response.all_data;
                 }
                 // Nothing to undo

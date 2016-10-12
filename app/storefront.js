@@ -89,7 +89,12 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
       console.log(myFarms);
       for (var i = 0; i < myFarms.length; i ++) {
         var farm = myFarms[i];
-        farm.description = JSON.parse(farm.description);
+        try {
+          farm.description = JSON.parse(farm.description);
+        } catch(e) {
+          console.log(e, 'for farm', farm);
+          return;
+        }
         if (!farm.description.settings) {
           continue;
         }
@@ -103,9 +108,22 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
           }
         }
 
-        // TODO
-        var readOnlyProperties = [];
-        var status = 'todo';
+        farm.running_servers = [];
+        var readOnlyProperties = {};
+        var status = '';
+        for (var j = 0; j < farm.servers.length; j ++) {
+          if (farm.servers[j].status != 'terminated' && farm.servers[j].status != 'pending_terminate') {
+            farm.running_servers.push(farm.servers[j]);
+          } else {
+            farm.terminating_servers_count ++;
+          }
+        }
+        if (farm.running_servers.length > 0) {
+          status = 'running';
+          readOnlyProperties.address = farm.running_servers[0].publicIp[0];
+        } else {
+          status = 'stopped';
+        }
 
         $scope.myApps.push({
           id: farm.id,
