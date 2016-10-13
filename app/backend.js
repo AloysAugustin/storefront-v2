@@ -2,7 +2,7 @@
 
 var app = angular.module('ScalrStorefront');
 
-app.factory('backend', ['appDefinitions', 'apiRecipes', 'localStorageService', function(appDefinitions, apiRecipes, localStorageService) {
+app.factory('backend', ['appDefinitions', 'apiRecipes', 'localStorageService','recipes', function(appDefinitions, apiRecipes, localStorageService, recipes) {
     var backend = {};
 
     backend.isUserAdvanced = function(credentials) {
