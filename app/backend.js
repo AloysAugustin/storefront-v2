@@ -13,6 +13,8 @@ app.factory('backend', ['appDefinitions', 'apiRecipes', 'localStorageService', f
         ScalrAPI.setSettings(credentials);
         var s = angular.copy(settings);
         s.def_name = def.name;
+        s.keyId = credentials.keyId;
+        s.envId = credentials.envId;
         apiRecipes.run(def.recipeId, s, success_cb, failure_cb);
     };
 
