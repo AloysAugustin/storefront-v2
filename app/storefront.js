@@ -206,7 +206,7 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
 
   $scope.isApprovalRequired = function(settings) {
     //TODO put in app defs
-    return settings.flavor == '_03large' || settings.availability == '_03ha' || settings.runtime == '_02forever' || settings.internet;
+    return settings.flavor == '_03large' || settings.availability == '_03ha' || settings.availability == '_02_247' || settings.runtime == '_02forever' || settings.internet;
   }
 
   $scope.launch = function(app) {
