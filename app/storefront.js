@@ -89,6 +89,7 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
       console.log(myFarms);
       for (var i = 0; i < myFarms.length; i ++) {
         var farm = myFarms[i];
+        farm.terminating_servers_count = 0;
         try {
           farm.description = JSON.parse(farm.description);
         } catch(e) {
@@ -115,12 +116,17 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
           if (farm.servers[j].status != 'terminated' && farm.servers[j].status != 'pending_terminate') {
             farm.running_servers.push(farm.servers[j]);
           } else {
-            farm.terminating_servers_count ++;
+            if (farm.servers[j].status == 'pending_terminate') {
+              farm.terminating_servers_count ++;
+            }
           }
         }
         if (farm.running_servers.length > 0) {
           status = 'running';
           readOnlyProperties.address = farm.running_servers[0].publicIp[0];
+        } else if (farm.terminating_servers_count > 0) {
+          console.log("terminating!");
+          status = 'terminating';
         } else {
           status = 'stopped';
         }
