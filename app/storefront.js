@@ -116,16 +116,17 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
           if (farm.servers[j].status != 'terminated' && farm.servers[j].status != 'pending_terminate') {
             farm.running_servers.push(farm.servers[j]);
           } else {
-            if (farm.servers[j].status == 'pending_terminate') {
-              farm.terminating_servers_count ++;
-            }
+            farm.terminating_servers_count ++;
           }
         }
-        if (farm.running_servers.length > 0) {
+
+        if (farm.name.startsWith('[PENDING_APPROVAL]')) {
+          farm.name = farm.name.replace('[PENDING_APPROVAL]', '');
+          status = 'pending_approval';
+        } else if (farm.running_servers.length > 0) {
           status = 'running';
           readOnlyProperties.address = farm.running_servers[0].publicIp[0];
         } else if (farm.terminating_servers_count > 0) {
-          console.log("terminating!");
           status = 'terminating';
         } else {
           status = 'stopped';
@@ -172,9 +173,26 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
       if (form[i].type == 'text' && localStorageService.get("userPrefs." + form[i].identifier) != null){
         r[form[i].identifier] = localStorageService.get("userPrefs." + form[i].identifier);
       }
+      if (form[i].type == 'checkbox') {
+        if (localStorageService.get("userPrefs." + form[i].identifier)) {
+          r[form[i].identifier] = true;
+        } else {
+          r[form[i].identifier] = false;
+        }
+      }
     }
     return r;
   };
+
+  $scope.hasModifiableSettings = function(form) {
+    var count = 0;
+    for (var i = 0; i < form.length; i ++) {
+      if (form[i].isModifiable) {
+        count += 1;
+      }
+    }
+    return count > 0;
+  }
 
   $scope.numAdvancedSettings = function(form) {
     var count = 0;
@@ -184,6 +202,11 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
       }
     }
     return count;
+  }
+
+  $scope.isApprovalRequired = function(settings) {
+    //TODO put in app defs
+    return settings.flavor == '_03large' || settings.availability == '_03ha' || settings.runtime == '_02forever' || settings.internet;
   }
 
   $scope.launch = function(app) {

@@ -150,6 +150,7 @@ app.factory('apiRecipes', function() {
                     // Filter farms by key id
                     for (var i = 0; i < data.farms.length; i ++) {
                         if (data.farms[i].name.startsWith('['+params.keyId+']')) {
+                            data.farms[i].name = data.farms[i].name.replace('['+params.keyId+']', '');
                             myFarms.push(data.farms[i]);
                         }
                     }

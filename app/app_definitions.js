@@ -77,7 +77,6 @@ app.factory('appDefinitions', function(){
 	};
 	appDefinitions.isModifiable = function(identifier){
 		return ([
-				"flavor"
 			].indexOf(identifier) >= 0);
 	};
 
@@ -111,7 +110,7 @@ app.factory('appDefinitions', function(){
 				var k = key.slice(0, -3);
 				res.push({
 					type: 'checkbox',
-					identifer: k,
+					identifier: k,
 					label: appDefinitions.identifierToLabel(k),
 					text: def[key],
 					advUser: appDefinitions.isAdvancedUser(k),
