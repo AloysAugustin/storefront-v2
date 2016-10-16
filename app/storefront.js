@@ -69,6 +69,14 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
     console.log(reason, obj);
   };
 
+  $scope.getAppDefinition = function(def_name) {
+    for (var j = 0; j < apps.defs.length; j ++) {
+      if (apps.defs[j].name == def_name) {
+        return apps.defs[j];
+      }
+    }
+  };
+
   $scope.fetchAllFarms = function() {
     $scope.apps.length = 0;
     $scope.myApps.length = 0;
@@ -101,13 +109,7 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
         }
         var def_name = farm.description.settings.def_name;
         delete farm.description.settings.def_name;
-        var def = {};
-        for (var j = 0; j < apps.defs.length; j ++) {
-          if (apps.defs[j].name == def_name) {
-            def = apps.defs[j];
-            break;
-          }
-        }
+        var def = $scope.getAppDefinition(def_name);
 
         farm.running_servers = [];
         var readOnlyProperties = {};
@@ -215,28 +217,55 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
         localStorageService.set('userPrefs.' + k, app.settings[k]);
       }
     }
-    back.runAppDef($scope.apiSettings, app.model, app.settings, function() {
+    app.launching = true;
+    app.settings.approval_required = $scope.isApprovalRequired(app.settings);
+    back.runAppDef($scope.apiSettings, app.model, app.settings, function(result) {
       app.launching = false;
-      $scope.fetchAllFarms();
+      if (app.settings.approval_required) {
+        $scope.request_approval(result);
+      } else {
+        $scope.fetchAllFarms();
+      }
     }, null);
   };
+
+  $scope.request_approval = function(result) {
+    console.log('sending email');
+    var def = $scope.getAppDefinition(result.params.def_name);
+    var body = {
+      user: $scope.apiSettings.keyId,
+      farmId: result.newFarm.id,
+      url: $scope.apiSettings.apiUrl,
+      env: $scope.apiSettings.envId,
+      appName: result.params.def_name,
+      // TODO: take list of params from definition
+      perf: def.flavorList[result.params.flavor],
+      avail: def.availabilityList[result.params.availability],
+      duration: def.runtimeList[result.params.runtime],
+      internet: result.params.internet
+    };
+    $.post('http://portal.demo.scalr.com:5000/send/', JSON.stringify(body), function() {
+      console.log('email sent');
+      $scope.fetchAllFarms();
+    });
+  }
 
   $scope.startApp = function(app) {
     back.startApp($scope.apiSettings, app.id, function() {
       $scope.fetchAllFarms();
-    }, null)
+    }, null);
   };
 
   $scope.stopApp = function(app) {
     back.stopApp($scope.apiSettings, app.id, function() {
       $scope.fetchAllFarms();
-    }, null)
+    }, null);
   };
 
   $scope.deleteApp = function(app) {
     back.deleteApp($scope.apiSettings, app.id, function() {
       $scope.fetchAllFarms();
-    }, null)
+    }, null);
   };
 
   /*

@@ -58,6 +58,7 @@ app.factory('apiRecipes', function() {
             return onError();
         }
         var step = recipe.steps[stepNb];
+        console.log(stepNb, step);
         var nextRevert = function(response) {
             revert(recipe, stepNb-1, onError);
         }
@@ -72,6 +73,10 @@ app.factory('apiRecipes', function() {
     var makeCall = function(data, params, obj, onSuccess, onError, index) {
         var method = obj.method;
         var path = obj.url(data, params, index);
+        if (!path || path.length <= 0) {
+            //skip this step if path is empty
+            return onSuccess({});
+        }
         if ('params' in obj) {
             var p = obj.params(data, params, index);
         } else {

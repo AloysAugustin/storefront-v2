@@ -14,12 +14,18 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
                     return '/api/v1beta0/user/{envId}/farms/{farmId}/actions/clone/'.replace('{envId}', params.envId).replace('{farmId}', data.initialFarmId);
                 },
                 body: function(data, params) {
+                    if (!params.approval_required) {
+                        var name = '[' + params.keyId + ']' + params.name;
+                    } else {
+                        var name = '[' + params.keyId + '][PENDING_APPROVAL]' + params.name
+                    }
                     return JSON.stringify({
-                        'name': '[' + params.keyId + ']' + params.name
+                        'name': name
                     });
                 },
                 done: function(response, data, params) {
                     data.newFarm = response.data;
+                    data.params = params;
                 },
                 undo: {
                     method: 'DELETE',
@@ -82,6 +88,9 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
                 description: 'Launch farm',
                 method: 'POST',
                 url: function(data, params) {
+                    if (params.approval_required) {
+                        return '';
+                    }
                     return '/api/v1beta0/user/{envId}/farms/{farmId}/actions/launch/'.replace('{envId}', params.envId).replace('{farmId}', data.newFarm.id);
                 },
                 done: function(response, data, params) {},
@@ -108,6 +117,7 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
                 },
                 done: function(response, data, params) {
                     data.newFarm = response.data;
+                    data.params = params;
                 },
                 undo: {
                     method: 'DELETE',
@@ -170,6 +180,9 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
                 description: 'Launch farm',
                 method: 'POST',
                 url: function(data, params) {
+                    if (params.approval_required) {
+                        return '';
+                    }
                     return '/api/v1beta0/user/{envId}/farms/{farmId}/actions/launch/'.replace('{envId}', params.envId).replace('{farmId}', data.newFarm.id);
                 },
                 done: function(response, data, params) {},
@@ -196,6 +209,7 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
                 },
                 done: function(response, data, params) {
                     data.newFarm = response.data;
+                    data.params = params;
                 },
                 undo: {
                     method: 'DELETE',
@@ -258,6 +272,9 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
                 description: 'Launch farm',
                 method: 'POST',
                 url: function(data, params) {
+                    if (params.approval_required) {
+                        return '';
+                    }
                     return '/api/v1beta0/user/{envId}/farms/{farmId}/actions/launch/'.replace('{envId}', params.envId).replace('{farmId}', data.newFarm.id);
                 },
                 done: function(response, data, params) {},
@@ -284,6 +301,7 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
                 },
                 done: function(response, data, params) {
                     data.newFarm = response.data;
+                    data.params = params;
                 },
                 undo: {
                     method: 'DELETE',
@@ -346,6 +364,9 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
                 description: 'Launch farm',
                 method: 'POST',
                 url: function(data, params) {
+                    if (params.approval_required) {
+                        return '';
+                    }
                     return '/api/v1beta0/user/{envId}/farms/{farmId}/actions/launch/'.replace('{envId}', params.envId).replace('{farmId}', data.newFarm.id);
                 },
                 done: function(response, data, params) {},
@@ -372,6 +393,7 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
                 },
                 done: function(response, data, params) {
                     data.newFarm = response.data;
+                    data.params = params;
                 },
                 undo: {
                     method: 'DELETE',
@@ -434,6 +456,9 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
                 description: 'Launch farm',
                 method: 'POST',
                 url: function(data, params) {
+                    if (params.approval_required) {
+                        return '';
+                    }
                     return '/api/v1beta0/user/{envId}/farms/{farmId}/actions/launch/'.replace('{envId}', params.envId).replace('{farmId}', data.newFarm.id);
                 },
                 done: function(response, data, params) {},
@@ -460,6 +485,7 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
                 },
                 done: function(response, data, params) {
                     data.newFarm = response.data;
+                    data.params = params;
                 },
                 undo: {
                     method: 'DELETE',
@@ -522,6 +548,9 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
                 description: 'Launch farm',
                 method: 'POST',
                 url: function(data, params) {
+                    if (params.approval_required) {
+                        return '';
+                    }
                     return '/api/v1beta0/user/{envId}/farms/{farmId}/actions/launch/'.replace('{envId}', params.envId).replace('{farmId}', data.newFarm.id);
                 },
                 done: function(response, data, params) {},
@@ -548,6 +577,7 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
                 },
                 done: function(response, data, params) {
                     data.newFarm = response.data;
+                    data.params = params;
                 },
                 undo: {
                     method: 'DELETE',
@@ -610,6 +640,9 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
                 description: 'Launch farm',
                 method: 'POST',
                 url: function(data, params) {
+                    if (params.approval_required) {
+                        return '';
+                    }
                     return '/api/v1beta0/user/{envId}/farms/{farmId}/actions/launch/'.replace('{envId}', params.envId).replace('{farmId}', data.newFarm.id);
                 },
                 done: function(response, data, params) {},
