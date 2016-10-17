@@ -132,11 +132,22 @@ app.factory('appDefinitions', function(){
 	var defaultPlatformList = {aws: "AWS", gce: "GCE"};
 
 	var defaultPriceFunction = function(settings){
+		var platform = "aws";
+		if (settings.platform) {
+			platform = settings.platform;
+		}
 		return {
-		 	_01small: "1.5",
-		 	_02medium: "2.6",
-		 	_03large: "3.8"
-		}[settings.flavor];
+			aws: {
+			 	_01small: "1.61",
+			 	_02medium: "3.22",
+			 	_03large: "6.44"
+			},
+			gce: {
+				_01small: "1.85",
+			 	_02medium: "3.70",
+			 	_03large: "7.40"
+			}
+		}[platform][settings.flavor];
 	}
 
 	var ubuntuDef = {
