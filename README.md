@@ -1,32 +1,34 @@
 # Scalr Storefront v2
 
-Simple interface that allows to launch Farms in Scalr using the APIv2
+The Scalr storefront is a simple interface to Scalr that allows to launch Farms in Scalr using the APIv2.
 
-This is a simple, fully client-side app that serves as a storefront for Scalr
+## Usage
 
-All the data is stored inside Scalr. To configure some templates in an environment and be able to launch them from the storefront, do the folloxing:
-- Create a template Farm that suits your needs. This can be anything from just an Ubuntu server to for instance a Docker Swarm cluster.
-- Make the name of this Farm begin by `[TEMPLATE]`
-- Put a JSON blob in the description field of the Farm, according to this example:
-```
-{
-  "logo": "http://design.ubuntu.com/wp-content/uploads/ubuntu-logo112.png",
-  "description": "Just an ubuntu server",
-  "dailyPrice": "1.06"
-}
-```
+The use of the storefront is purposefully as simple as possible. Login with Scalr API credentials. Then, to launch an application, head to the "Catalog" tab, click ont the application you need, choose what settings you want or just keep the defaults, and click on "Launch". Your application will appear in the "My Applications" tab.
 
-Note: this is experimental and unstable code, most errors are logged in the console but not displayed in the UI
+## Setup instructions
 
-Templates farms can be customized in two ways:
-- Setting a farm-level global variable called STOREFRONT_CONFIGURABLE_GV that contains a JSON-formatted list of global variable names (ex: ["ACCOUNT_NAME", "ACCOUNT_PW"]) will allow the storefront user to give a custom value to these global variables.
-- Setting a farm-role level global variable called STOREFRONT_SCALING_ENABLED will allow the user to choose the number of instances for this farm role. Min, max and default number of instances can be configured with the value of STOREFRONT_SCALING_ENABLED:
-```
-{
-"min": 1,
-"max": 5,
-"value": 1
-}
-```
+To use the storefront, just clone this repository (the `master` branch is usually fine) and serve the `app` folder statically. If you want to use it on a different server than demo.scalr.com, read the instructions below to make some applications available to your users.
 
-TODO: Reflect impact of scaling choices in estimated price
+## Customisation
+
+### Architecture overview
+
+The storefront offers a series of appkication that can be launched by the user. Each application has a definition in `app/app_definitions.js` that defines its name, settings, cost, and the "API recipe" that allows to configure launch it.
+When an application is launched the corresponding API recipe is called with the parameters chosen by the user. The recipe is responsible for creating a Farm in Scalr that corresponds to what the user wants, and launch it. It usually does so by cloning a base Farm, and customizing it for the user.
+
+### Application settings
+
+Application settings are stored in `app/app_definitions.js`. The settings for each application are stored in the application definition. The suffix of the setting name defines its type:
+    - xxxList for a set of options
+    - xxxField for a text field
+    - xxxBox for a checkbox
+
+The prefix of the setting will be the option name when passed to the recipe.
+The label that will be displayed for this setting is set in the `identifierToLabel` function.
+The `recipeId` property of the definition is the name of the recipe that will be used to launch this application.
+
+### API Recipes
+
+API Recipes are a generic way to chain API calls, that in this case we use to clone a base Farm, customize its Farm Roles, and launch it. To add an application to the storefront, you usually need to create a new recipe and register it. Take inspiration from the existing recipes in `app/recipes.js` to see how this can be done. If you want to add a parameter to an existing app, modify its recipe to take the new parameter into account. 
+
