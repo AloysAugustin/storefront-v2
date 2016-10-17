@@ -43,7 +43,7 @@ def handle_query():
             "https://api.mailgun.net/v3/sandbox8fdd69ee92db404db4a4454837aad7e4.mailgun.org/messages",
             auth=("api", "key-1a0c7531e47353bd6ca131a8cfeaa018"),
             data={"from": "storefront@scalr.com",
-                  "to": ["aloys@scalr.com"],
+                  "to": ["dan@scalr.com"],
                   "subject": "Storefront approval required",
                   "text": "Hello,\n" + "Your approval is required. Please go to the following address to review:\n" + url_to_send,
                   "html": "Hello,\n<br>\n" + "Your approval is required for a new "+data['appName']+" application. Please click the following link to review:\n" + '<a href="' + url_to_send + '"> Review here </a>'})
@@ -55,4 +55,4 @@ def handle_query():
 
 
 if __name__=='__main__':
-    app.run(debug=True, host='0.0.0.0')
+    app.run(debug=False, host='0.0.0.0')
