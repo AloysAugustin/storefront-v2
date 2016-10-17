@@ -50,7 +50,8 @@ app.factory('appDefinitions', function(){
 			adminADGroup: "Admin AD Group",
 			jbcomponentVersion: "Version",
 			mysqlcomponentVersion: "Version",
-			apachecomponentVersion: "Version"
+			apachecomponentVersion: "Version",
+			platform: "Cloud platform",
 		}[identifier];
 	};
 	appDefinitions.isAdvancedUser = function(identifier){
@@ -128,6 +129,7 @@ app.factory('appDefinitions', function(){
 	var defaultLocationList = {ssf:"SSF", basel:"Basel", shanghai:"Shanghai"};
 	var defaultYesNoList = {no:"No", yes:"Yes"};
 	var defaultStorageList = {_01no:"No", _02s: "10GB", _03m:"100GB"};
+	var defaultPlatformList = {aws: "AWS", gce: "GCE"};
 
 	var defaultPriceFunction = function(settings){
 		return {
@@ -146,6 +148,7 @@ app.factory('appDefinitions', function(){
 		flavorList: defaultFlavorList,
 		availabilityList: defaultAvailabilityList,
 		runtimeList: defaultRuntimeList,
+		platformList: defaultPlatformList,
 		internetBox: 'Make this application accessible from the internet',
 		//Advanced User Options are here
 	};
@@ -202,6 +205,7 @@ app.factory('appDefinitions', function(){
 		flavorList: defaultFlavorList,
 		availabilityList: defaultAvailabilityList,
 		runtimeList: defaultRuntimeList,
+		platformList: defaultPlatformList,
 		internetBox: 'Make this application accessible from the internet',
 		//Advanced User Options are here
 	};
