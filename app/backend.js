@@ -2,13 +2,13 @@
 
 var app = angular.module('ScalrStorefront');
 
-app.factory('backend', ['appDefinitions', 'apiRecipes', 'localStorageService','recipes', function(appDefinitions, apiRecipes, localStorageService, recipes) {
+app.factory('backend', ['appDefinitions', 'apiRecipes', 'localStorageService','recipes','$http', function(appDefinitions, apiRecipes, localStorageService, recipes, $http) {
     var backend = {};
 
     backend.isUserAdvanced = function(credentials) {
         return true;
     };
-
+    ScalrAPI.setHTTPService($http);
     backend.runAppDef = function(credentials, def, settings, success_cb, failure_cb) {
         ScalrAPI.setSettings(credentials);
         var s = angular.copy(settings);

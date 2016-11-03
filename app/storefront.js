@@ -1,4 +1,4 @@
-var app = angular.module('ScalrStorefront', ['LocalStorageModule', 'angular.filter', 'ui.bootstrap']);
+var app = angular.module('ScalrStorefront', ['LocalStorageModule', 'angular.filter', 'ui.bootstrap','ngRoute','ngStorage', 'afOAuth2']);
 
 app.controller('StorefrontController', [
   "backend",
