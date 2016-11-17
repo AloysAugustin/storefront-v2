@@ -127,7 +127,17 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
           status = 'pending_approval';
         } else if (farm.running_servers.length > 0) {
           status = 'running';
-          readOnlyProperties.address = farm.running_servers[0].publicIp[0];
+          if ('publicFarmRole' in farm.description) {
+            var highestFRId = 0;
+            for (var j = 0; j < farm.running_servers.length; j ++) {
+              if (farm.running_servers[j].farmRole.id > highestFRId) {
+                highestFRId = farm.running_servers[j].farmRole.id;
+                readOnlyProperties.address = farm.running_servers[j].publicIp[0];
+              }
+            }
+          } else {
+            readOnlyProperties.address = farm.running_servers[0].publicIp[0];            
+          }
         } else if (farm.terminating_servers_count > 0) {
           status = 'terminating';
         } else {

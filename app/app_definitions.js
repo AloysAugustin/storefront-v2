@@ -250,5 +250,17 @@ app.factory('appDefinitions', function(){
 	};
 	appDefinitions.registerDef(windowsDef);
 
+	var twoTierAppDef = {
+		name: "Two-tier app",
+		logoUrl: "https://wbm2-medianet.netdna-ssl.com/wp-content/uploads/2014/08/apache-http-server-logo-large.jpg",
+		price: function(settings) {
+			return "3.17";
+		},
+		recipeId: 'twotier',
+		description: "Two Apache app servers behind an nginx load balancer.",
+		//Advanced User Options are here
+	};
+	appDefinitions.registerDef(twoTierAppDef);
+
 	return appDefinitions;
 });

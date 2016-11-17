@@ -204,6 +204,63 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
         };
     }
 
+    var twotierRecipe = {
+        data: {},
+        validateParams: function() {return true;},
+        steps: [
+            {
+                description: 'Clone base farm',
+                method: 'POST',
+                url: function(data, params) {
+                    var farmId = 742;
+                    return '/api/v1beta0/user/{envId}/farms/{farmId}/actions/clone/'.replace('{envId}', params.envId).replace('{farmId}', farmId);
+                },
+                body: function(data, params) {
+                    var name = '[' + params.keyId + ']' + params.name;
+                    return JSON.stringify({
+                        'name': name
+                    });
+                },
+                done: function(response, data, params) {
+                    data.newFarm = response.data;
+                    data.params = params;
+                },
+                undo: {
+                    method: 'DELETE',
+                    url: function(data, params) {
+                        return '/api/v1beta0/user/{envId}/farms/{farmId}/'.replace('{envId}', params.envId).replace('{farmId}', data.newFarm.id);
+                    }
+                }
+            },
+            {
+                description: 'Set farm description',
+                method: 'PATCH',
+                url: function(data, params) {
+                    return '/api/v1beta0/user/{envId}/farms/{farmId}/'.replace('{envId}', params.envId).replace('{farmId}', data.newFarm.id);
+                },
+                body: function(data, params) {
+                    var settings = angular.copy(params);
+                    delete settings.keyId;
+                    return JSON.stringify({
+                        description: JSON.stringify({
+                            settings: settings,
+                            publicFarmRole: 'nginx-ubuntu1404'
+                        }),
+                    });
+                },
+                done: function(response, data, params) {},
+            },
+            {
+                description: 'Launch farm',
+                method: 'POST',
+                url: function(data, params) {
+                    return '/api/v1beta0/user/{envId}/farms/{farmId}/actions/launch/'.replace('{envId}', params.envId).replace('{farmId}', data.newFarm.id);
+                },
+                done: function(response, data, params) {},
+            }
+        ]
+    };
+
     apiRecipes.register('ubuntu', mkMultiPlatformFarmRecipe({aws: 183, gce: 654}));
     apiRecipes.register('redis', mkStdFarmRecipe(191));
     apiRecipes.register('windows', mkStdFarmRecipe(192));
@@ -211,5 +268,6 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
     apiRecipes.register('node', mkStdFarmRecipe(188));
     apiRecipes.register('django', mkStdFarmRecipe(187));
     apiRecipes.register('rails', mkStdFarmRecipe(184));
+    apiRecipes.register('twotier', twotierRecipe);
 }]);
 
