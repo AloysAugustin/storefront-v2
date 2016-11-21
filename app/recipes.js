@@ -285,7 +285,7 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
                     return JSON.stringify({
                         enabled: true,
                         minInstances: params.appNum.substring(3),
-                        maxInstances: params.appNum.substring(3),
+                        maxInstances: parseInt(params.appNum.substring(3)) + 20,
                         scalingBehavior: "launch-terminate",
                         considerSuspendedServers: "running",
                     });
