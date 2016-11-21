@@ -324,7 +324,7 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
                 description: 'Scale up rapidly app server',
                 type: 'parallel-for',
                 iterations: function(data, params) {
-                    return params.appNum.substring(3);
+                    return parseInt(params.appNum.substring(3)) - 1;
                 },
                 method: 'POST',
                 url: function(data, params, index) {
@@ -343,7 +343,7 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
                 description: 'Scale up rapidly db server',
                 type: 'parallel-for',
                 iterations: function(data, params) {
-                    return params.dbNum.substring(3);
+                    return parseInt(params.dbNum.substring(3)) - 1;
                 },
                 method: 'POST',
                 url: function(data, params, index) {
