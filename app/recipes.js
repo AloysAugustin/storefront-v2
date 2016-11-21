@@ -2,7 +2,7 @@
 var app = angular.module('ScalrStorefront');
 app.factory("recipes", ["apiRecipes",function(apiRecipes){
 
-    var mkStdFarmRecipe = function(initialFarmId) {
+    var mkStdFarmRecipe = function(initialFarmId,forceInstanceType) {
         return {
             data: {
                 initialFarmId: initialFarmId
@@ -76,6 +76,9 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
                             _02medium: "m3.large",
                             _03large: "m3.xlarge",
                         }[params.flavor];
+                        if (typeof forceInstanceType !== 'undefined') {
+                            instanceType = forceInstanceType;
+                        }
                         return JSON.stringify({
                             instanceConfigurationType: "AwsInstanceConfiguration",
                             instanceType: {
@@ -368,5 +371,8 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
     apiRecipes.register('django', mkStdFarmRecipe(187));
     apiRecipes.register('rails', mkStdFarmRecipe(184));
     apiRecipes.register('fastscaling', rapidDeploymentRecipe);
+    apiRecipes.register('sapHanaExpress', mkStdFarmRecipe(760,'c3.4xlarge'))
+    apiRecipes.register('apacheChef', mkStdFarmRecipe(763))
+
 }]);
 

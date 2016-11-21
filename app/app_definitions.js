@@ -294,5 +294,33 @@ app.factory('appDefinitions', function(){
 	};
 	appDefinitions.registerDef(fastScalingDef);
 
+	var sapHanaExpressDef = {
+		name: "A SAP Hana Express instance",
+		logoUrl: "http://www.virtustream.com/images/SAP-HANA-logo_160330_154207.png",
+		price: defaultPriceFunction,
+		recipeId: 'sapHanaExpress',
+		description: "An Ubuntu 14.04 with a running SAP Hana Express",
+		flavorList: defaultFlavorList,
+		availabilityList: defaultAvailabilityList,
+		runtimeList: defaultRuntimeList,
+		internetBox: 'Make this application accessible from the internet',
+		//Advanced User Options are here
+	};
+	appDefinitions.registerDef(sapHanaExpressDef);
+
+	var apacheChefDef = {
+		name: "Apache with Chef instance",
+		logoUrl: "http://s3.amazonaws.com/opscode-corpsite/assets/121/pic-chef-logo.png",
+		price: defaultPriceFunction,
+		recipeId: 'apacheChef',
+		description: "A Chef-provisioned Apache Server",
+		flavorList: defaultFlavorList,
+		availabilityList: defaultAvailabilityList,
+		runtimeList: defaultRuntimeList,
+		internetBox: 'Make this application accessible from the internet',
+		//Advanced User Options are here
+	};
+	appDefinitions.registerDef(apacheChefDef);
+
 	return appDefinitions;
 });
