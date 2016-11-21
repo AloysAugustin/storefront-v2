@@ -293,7 +293,7 @@ app.factory('appDefinitions', function(){
 	appDefinitions.registerDef(fastScalingDef);
 
 	var sapHanaExpressDef = {
-		name: "A SAP Hana Express instance",
+		name: "SAP HANA Express",
 		logoUrl: "http://www.virtustream.com/images/SAP-HANA-logo_160330_154207.png",
 		price: defaultPriceFunction,
 		recipeId: 'sapHanaExpress',
