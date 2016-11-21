@@ -52,6 +52,8 @@ app.factory('appDefinitions', function(){
 			mysqlcomponentVersion: "Version",
 			apachecomponentVersion: "Version",
 			platform: "Cloud platform",
+			appNum: 'Amount of application server',
+			dbNum: 'Amount of DB servers',
 		}[identifier];
 	};
 	appDefinitions.isAdvancedUser = function(identifier){
@@ -277,6 +279,20 @@ app.factory('appDefinitions', function(){
 		//Advanced User Options are here
 	};
 	appDefinitions.registerDef(windowsDef);
+
+	var fastScalingDef = {
+		name: "3 Tier App",
+		logoUrl: "https://api-explorer.scalr.com/images/scalr-logo-retina.png",
+		price: function(settings) {
+			return (1.06 * (1 + parseInt(settings.appNum.substring(3)) + parseInt(settings.dbNum.substring(3)))).toString().substring(0,5);
+		},
+		recipeId: 'fastscaling',
+		description: 'Fast scale-up example',
+		appNumList: {_a_5: '5', _b_10: '10', _c_20: '20', _c_50: '50'},
+		dbNumList: {_a_5: '5', _b_10: '10', _c_20: '20', _c_50: '50'},
+
+	};
+	appDefinitions.registerDef(fastScalingDef);
 
 	return appDefinitions;
 });
