@@ -216,7 +216,7 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
         data: {
             initialFarmId: 758
         },
-        validateParams: apiRecipes.mkValidateParams(['keyId', 'envId', 'name', 'appNum', 'dbNum']),
+        validateParams: apiRecipes.mkValidateParams(['keyId', 'envId', 'name', 'appNum']),
         steps: [
             {
                 description: 'Clone base farm',
@@ -275,11 +275,8 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
                 method: 'PATCH',
                 url: function(data, params) {
                     for (var i = 0; i < data.newFarmRoles.length; i ++) {
-                        if (data.newFarmRoles[i].alias == 'mysql-ubuntu1404') {
-                            data.appFarmRoleId = data.newFarmRoles[i].id;
-                        }
                         if (data.newFarmRoles[i].alias == 'Webapp') {
-                            data.dbFarmRoleId = data.newFarmRoles[i].id;
+                            data.appFarmRoleId = data.newFarmRoles[i].id;
                         }
                     }
                     return '/api/v1beta0/user/{envId}/farm-roles/{farmRoleId}/scaling/'.replace('{envId}', params.envId).replace('{farmRoleId}', data.appFarmRoleId);
@@ -289,24 +286,6 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
                         enabled: true,
                         minInstances: params.appNum.substring(3),
                         maxInstances: params.appNum.substring(3),
-                        scalingBehavior: "launch-terminate",
-                        considerSuspendedServers: "running",
-                    });
-                },
-                done: function(response, data, params) {},
-                // The Farm Role will be deleted with the farm, nothing to undo
-            },
-            {
-                description: 'Set db farm role scaling',
-                method: 'PATCH',
-                url: function(data, params) {
-                    return '/api/v1beta0/user/{envId}/farm-roles/{farmRoleId}/scaling/'.replace('{envId}', params.envId).replace('{farmRoleId}', data.dbFarmRoleId);
-                },
-                body: function(data, params) {
-                    return JSON.stringify({
-                        enabled: true,
-                        minInstances: params.dbNum.substring(3),
-                        maxInstances: params.dbNum.substring(3),
                         scalingBehavior: "launch-terminate",
                         considerSuspendedServers: "running",
                     });
@@ -344,25 +323,6 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
                 },
                 done: function(response, data, params, index) {}
             },
-            {
-                description: 'Scale up rapidly db server',
-                type: 'parallel-for',
-                iterations: function(data, params) {
-                    return parseInt(params.dbNum.substring(3)) - 1;
-                },
-                method: 'POST',
-                url: function(data, params, index) {
-                    return '/api/v1beta0/user/{envId}/servers/'.replace('{envId}', params.envId);
-                },
-                body: function(data, params) {
-                    return JSON.stringify({
-                      "farmRole": {
-                        "id": data.dbFarmRoleId
-                      }
-                    });
-                },
-                done: function(response, data, params, index) {}
-            }
         ]
     };
 

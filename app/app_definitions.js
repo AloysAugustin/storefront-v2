@@ -52,7 +52,7 @@ app.factory('appDefinitions', function(){
 			mysqlcomponentVersion: "Version",
 			apachecomponentVersion: "Version",
 			platform: "Cloud platform",
-			appNum: 'Amount of application server',
+			appNum: 'Amount of application servers',
 			dbNum: 'Amount of DB servers',
 		}[identifier];
 	};
@@ -284,13 +284,11 @@ app.factory('appDefinitions', function(){
 		name: "3 Tier App",
 		logoUrl: "https://api-explorer.scalr.com/images/scalr-logo-retina.png",
 		price: function(settings) {
-			return (1.06 * (1 + parseInt(settings.appNum.substring(3)) + parseInt(settings.dbNum.substring(3)))).toString().substring(0,5);
+			return (1.06 * (3 + parseInt(settings.appNum.substring(3)))).toString().substring(0,5);
 		},
 		recipeId: 'fastscaling',
 		description: 'Fast scale-up example',
-		appNumList: {_a_5: '5', _b_10: '10', _c_20: '20', _c_50: '50'},
-		dbNumList: {_a_5: '5', _b_10: '10', _c_20: '20', _c_50: '50'},
-
+		appNumList: { _b_10: '10', _c_20: '20', _c_50: '50', _d_100: '100'},
 	};
 	appDefinitions.registerDef(fastScalingDef);
 
