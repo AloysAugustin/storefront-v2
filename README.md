@@ -14,7 +14,7 @@ To use the storefront, just clone this repository (the `master` branch is usuall
 
 ### Architecture overview
 
-The storefront offers a series of appkication that can be launched by the user. Each application has a definition in `app/app_definitions.js` that defines its name, settings, cost, and the "API recipe" that allows to configure launch it.
+The storefront offers a series of application that can be launched by the user. Each application has a definition in `app/app_definitions.js` that defines its name, settings, cost, and the "API recipe" that allows to configure launch it.
 When an application is launched the corresponding API recipe is called with the parameters chosen by the user. The recipe is responsible for creating a Farm in Scalr that corresponds to what the user wants, and launch it. It usually does so by cloning a base Farm, and customizing it for the user.
 
 ### Application settings
