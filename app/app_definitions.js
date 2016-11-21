@@ -155,7 +155,7 @@ app.factory('appDefinitions', function(){
 		logoUrl: "http://design.ubuntu.com/wp-content/uploads/ubuntu-logo112.png",
 		price: defaultPriceFunction,
 		recipeId: 'ubuntu',
-		description: "Just an Ubuntu Server",
+		description: "Just an Ubuntu server",
 		flavorList: defaultFlavorList,
 		availabilityList: defaultAvailabilityList,
 		runtimeList: defaultRuntimeList,
@@ -235,6 +235,34 @@ app.factory('appDefinitions', function(){
 		//Advanced User Options are here
 	};
 	appDefinitions.registerDef(redisDef);
+
+	var pgsDef = {
+		name: "PostgreSQL",
+		logoUrl: "https://wiki.postgresql.org/images/3/30/PostgreSQL_logo.3colors.120x120.png",
+		price: defaultPriceFunction,
+		recipeId: 'postgre',
+		description: "PostgreSQL 9.3 on Ubuntu 14.04",
+		flavorList: defaultFlavorList,
+		availabilityList: defaultAvailabilityList,
+		runtimeList: defaultRuntimeList,
+		internetBox: 'Make this application accessible from the internet',
+		//Advanced User Options are here
+	};
+	appDefinitions.registerDef(pgsDef);
+
+	var iisDef = {
+		name: "Microsoft IIS",
+		logoUrl: "https://www.datadoghq.com/wp-content/uploads/2015/04/Integrations-MicrosoftIIS-340x216.png",
+		price: defaultPriceFunction,
+		recipeId: 'winiis',
+		description: "IIS on Server 2008 r2, with SQL Server 2012",
+		flavorList: defaultFlavorList,
+		availabilityList: defaultAvailabilityList,
+		runtimeList: defaultRuntimeList,
+		internetBox: 'Make this application accessible from the internet',
+		//Advanced User Options are here
+	};
+	appDefinitions.registerDef(iisDef);
 
 	var windowsDef = {
 		name: "Windows instance",

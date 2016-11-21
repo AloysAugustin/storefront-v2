@@ -206,6 +206,8 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
 
     apiRecipes.register('ubuntu', mkMultiPlatformFarmRecipe({aws: 183, gce: 654}));
     apiRecipes.register('redis', mkStdFarmRecipe(191));
+    apiRecipes.register('postgre', mkStdFarmRecipe(757));
+    apiRecipes.register('winiis', mkStdFarmRecipe(756));
     apiRecipes.register('windows', mkStdFarmRecipe(192));
     apiRecipes.register('mysql', mkMultiPlatformFarmRecipe({aws: 190, gce: 655}));
     apiRecipes.register('node', mkStdFarmRecipe(188));
