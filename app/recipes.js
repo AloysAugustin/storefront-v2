@@ -212,118 +212,121 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
         };
     }
 
-    var rapidDeploymentRecipe = {
-        data: {
-            initialFarmId: 758
-        },
-        validateParams: apiRecipes.mkValidateParams(['keyId', 'envId', 'name', 'appNum']),
-        steps: [
-            {
-                description: 'Clone base farm',
-                method: 'POST',
-                url: function(data, params) {
-                    return '/api/v1beta0/user/{envId}/farms/{farmId}/actions/clone/'.replace('{envId}', params.envId).replace('{farmId}', data.initialFarmId);
-                },
-                body: function(data, params) {
-                    var name = '[' + params.keyId + ']' + params.name;
-                    return JSON.stringify({
-                        'name': name
-                    });
-                },
-                done: function(response, data, params) {
-                    data.newFarm = response.data;
-                    data.params = params;
-                },
-                undo: {
-                    method: 'DELETE',
+    var mkRapidDeploymentRecipe = function(initialFarmId, farmRoleToScale) {
+        return {
+            data: {
+                initialFarmId: initialFarmId,
+                farmRoleToScale: farmRoleToScale
+            },
+            validateParams: apiRecipes.mkValidateParams(['keyId', 'envId', 'name', 'appNum']),
+            steps: [
+                {
+                    description: 'Clone base farm',
+                    method: 'POST',
                     url: function(data, params) {
-                        return '/api/v1beta0/user/{envId}/farms/{farmId}/'.replace('{envId}', params.envId).replace('{farmId}', data.newFarm.id);
-                    }
-                }
-            },
-            {
-                description: 'Set farm description',
-                method: 'PATCH',
-                url: function(data, params) {
-                    return '/api/v1beta0/user/{envId}/farms/{farmId}/'.replace('{envId}', params.envId).replace('{farmId}', data.newFarm.id);
-                },
-                body: function(data, params) {
-                    var settings = angular.copy(params);
-                    delete settings.keyId;
-                    return JSON.stringify({
-                        description: JSON.stringify({
-                            settings: settings
-                        }),
-                    });
-                },
-                done: function(response, data, params) {},
-                // Nothing to undo
-            },
-            {
-                description: 'Get new farm role',
-                method: 'GET',
-                url: function(data, params) {
-                    return '/api/v1beta0/user/{envId}/farms/{farmId}/farm-roles/'.replace('{envId}', params.envId).replace('{farmId}', data.newFarm.id);
-                },
-                done: function(response, data, params) {
-                    data.newFarmRoles = response.data;
-                }
-                // Nothing to undo
-            },
-            {
-                description: 'Set app farm role scaling',
-                method: 'PATCH',
-                url: function(data, params) {
-                    for (var i = 0; i < data.newFarmRoles.length; i ++) {
-                        if (data.newFarmRoles[i].alias == 'Webapp') {
-                            data.appFarmRoleId = data.newFarmRoles[i].id;
+                        return '/api/v1beta0/user/{envId}/farms/{farmId}/actions/clone/'.replace('{envId}', params.envId).replace('{farmId}', data.initialFarmId);
+                    },
+                    body: function(data, params) {
+                        var name = '[' + params.keyId + ']' + params.name;
+                        return JSON.stringify({
+                            'name': name
+                        });
+                    },
+                    done: function(response, data, params) {
+                        data.newFarm = response.data;
+                        data.params = params;
+                    },
+                    undo: {
+                        method: 'DELETE',
+                        url: function(data, params) {
+                            return '/api/v1beta0/user/{envId}/farms/{farmId}/'.replace('{envId}', params.envId).replace('{farmId}', data.newFarm.id);
                         }
                     }
-                    return '/api/v1beta0/user/{envId}/farm-roles/{farmRoleId}/scaling/'.replace('{envId}', params.envId).replace('{farmRoleId}', data.appFarmRoleId);
                 },
-                body: function(data, params) {
-                    return JSON.stringify({
-                        enabled: true,
-                        minInstances: params.appNum.substring(3),
-                        maxInstances: parseInt(params.appNum.substring(3)) + 20,
-                        scalingBehavior: "launch-terminate",
-                        considerSuspendedServers: "running",
-                    });
+                {
+                    description: 'Set farm description',
+                    method: 'PATCH',
+                    url: function(data, params) {
+                        return '/api/v1beta0/user/{envId}/farms/{farmId}/'.replace('{envId}', params.envId).replace('{farmId}', data.newFarm.id);
+                    },
+                    body: function(data, params) {
+                        var settings = angular.copy(params);
+                        delete settings.keyId;
+                        return JSON.stringify({
+                            description: JSON.stringify({
+                                settings: settings
+                            }),
+                        });
+                    },
+                    done: function(response, data, params) {},
+                    // Nothing to undo
                 },
-                done: function(response, data, params) {},
-                // The Farm Role will be deleted with the farm, nothing to undo
-            },
-            {
-                description: 'Launch farm',
-                method: 'POST',
-                url: function(data, params) {
-                    if (params.approval_required) {
-                        return '';
+                {
+                    description: 'Get new farm role',
+                    method: 'GET',
+                    url: function(data, params) {
+                        return '/api/v1beta0/user/{envId}/farms/{farmId}/farm-roles/'.replace('{envId}', params.envId).replace('{farmId}', data.newFarm.id);
+                    },
+                    done: function(response, data, params) {
+                        data.newFarmRoles = response.data;
                     }
-                    return '/api/v1beta0/user/{envId}/farms/{farmId}/actions/launch/'.replace('{envId}', params.envId).replace('{farmId}', data.newFarm.id);
+                    // Nothing to undo
                 },
-                done: function(response, data, params) {},
-            },
-            {
-                description: 'Scale up rapidly app server',
-                type: 'parallel-for',
-                iterations: function(data, params) {
-                    return parseInt(params.appNum.substring(3)) - 1;
+                {
+                    description: 'Set app farm role scaling',
+                    method: 'PATCH',
+                    url: function(data, params) {
+                        for (var i = 0; i < data.newFarmRoles.length; i ++) {
+                            if (data.newFarmRoles[i].alias == data.farmRoleToScale) {
+                                data.appFarmRoleId = data.newFarmRoles[i].id;
+                            }
+                        }
+                        return '/api/v1beta0/user/{envId}/farm-roles/{farmRoleId}/scaling/'.replace('{envId}', params.envId).replace('{farmRoleId}', data.appFarmRoleId);
+                    },
+                    body: function(data, params) {
+                        return JSON.stringify({
+                            enabled: true,
+                            minInstances: params.appNum.substring(3),
+                            maxInstances: parseInt(params.appNum.substring(3)) + 20,
+                            scalingBehavior: "launch-terminate",
+                            considerSuspendedServers: "running",
+                        });
+                    },
+                    done: function(response, data, params) {},
+                    // The Farm Role will be deleted with the farm, nothing to undo
                 },
-                method: 'POST',
-                url: function(data, params, index) {
-                    return '/api/v1beta0/user/{envId}/servers/'.replace('{envId}', params.envId);
+                {
+                    description: 'Launch farm',
+                    method: 'POST',
+                    url: function(data, params) {
+                        if (params.approval_required) {
+                            return '';
+                        }
+                        return '/api/v1beta0/user/{envId}/farms/{farmId}/actions/launch/'.replace('{envId}', params.envId).replace('{farmId}', data.newFarm.id);
+                    },
+                    done: function(response, data, params) {},
                 },
-                body: function(data, params) {
-                    return JSON.stringify({
-                      "farmRole": {
-                        "id": data.appFarmRoleId
-                      }
-                    });
+                {
+                    description: 'Scale up rapidly app server',
+                    type: 'parallel-for',
+                    iterations: function(data, params) {
+                        return parseInt(params.appNum.substring(3)) - 1;
+                    },
+                    method: 'POST',
+                    url: function(data, params, index) {
+                        return '/api/v1beta0/user/{envId}/servers/'.replace('{envId}', params.envId);
+                    },
+                    body: function(data, params) {
+                        return JSON.stringify({
+                          "farmRole": {
+                            "id": data.appFarmRoleId
+                          }
+                        });
+                    },
+                    done: function(response, data, params, index) {}
                 },
-                done: function(response, data, params, index) {}
-            },
-        ]
+            ]
+        };
     };
 
     apiRecipes.register('ubuntu', mkMultiPlatformFarmRecipe({aws: 183, gce: 654}));
@@ -335,8 +338,8 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
     apiRecipes.register('node', mkStdFarmRecipe(188));
     apiRecipes.register('django', mkStdFarmRecipe(187));
     apiRecipes.register('rails', mkStdFarmRecipe(184));
-    apiRecipes.register('fastscaling', rapidDeploymentRecipe);
-    apiRecipes.register('sapHanaExpress', mkStdFarmRecipe(760,'c3.4xlarge'))
+    apiRecipes.register('fastscaling', mkRapidDeploymentRecipe(758, 'Webapp'));
+    apiRecipes.register('sapHanaExpress', mkRapidDeploymentRecipe(760, 'sap-hana-express'));
     apiRecipes.register('apacheChef', mkStdFarmRecipe(763))
 
 }]);
