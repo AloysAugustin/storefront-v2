@@ -42,40 +42,15 @@ app.factory('appDefinitions', function(){
 			internet: "Internet access",
 			flavor: "Performance level",
 			location: "Location",
-			addMoreStorage: "Add persistent storage",
 			availability: "Availability level",
-			runtime: "Application lifetime",
-			monitoring: "Monitoring",
-			backup: "Backup",
-			adminADGroup: "Admin AD Group",
-			jbcomponentVersion: "Version",
-			mysqlcomponentVersion: "Version",
-			apachecomponentVersion: "Version",
-			platform: "Cloud platform",
 			justification: "Justification"
 		}[identifier];
 	};
 	appDefinitions.isAdvancedUser = function(identifier){
-		return ([
-				"location",
-				"addMoreStorage",
-				"monitoring",
-				"backup",
-				"adminADGroup",
-				"jbcomponentVersion",
-				"mysqlcomponentVersion",
-				"apachecomponentVersion"
-			].indexOf(identifier) >= 0);
+		return ([].indexOf(identifier) >= 0);
 	};
 	appDefinitions.isAdvancedOption = function(identifier){
-		return ([
-				"monitoring",
-				"backup",
-				"adminADGroup",
-				"jbcomponentVersion",
-				"mysqlcomponentVersion",
-				"apachecomponentVersion"
-			].indexOf(identifier) >= 0);
+		return ([].indexOf(identifier) >= 0);
 	};
 	appDefinitions.isApprovalOnlyOption = function(identifier){
 		return ([
@@ -83,8 +58,7 @@ app.factory('appDefinitions', function(){
 			].indexOf(identifier) >= 0);
 	};
 	appDefinitions.isModifiable = function(identifier){
-		return ([
-			].indexOf(identifier) >= 0);
+		return ([].indexOf(identifier) >= 0);
 	};
 
 	appDefinitions.getEnvApps = function(envId) {
@@ -152,37 +126,14 @@ app.factory('appDefinitions', function(){
 
 	var defaultFlavorList = {_01small:"Low", _02medium:"Medium", _03large:"High"};
 	var defaultAvailabilityList = {_01bh: "Business hours", _02_247: "24/7", _03ha: "HA"};
-	var defaultRuntimeList = {_01_7days: "7 days", _02forever: "Forever"}
-	var defaultLocationList = {ssf:"SSF", basel:"Basel", shanghai:"Shanghai"};
 	var defaultYesNoList = {no:"No", yes:"Yes"};
-	var defaultStorageList = {_01no:"No", _02s: "10GB", _03m:"100GB"};
-	var defaultPlatformList = {aws: "AWS", gce: "GCE"};
 
 	var defaultPriceFunction = function(settings){
-		var platform = "aws";
-		if (settings.platform) {
-			platform = settings.platform;
-		}
 		return {
-			aws: {
 			 	_01small: "1.61",
 			 	_02medium: "3.22",
 			 	_03large: "6.44"
-			},
-			gce: {
-				_01small: "1.85",
-			 	_02medium: "3.70",
-			 	_03large: "7.40"
-			}
-		}[platform][settings.flavor];
-	}
-
-	var defaultApprovalFunction = function(settings) {
-		return settings.flavor == '_03large' 
-		|| settings.availability == '_03ha'
-		|| settings.availability == '_02_247'
-		|| settings.runtime == '_02forever'
-		|| settings.internet;
+			}[settings.flavor];
 	}
 
 	var always = function(settings) {
@@ -193,144 +144,20 @@ app.factory('appDefinitions', function(){
 		return false;
 	}
 
-	var defaultApprover = 'mohammed@scalr.com';
+	var defaultApprover = 'fisseha.mariam@bmonb.com';
 
-	var ubuntuDef = {
-		name: "Ubuntu instance",
+	var tempDef = {
+		name: "Placeholder",
 		logoUrl: "http://design.ubuntu.com/wp-content/uploads/ubuntu-logo112.png",
 		price: defaultPriceFunction,
 		environment: 2,
 		recipeId: 'ubuntu',
 		description: "Just an Ubuntu Server",
-		flavorList: defaultFlavorList,
-		availabilityList: defaultAvailabilityList,
-		runtimeList: defaultRuntimeList,
-		platformList: defaultPlatformList,
-		internetBox: 'Make this application accessible from the internet',
-		approvalNeeded: defaultApprovalFunction,
+		approvalNeeded: never,
 		approver: defaultApprover,
 		//Advanced User Options are here
 	};
-	appDefinitions.registerDef(ubuntuDef);
-
-	var largeUbuntuDef = {
-		name: "Large ubuntu instance",
-		logoUrl: "http://design.ubuntu.com/wp-content/uploads/ubuntu-logo112.png",
-		price: defaultPriceFunction,
-		environment: 39,
-		recipeId: 'ubuntu-approval',
-		description: "Just an Ubuntu Server",
-		flavorList: defaultFlavorList,
-		internetBox: 'Make this application accessible from the internet',
-		approvalNeeded: always,
-		approver: defaultApprover,
-		justificationField: 'Justification',
-		//Advanced User Options are here
-	};
-	appDefinitions.registerDef(largeUbuntuDef);
-
-	var railsDef = {
-		name: "Apache rails",
-		logoUrl: "https://upload.wikimedia.org/wikipedia/commons/1/16/Ruby_on_Rails-logo.png",
-		price: defaultPriceFunction,
-		environment: 2,
-		recipeId: 'rails',
-		description: "A Rails / Apache server",
-		flavorList: defaultFlavorList,
-		availabilityList: defaultAvailabilityList,
-		runtimeList: defaultRuntimeList,
-		internetBox: 'Make this application accessible from the internet',
-		approvalNeeded: defaultApprovalFunction,
-		approver: defaultApprover,
-		//Advanced User Options are here
-	};
-	appDefinitions.registerDef(railsDef);
-
-	var djangoDef = {
-		name: "Apache Django",
-		logoUrl: "http://www.unixstickers.com/image/data/stickers/django/django-neg.sh.png",
-		price: defaultPriceFunction,
-		environment: 2,
-		recipeId: 'django',
-		description: "A Django / Apache server",
-		flavorList: defaultFlavorList,
-		availabilityList: defaultAvailabilityList,
-		runtimeList: defaultRuntimeList,
-		internetBox: 'Make this application accessible from the internet',
-		approvalNeeded: defaultApprovalFunction,
-		approver: defaultApprover,
-		//Advanced User Options are here
-	};
-	appDefinitions.registerDef(djangoDef);
-
-	var nodeDef = {
-		name: "Node.JS",
-		logoUrl: "https://node-os.com/images/nodejs.png",
-		price: defaultPriceFunction,
-		environment: 2,
-		recipeId: 'node',
-		description: "A Node.JS server",
-		flavorList: defaultFlavorList,
-		availabilityList: defaultAvailabilityList,
-		runtimeList: defaultRuntimeList,
-		internetBox: 'Make this application accessible from the internet',
-		approvalNeeded: defaultApprovalFunction,
-		approver: defaultApprover,
-		//Advanced User Options are here
-	};
-	appDefinitions.registerDef(nodeDef);
-
-	var mysqlDef = {
-		name: "MySQL",
-		logoUrl: "https://www.mysql.fr/common/logos/logo-mysql-170x115.png",
-		price: defaultPriceFunction,
-		environment: 2,
-		recipeId: 'mysql',
-		description: "A MySQL server, on Ubuntu 14.04",
-		flavorList: defaultFlavorList,
-		availabilityList: defaultAvailabilityList,
-		runtimeList: defaultRuntimeList,
-		platformList: defaultPlatformList,
-		internetBox: 'Make this application accessible from the internet',
-		approvalNeeded: defaultApprovalFunction,
-		approver: defaultApprover,
-		//Advanced User Options are here
-	};
-	appDefinitions.registerDef(mysqlDef);
-
-	var redisDef = {
-		name: "Redis",
-		logoUrl: "https://upload.wikimedia.org/wikipedia/en/thumb/6/6b/Redis_Logo.svg/1280px-Redis_Logo.svg.png",
-		price: defaultPriceFunction,
-		environment: 2,
-		recipeId: 'redis',
-		description: "A Redis server",
-		flavorList: defaultFlavorList,
-		availabilityList: defaultAvailabilityList,
-		runtimeList: defaultRuntimeList,
-		internetBox: 'Make this application accessible from the internet',
-		approvalNeeded: defaultApprovalFunction,
-		approver: defaultApprover,
-		//Advanced User Options are here
-	};
-	appDefinitions.registerDef(redisDef);
-
-	var windowsDef = {
-		name: "Windows instance",
-		logoUrl: "http://itiscloudy.com/wp-content/uploads/2015/08/logo_winserver2012R2.png",
-		price: defaultPriceFunction,
-		environment: 2,
-		recipeId: 'windows',
-		description: "Just a Windows 2012 Server",
-		flavorList: defaultFlavorList,
-		availabilityList: defaultAvailabilityList,
-		runtimeList: defaultRuntimeList,
-		internetBox: 'Make this application accessible from the internet',
-		approvalNeeded: defaultApprovalFunction,
-		approver: defaultApprover,
-		//Advanced User Options are here
-	};
-	appDefinitions.registerDef(windowsDef);
+	appDefinitions.registerDef(tempDef);
 
 	return appDefinitions;
 });
