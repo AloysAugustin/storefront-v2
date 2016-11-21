@@ -7,7 +7,7 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
             data: {
                 initialFarmId: initialFarmId
             },
-            validateParams: apiRecipes.mkValidateParams(['keyId', 'envId', 'flavor', 'name', 'approval_required']),
+            validateParams: apiRecipes.mkValidateParams(['keyId', 'envId', 'name']),
             steps: [
                 {
                     description: 'Clone base farm',
