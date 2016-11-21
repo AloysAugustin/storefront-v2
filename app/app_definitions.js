@@ -129,11 +129,7 @@ app.factory('appDefinitions', function(){
 	var defaultYesNoList = {no:"No", yes:"Yes"};
 
 	var defaultPriceFunction = function(settings){
-		return {
-			 	_01small: "1.61",
-			 	_02medium: "3.22",
-			 	_03large: "6.44"
-			}[settings.flavor];
+		return '1.00';
 	}
 
 	var always = function(settings) {
@@ -146,18 +142,17 @@ app.factory('appDefinitions', function(){
 
 	var defaultApprover = 'fisseha.mariam@bmonb.com';
 
-	var tempDef = {
-		name: "Placeholder",
-		logoUrl: "http://design.ubuntu.com/wp-content/uploads/ubuntu-logo112.png",
+	var rhel7Def = {
+		name: "RHEL7 Server",
+		logoUrl: "http://img.clubic.com/02104444-photo-red-hat-logo.jpg",
 		price: defaultPriceFunction,
 		environment: 2,
-		recipeId: 'ubuntu',
-		description: "Just an Ubuntu Server",
 		approvalNeeded: never,
 		approver: defaultApprover,
-		//Advanced User Options are here
+		recipeId: 'rhel7',
+		description: "Just a RedHat 7 server",
 	};
-	appDefinitions.registerDef(tempDef);
+	appDefinitions.registerDef(rhel7Def);
 
 	return appDefinitions;
 });
