@@ -7,7 +7,9 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
             data: {
                 initialFarmId: initialFarmId
             },
-            validateParams: apiRecipes.mkValidateParams(['keyId', 'envId', 'flavor', 'name', 'approval_required']),
+            validateParams: typeof forceInstanceType === 'undefined' ? 
+                apiRecipes.mkValidateParams(['keyId', 'envId', 'flavor', 'name', 'approval_required']) : 
+                apiRecipes.mkValidateParams(['keyId', 'envId', 'name', 'approval_required']),
             steps: [
                 {
                     description: 'Clone base farm',
@@ -71,12 +73,15 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
                         return '/api/v1beta0/user/{envId}/farm-roles/{farmRoleId}/instance/'.replace('{envId}', params.envId).replace('{farmRoleId}', data.newFarmRoles[0].id);
                     },
                     body: function(data, params) {
-                        var instanceType = {
-                            _01small: "m3.medium",
-                            _02medium: "m3.large",
-                            _03large: "m3.xlarge",
-                        }[params.flavor];
-                        if (typeof forceInstanceType !== 'undefined') {
+                        var instanceType;
+                        if (typeof forceInstanceType === 'undefined') {
+                            instanceType = {
+                                _01small: "m3.medium",
+                                _02medium: "m3.large",
+                                _03large: "m3.xlarge",
+                            }[params.flavor];
+                        }
+                        else {
                             instanceType = forceInstanceType;
                         }
                         return JSON.stringify({

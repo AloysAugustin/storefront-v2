@@ -300,7 +300,6 @@ app.factory('appDefinitions', function(){
 		price: defaultPriceFunction,
 		recipeId: 'sapHanaExpress',
 		description: "An Ubuntu 14.04 with a running SAP Hana Express",
-		flavorList: defaultFlavorList,
 		availabilityList: defaultAvailabilityList,
 		runtimeList: defaultRuntimeList,
 		internetBox: 'Make this application accessible from the internet',
