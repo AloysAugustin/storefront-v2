@@ -46,6 +46,7 @@ app.factory('backend', ['appDefinitions', 'apiRecipes', 'localStorageService','r
     };
 
     backend.updateApp = function(credentials, instId, newData, success_cb, failure_cb) {
+        console.log("Not implemented");
         failure_cb();
     };
 

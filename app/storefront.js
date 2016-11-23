@@ -149,7 +149,11 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
       }
       console.log($scope.myApps);
       $scope.$apply();
-    }, null);
+    }, function() {
+      alert("Can't list applications. Check your credentials.");
+      $scope.loggedIn = false;
+      $scope.autoLoggedIn = false;
+    });
   };
 
   $scope.applyChanges = function(app) {
@@ -226,7 +230,10 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
       } else {
         $scope.fetchAllFarms();
       }
-    }, null);
+    }, function() {
+      alert("Farm launched failed. Please check that you don't already have a farm by this name.");
+      $scope.fetchAllFarms();
+    });
   };
 
   $scope.request_approval = function(result) {
@@ -253,19 +260,28 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
   $scope.startApp = function(app) {
     back.startApp($scope.apiSettings, app.id, function() {
       $scope.fetchAllFarms();
-    }, null);
+    }, function() {
+      alert("Operation failed.");
+      $scope.fetchAllFarms();
+    });
   };
 
   $scope.stopApp = function(app) {
     back.stopApp($scope.apiSettings, app.id, function() {
       $scope.fetchAllFarms();
-    }, null);
+    }, function() {
+      alert("Operation failed.");
+      $scope.fetchAllFarms();
+    });
   };
 
   $scope.deleteApp = function(app) {
     back.deleteApp($scope.apiSettings, app.id, function() {
       $scope.fetchAllFarms();
-    }, null);
+    }, function() {
+      alert("Operation failed.");
+      $scope.fetchAllFarms();
+    });
   };
 
   /*
