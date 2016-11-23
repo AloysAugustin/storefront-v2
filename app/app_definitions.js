@@ -38,42 +38,18 @@ app.factory('appDefinitions', function(){
 	};
 	appDefinitions.identifierToLabel = function(identifier){
 		return {
-			distribution: "Distribution",
-			internet: "Internet accesss",
 			flavor: "Performance level",
 			location: "Location",
-			addMoreStorage: "Add persistent storage",
 			availability: "Availability level",
 			runtime: "Application lifetime",
-			monitoring: "Monitoring",
-			backup: "Backup",
-			adminADGroup: "Admin AD Group",
-			jbcomponentVersion: "Version",
-			mysqlcomponentVersion: "Version",
-			apachecomponentVersion: "Version",
-			platform: "Cloud platform",
 		}[identifier];
 	};
 	appDefinitions.isAdvancedUser = function(identifier){
 		return ([
-				"location",
-				"addMoreStorage",
-				"monitoring",
-				"backup",
-				"adminADGroup",
-				"jbcomponentVersion",
-				"mysqlcomponentVersion",
-				"apachecomponentVersion"
 			].indexOf(identifier) >= 0);
 	};
 	appDefinitions.isAdvancedOption = function(identifier){
 		return ([
-				"monitoring",
-				"backup",
-				"adminADGroup",
-				"jbcomponentVersion",
-				"mysqlcomponentVersion",
-				"apachecomponentVersion"
 			].indexOf(identifier) >= 0);
 	};
 	appDefinitions.isModifiable = function(identifier){
@@ -125,142 +101,19 @@ app.factory('appDefinitions', function(){
 
 	var defaultFlavorList = {_01small:"Low", _02medium:"Medium", _03large:"High"};
 	var defaultAvailabilityList = {_01bh: "Business hours", _02_247: "24/7", _03ha: "HA"};
-	var defaultRuntimeList = {_01_7days: "7 days", _02forever: "Forever"}
-	var defaultLocationList = {ssf:"SSF", basel:"Basel", shanghai:"Shanghai"};
 	var defaultYesNoList = {no:"No", yes:"Yes"};
-	var defaultStorageList = {_01no:"No", _02s: "10GB", _03m:"100GB"};
-	var defaultPlatformList = {aws: "AWS", gce: "GCE"};
 
-	var defaultPriceFunction = function(settings){
-		var platform = "aws";
-		if (settings.platform) {
-			platform = settings.platform;
-		}
-		return {
-			aws: {
-			 	_01small: "1.61",
-			 	_02medium: "3.22",
-			 	_03large: "6.44"
-			},
-			gce: {
-				_01small: "1.85",
-			 	_02medium: "3.70",
-			 	_03large: "7.40"
-			}
-		}[platform][settings.flavor];
-	}
-
-	var ubuntuDef = {
-		name: "Ubuntu instance",
-		logoUrl: "http://design.ubuntu.com/wp-content/uploads/ubuntu-logo112.png",
-		price: defaultPriceFunction,
-		recipeId: 'ubuntu',
-		description: "Just an Ubuntu Server",
-		flavorList: defaultFlavorList,
-		availabilityList: defaultAvailabilityList,
-		runtimeList: defaultRuntimeList,
-		platformList: defaultPlatformList,
-		internetBox: 'Make this application accessible from the internet',
-		//Advanced User Options are here
-	};
-	appDefinitions.registerDef(ubuntuDef);
-
-	var railsDef = {
-		name: "Apache rails",
-		logoUrl: "https://upload.wikimedia.org/wikipedia/commons/1/16/Ruby_on_Rails-logo.png",
-		price: defaultPriceFunction,
-		recipeId: 'rails',
-		description: "A Rails / Apache server",
-		flavorList: defaultFlavorList,
-		availabilityList: defaultAvailabilityList,
-		runtimeList: defaultRuntimeList,
-		internetBox: 'Make this application accessible from the internet',
-		//Advanced User Options are here
-	};
-	appDefinitions.registerDef(railsDef);
-
-	var djangoDef = {
-		name: "Apache Django",
-		logoUrl: "http://www.unixstickers.com/image/data/stickers/django/django-neg.sh.png",
-		price: defaultPriceFunction,
-		recipeId: 'django',
-		description: "A Django / Apache server",
-		flavorList: defaultFlavorList,
-		availabilityList: defaultAvailabilityList,
-		runtimeList: defaultRuntimeList,
-		internetBox: 'Make this application accessible from the internet',
-		//Advanced User Options are here
-	};
-	appDefinitions.registerDef(djangoDef);
-
-	var nodeDef = {
-		name: "Node.JS",
-		logoUrl: "https://node-os.com/images/nodejs.png",
-		price: defaultPriceFunction,
-		recipeId: 'node',
-		description: "A Node.JS server",
-		flavorList: defaultFlavorList,
-		availabilityList: defaultAvailabilityList,
-		runtimeList: defaultRuntimeList,
-		internetBox: 'Make this application accessible from the internet',
-		//Advanced User Options are here
-	};
-	appDefinitions.registerDef(nodeDef);
-
-	var mysqlDef = {
-		name: "MySQL",
-		logoUrl: "https://www.mysql.fr/common/logos/logo-mysql-170x115.png",
-		price: defaultPriceFunction,
-		recipeId: 'mysql',
-		description: "A MySQL server, on Ubuntu 14.04",
-		flavorList: defaultFlavorList,
-		availabilityList: defaultAvailabilityList,
-		runtimeList: defaultRuntimeList,
-		platformList: defaultPlatformList,
-		internetBox: 'Make this application accessible from the internet',
-		//Advanced User Options are here
-	};
-	appDefinitions.registerDef(mysqlDef);
-
-	var redisDef = {
-		name: "Redis",
-		logoUrl: "https://upload.wikimedia.org/wikipedia/en/thumb/6/6b/Redis_Logo.svg/1280px-Redis_Logo.svg.png",
-		price: defaultPriceFunction,
-		recipeId: 'redis',
-		description: "A Redis server",
-		flavorList: defaultFlavorList,
-		availabilityList: defaultAvailabilityList,
-		runtimeList: defaultRuntimeList,
-		internetBox: 'Make this application accessible from the internet',
-		//Advanced User Options are here
-	};
-	appDefinitions.registerDef(redisDef);
-
-	var windowsDef = {
-		name: "Windows instance",
-		logoUrl: "http://itiscloudy.com/wp-content/uploads/2015/08/logo_winserver2012R2.png",
-		price: defaultPriceFunction,
-		recipeId: 'windows',
-		description: "Just a Windows 2012 Server",
-		flavorList: defaultFlavorList,
-		availabilityList: defaultAvailabilityList,
-		runtimeList: defaultRuntimeList,
-		internetBox: 'Make this application accessible from the internet',
-		//Advanced User Options are here
-	};
-	appDefinitions.registerDef(windowsDef);
-
-	var twoTierAppDef = {
-		name: "Two-tier app",
-		logoUrl: "https://wbm2-medianet.netdna-ssl.com/wp-content/uploads/2014/08/apache-http-server-logo-large.jpg",
+	var tempDef = {
+		name: "Placeholder",
+		logoUrl: "https://api-explorer.scalr.com/images/scalr-logo-retina.png",
 		price: function(settings) {
-			return "3.17";
+			return "1.86";
 		},
-		recipeId: 'twotier',
-		description: "Two Apache app servers behind an nginx load balancer.",
+		recipeId: 'temp',
+		description: "placeholder",
 		//Advanced User Options are here
 	};
-	appDefinitions.registerDef(twoTierAppDef);
+	appDefinitions.registerDef(tempDef);
 
 	return appDefinitions;
 });
