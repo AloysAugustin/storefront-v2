@@ -103,17 +103,17 @@ app.factory('appDefinitions', function(){
 	var defaultAvailabilityList = {_01bh: "Business hours", _02_247: "24/7", _03ha: "HA"};
 	var defaultYesNoList = {no:"No", yes:"Yes"};
 
-	var tempDef = {
-		name: "Placeholder",
-		logoUrl: "https://api-explorer.scalr.com/images/scalr-logo-retina.png",
+	var centosApacheDef = {
+		name: "CentOS7 Apache",
+		logoUrl: "http://www.timeislife.com/wp-content/uploads/2016/04/apache_logo.png",
 		price: function(settings) {
-			return "1.86";
+			return "0.31";
 		},
-		recipeId: 'temp',
-		description: "placeholder",
+		recipeId: 'centos-apache',
+		description: "An Apache web server on CentOS7",
 		//Advanced User Options are here
 	};
-	appDefinitions.registerDef(tempDef);
+	appDefinitions.registerDef(centosApacheDef);
 
 	return appDefinitions;
 });

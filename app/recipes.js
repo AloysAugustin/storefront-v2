@@ -16,11 +16,7 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
                         return '/api/v1beta0/user/{envId}/farms/{farmId}/actions/clone/'.replace('{envId}', params.envId).replace('{farmId}', data.initialFarmId);
                     },
                     body: function(data, params) {
-                        if (!params.approval_required) {
-                            var name = '[' + params.keyId + ']' + params.name;
-                        } else {
-                            var name = '[' + params.keyId + '][PENDING_APPROVAL]' + params.name
-                        }
+                        var name = '[' + params.keyId + ']' + params.name;
                         return JSON.stringify({
                             'name': name
                         });
@@ -69,9 +65,6 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
                     description: 'Launch farm',
                     method: 'POST',
                     url: function(data, params) {
-                        if (params.approval_required) {
-                            return '';
-                        }
                         return '/api/v1beta0/user/{envId}/farms/{farmId}/actions/launch/'.replace('{envId}', params.envId).replace('{farmId}', data.newFarm.id);
                     },
                     done: function(response, data, params) {},
@@ -82,6 +75,6 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
     }
 
 
-    apiRecipes.register('temp', mkStdFarmRecipe(1));
+    apiRecipes.register('centos-apache', mkStdFarmRecipe(9));
 }]);
 
