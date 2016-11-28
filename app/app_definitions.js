@@ -111,7 +111,6 @@ app.factory('appDefinitions', function(){
 		},
 		recipeId: 'temp',
 		description: "placeholder",
-		//Advanced User Options are here
 	};
 	appDefinitions.registerDef(tempDef);
 

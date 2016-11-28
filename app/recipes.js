@@ -16,11 +16,8 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
                         return '/api/v1beta0/user/{envId}/farms/{farmId}/actions/clone/'.replace('{envId}', params.envId).replace('{farmId}', data.initialFarmId);
                     },
                     body: function(data, params) {
-                        if (!params.approval_required) {
-                            var name = '[' + params.keyId + ']' + params.name;
-                        } else {
-                            var name = '[' + params.keyId + '][PENDING_APPROVAL]' + params.name
-                        }
+                        var name = '[' + params.keyId + ']' + params.name;
+    
                         return JSON.stringify({
                             'name': name
                         });
