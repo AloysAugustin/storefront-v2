@@ -69,26 +69,20 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
     console.log(reason, obj);
   };
 
-  $scope.getAppDefinition = function(def_name) {
-    for (var j = 0; j < apps.defs.length; j ++) {
-      if (apps.defs[j].name == def_name) {
-        return apps.defs[j];
-      }
-    }
-  };
-
   $scope.fetchAllFarms = function() {
     $scope.apps.length = 0;
     $scope.myApps.length = 0;
 
-    for (var i = 0; i < apps.defs.length; i ++) {
-      var form = angular.copy(apps.parseDefToDict(apps.defs[i]));
+    var env_apps = apps.getEnvApps($scope.apiSettings.envId);
+    console.log(env_apps);
+    for (var i = 0; i < env_apps.length; i ++) {
+      var form = angular.copy(apps.parseDefToDict(env_apps[i]));
       $scope.apps.push({
-        model: angular.copy(apps.defs[i]),
+        model: angular.copy(env_apps[i]),
         form: form,
         show_launch: false,
         launching: false,
-        settings: $scope.default_settings(form, apps.defs[i].name)
+        settings: $scope.default_settings(form, env_apps[i].name)
       });
     }
 
@@ -109,7 +103,7 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
         }
         var def_name = farm.description.settings.def_name;
         delete farm.description.settings.def_name;
-        var def = $scope.getAppDefinition(def_name);
+        var def = apps.getDefinition(def_name, $scope.apiSettings.envId);
 
         farm.running_servers = [];
         var readOnlyProperties = {};
@@ -238,7 +232,7 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
 
   $scope.request_approval = function(result) {
     console.log('sending email');
-    var def = $scope.getAppDefinition(result.params.def_name);
+    var def = apps.getDefinition(result.params.def_name, $scope.apiSettings.envId);
     var body = {
       user: $scope.apiSettings.keyId,
       farmId: result.newFarm.id,

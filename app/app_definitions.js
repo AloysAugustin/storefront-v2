@@ -81,6 +81,24 @@ app.factory('appDefinitions', function(){
 			].indexOf(identifier) >= 0);
 	};
 
+	appDefinitions.getEnvApps = function(envId) {
+		var envApps = [];
+		for (var i = 0; i < this.defs.length; i ++) {
+			if (this.defs[i].environment == envId) {
+				envApps.push(this.defs[i]);
+			}
+		}
+		return envApps;
+	};
+
+	appDefinitions.getDefinition = function(defName, envId) {
+		for (var i = 0; i < this.defs.length; i ++) {
+			if (this.defs[i].environment == envId && this.defs[i].name == defName) {
+				return this.defs[i];
+			}
+		}
+	}
+
 	appDefinitions.parseDefToDict = function(def){
 		var res = [];
 		for (var key in def){
@@ -154,6 +172,7 @@ app.factory('appDefinitions', function(){
 		name: "Ubuntu instance",
 		logoUrl: "http://design.ubuntu.com/wp-content/uploads/ubuntu-logo112.png",
 		price: defaultPriceFunction,
+		environment: 2,
 		recipeId: 'ubuntu',
 		description: "Just an Ubuntu Server",
 		flavorList: defaultFlavorList,
@@ -165,10 +184,24 @@ app.factory('appDefinitions', function(){
 	};
 	appDefinitions.registerDef(ubuntuDef);
 
+	var ubuntuDef = {
+		name: "Large ubuntu instance",
+		logoUrl: "http://design.ubuntu.com/wp-content/uploads/ubuntu-logo112.png",
+		price: defaultPriceFunction,
+		environment: 39,
+		recipeId: 'ubuntu-approval',
+		description: "Just an Ubuntu Server",
+		flavorList: defaultFlavorList,
+		internetBox: 'Make this application accessible from the internet',
+		//Advanced User Options are here
+	};
+	appDefinitions.registerDef(ubuntuDef);
+
 	var railsDef = {
 		name: "Apache rails",
 		logoUrl: "https://upload.wikimedia.org/wikipedia/commons/1/16/Ruby_on_Rails-logo.png",
 		price: defaultPriceFunction,
+		environment: 2,
 		recipeId: 'rails',
 		description: "A Rails / Apache server",
 		flavorList: defaultFlavorList,
@@ -183,6 +216,7 @@ app.factory('appDefinitions', function(){
 		name: "Apache Django",
 		logoUrl: "http://www.unixstickers.com/image/data/stickers/django/django-neg.sh.png",
 		price: defaultPriceFunction,
+		environment: 2,
 		recipeId: 'django',
 		description: "A Django / Apache server",
 		flavorList: defaultFlavorList,
@@ -197,6 +231,7 @@ app.factory('appDefinitions', function(){
 		name: "Node.JS",
 		logoUrl: "https://node-os.com/images/nodejs.png",
 		price: defaultPriceFunction,
+		environment: 2,
 		recipeId: 'node',
 		description: "A Node.JS server",
 		flavorList: defaultFlavorList,
@@ -211,6 +246,7 @@ app.factory('appDefinitions', function(){
 		name: "MySQL",
 		logoUrl: "https://www.mysql.fr/common/logos/logo-mysql-170x115.png",
 		price: defaultPriceFunction,
+		environment: 2,
 		recipeId: 'mysql',
 		description: "A MySQL server, on Ubuntu 14.04",
 		flavorList: defaultFlavorList,
@@ -226,6 +262,7 @@ app.factory('appDefinitions', function(){
 		name: "Redis",
 		logoUrl: "https://upload.wikimedia.org/wikipedia/en/thumb/6/6b/Redis_Logo.svg/1280px-Redis_Logo.svg.png",
 		price: defaultPriceFunction,
+		environment: 2,
 		recipeId: 'redis',
 		description: "A Redis server",
 		flavorList: defaultFlavorList,
@@ -240,6 +277,7 @@ app.factory('appDefinitions', function(){
 		name: "Windows instance",
 		logoUrl: "http://itiscloudy.com/wp-content/uploads/2015/08/logo_winserver2012R2.png",
 		price: defaultPriceFunction,
+		environment: 2,
 		recipeId: 'windows',
 		description: "Just a Windows 2012 Server",
 		flavorList: defaultFlavorList,
