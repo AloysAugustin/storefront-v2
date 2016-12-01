@@ -168,6 +168,16 @@ app.factory('appDefinitions', function(){
 		}[platform][settings.flavor];
 	}
 
+	var defaultApprovalFunction = function(settings) {
+		return settings.flavor == '_03large' 
+		|| settings.availability == '_03ha'
+		|| settings.availability == '_02_247'
+		|| settings.runtime == '_02forever'
+		|| settings.internet;
+	}
+
+	var defaultApprover = 'aloys@scalr.com';
+
 	var ubuntuDef = {
 		name: "Ubuntu instance",
 		logoUrl: "http://design.ubuntu.com/wp-content/uploads/ubuntu-logo112.png",
@@ -180,11 +190,13 @@ app.factory('appDefinitions', function(){
 		runtimeList: defaultRuntimeList,
 		platformList: defaultPlatformList,
 		internetBox: 'Make this application accessible from the internet',
+		approvalNeeded: defaultApprovalFunction,
+		approver: defaultApprover,
 		//Advanced User Options are here
 	};
 	appDefinitions.registerDef(ubuntuDef);
 
-	var ubuntuDef = {
+	var largeUbuntuDef = {
 		name: "Large ubuntu instance",
 		logoUrl: "http://design.ubuntu.com/wp-content/uploads/ubuntu-logo112.png",
 		price: defaultPriceFunction,
@@ -193,6 +205,8 @@ app.factory('appDefinitions', function(){
 		description: "Just an Ubuntu Server",
 		flavorList: defaultFlavorList,
 		internetBox: 'Make this application accessible from the internet',
+		approvalNeeded: defaultApprovalFunction,
+		approver: defaultApprover,
 		//Advanced User Options are here
 	};
 	appDefinitions.registerDef(ubuntuDef);
@@ -208,6 +222,8 @@ app.factory('appDefinitions', function(){
 		availabilityList: defaultAvailabilityList,
 		runtimeList: defaultRuntimeList,
 		internetBox: 'Make this application accessible from the internet',
+		approvalNeeded: defaultApprovalFunction,
+		approver: defaultApprover,
 		//Advanced User Options are here
 	};
 	appDefinitions.registerDef(railsDef);
@@ -223,6 +239,8 @@ app.factory('appDefinitions', function(){
 		availabilityList: defaultAvailabilityList,
 		runtimeList: defaultRuntimeList,
 		internetBox: 'Make this application accessible from the internet',
+		approvalNeeded: defaultApprovalFunction,
+		approver: defaultApprover,
 		//Advanced User Options are here
 	};
 	appDefinitions.registerDef(djangoDef);
@@ -238,6 +256,8 @@ app.factory('appDefinitions', function(){
 		availabilityList: defaultAvailabilityList,
 		runtimeList: defaultRuntimeList,
 		internetBox: 'Make this application accessible from the internet',
+		approvalNeeded: defaultApprovalFunction,
+		approver: defaultApprover,
 		//Advanced User Options are here
 	};
 	appDefinitions.registerDef(nodeDef);
@@ -254,6 +274,8 @@ app.factory('appDefinitions', function(){
 		runtimeList: defaultRuntimeList,
 		platformList: defaultPlatformList,
 		internetBox: 'Make this application accessible from the internet',
+		approvalNeeded: defaultApprovalFunction,
+		approver: defaultApprover,
 		//Advanced User Options are here
 	};
 	appDefinitions.registerDef(mysqlDef);
@@ -269,6 +291,8 @@ app.factory('appDefinitions', function(){
 		availabilityList: defaultAvailabilityList,
 		runtimeList: defaultRuntimeList,
 		internetBox: 'Make this application accessible from the internet',
+		approvalNeeded: defaultApprovalFunction,
+		approver: defaultApprover,
 		//Advanced User Options are here
 	};
 	appDefinitions.registerDef(redisDef);
@@ -284,6 +308,8 @@ app.factory('appDefinitions', function(){
 		availabilityList: defaultAvailabilityList,
 		runtimeList: defaultRuntimeList,
 		internetBox: 'Make this application accessible from the internet',
+		approvalNeeded: defaultApprovalFunction,
+		approver: defaultApprover,
 		//Advanced User Options are here
 	};
 	appDefinitions.registerDef(windowsDef);

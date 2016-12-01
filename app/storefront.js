@@ -204,11 +204,6 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
     return count;
   }
 
-  $scope.isApprovalRequired = function(settings) {
-    //TODO put in app defs
-    return settings.flavor == '_03large' || settings.availability == '_03ha' || settings.availability == '_02_247' || settings.runtime == '_02forever' || settings.internet;
-  }
-
   $scope.launch = function(app) {
     for (k in app.settings){
       if (k != 'name'){
@@ -216,7 +211,7 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
       }
     }
     app.launching = true;
-    app.settings.approval_required = $scope.isApprovalRequired(app.settings);
+    app.settings.approval_required = app.model.approvalNeeded(app.settings);
     back.runAppDef($scope.apiSettings, app.model, app.settings, function(result) {
       app.launching = false;
       if (app.settings.approval_required) {
