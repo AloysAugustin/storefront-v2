@@ -24,12 +24,9 @@
         <div class="auth col-md-6 col-md-offset-3 margin-md-top">
           <h3>Request approval</h3>
           <p>{{user}} wants to create a new {{appName}} with the following characteristics:
-            <ul>
-              <li>Performance: {{perf}}</li>
-              <li>Availability: {{availability}}</li>
-              <li>Duration: {{duration}}</li>
-              <li>Internet access: <span ng-show="internet_access">Yes</span><span ng-hide="internet_access">No</span></li>
-            </ul>
+            <pre>
+              <code>{{params}}</code>
+            </pre>
             Fill in your credentials below to accept or reject this request
             </p>
           <form id="loginForm" class="form-horizontal padding-sm-top">

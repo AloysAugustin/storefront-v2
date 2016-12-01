@@ -31,7 +31,7 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
     path = path.replace('{farmId}', $scope.farmId);
     ScalrAPI.setSettings($scope.apiSettings);
     ScalrAPI.fetch(path, '', $scope.farmFetched, function(response) {
-      console.log('Fetching failed', response);
+      alert('Request not found');
     });
   };
 
@@ -46,7 +46,7 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
     path = path.replace('{farmId}', $scope.farmId);
     ScalrAPI.setSettings($scope.apiSettings);
     ScalrAPI.edit(path, edit_body, $scope.launchFarm, function(response) {
-      console.log('Deletion failed', response);
+      alert('Renaming failed');
     });
   };
 
@@ -60,7 +60,7 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
       $scope.done = true;
       $scope.$apply();
     }, function(response) {
-      console.log('Deletion failed', response);
+      alert('Launching failed');
     });
   };
 
@@ -75,7 +75,7 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
       $scope.done = true;
       $scope.$apply();
     },function(response) {
-      console.log('Deletion failed');
+      alert('Deletion failed');
     });
   };
 
@@ -83,17 +83,12 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
 
   var args = $location.search();
 
-  console.log(window.location.query);
-
   $scope.user = args['u'];
   $scope.appName = args['t'];
-  $scope.perf = args['p'];
-  $scope.availability = args['a'];
-  $scope.duration = args['d'];
+  var params = JSON.parse(args['p']);
+  $scope.params = JSON.stringify(params, null, 2);
   $scope.farmId = args['f'];
   $scope.done = false;
-  $scope.internet_access = args['i'];
-  console.log(args['i']);
   $scope.apiSettings.apiUrl = args['s'];
   $scope.apiSettings.envId = args['e'];
   console.log($scope.apiSettings, args);
