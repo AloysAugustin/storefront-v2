@@ -228,6 +228,11 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
   $scope.request_approval = function(app) {
     console.log('sending email');
     var def = apps.getDefinition(app.params.def_name, $scope.apiSettings.envId);
+    var params = angular.copy(app.params);
+    delete params['def_name']
+    delete params['keyId']
+    delete params['name']
+    delete params['approval_required']
     var body = {
       user: app.newFarm.owner.email,
       admin: def.approver,
