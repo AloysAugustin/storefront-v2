@@ -236,11 +236,13 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
       env: $scope.apiSettings.envId,
       appName: app.params.def_name,
       // TODO: take list of params from definition
-      perf: def.flavorList[app.params.flavor],
+      /*perf: def.flavorList[app.params.flavor],
       avail: def.availabilityList[app.params.availability],
       duration: def.runtimeList[app.params.runtime],
-      internet: app.params.internet
+      internet: app.params.internet*/
+      params: app.params;
     };
+
     $.post('http://' + window.location.hostname + ':5000/send/', JSON.stringify(body), function() {
       console.log('email sent');
       $scope.fetchAllFarms();
