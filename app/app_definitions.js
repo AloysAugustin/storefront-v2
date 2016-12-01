@@ -176,6 +176,10 @@ app.factory('appDefinitions', function(){
 		|| settings.internet;
 	}
 
+	var always = function(settings) {
+		return true;
+	}
+
 	var defaultApprover = 'aloys@scalr.com';
 
 	var ubuntuDef = {
@@ -205,7 +209,7 @@ app.factory('appDefinitions', function(){
 		description: "Just an Ubuntu Server",
 		flavorList: defaultFlavorList,
 		internetBox: 'Make this application accessible from the internet',
-		approvalNeeded: defaultApprovalFunction,
+		approvalNeeded: always,
 		approver: defaultApprover,
 		//Advanced User Options are here
 	};
