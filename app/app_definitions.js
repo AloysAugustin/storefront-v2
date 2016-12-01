@@ -209,7 +209,7 @@ app.factory('appDefinitions', function(){
 		approver: defaultApprover,
 		//Advanced User Options are here
 	};
-	appDefinitions.registerDef(ubuntuDef);
+	appDefinitions.registerDef(largeUbuntuDef);
 
 	var railsDef = {
 		name: "Apache rails",
