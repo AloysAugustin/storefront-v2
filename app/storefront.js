@@ -10,7 +10,7 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
     apiUrl: "https://demo.scalr.com/",
     keyId: "",
     secretKey: "",
-    envId: ""
+    envId: "2"
   };
 
   $scope.apiSettings = {};
