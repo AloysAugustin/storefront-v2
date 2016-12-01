@@ -230,8 +230,8 @@
                           </div>
                           <div class='form-group padding-sm-top' id="button-container">
                             <div class="text-center">
-                              <button type="button" ng-hide='isApprovalRequired(app.settings)' ng-disabled="app.launching" class="auth-button btn btn-success" id="button-farm-{{app.selected}}-done" ng-click="app.launching = true; launch(app);">Launch for ${{app.model.price(app.settings)}} / day</button>
-                              <button type="button" ng-show='isApprovalRequired(app.settings)' ng-disabled="app.launching" class="auth-button btn btn-success" id="button-farm-{{app.selected}}-done" ng-click="app.launching = true; launch(app);">Request application</button>
+                              <button type="button" ng-hide='app.model.approvalNeeded(app.settings)' ng-disabled="app.launching" class="auth-button btn btn-success" id="button-farm-{{app.selected}}-done" ng-click="app.launching = true; launch(app);">Launch for ${{app.model.price(app.settings)}} / day</button>
+                              <button type="button" ng-show='app.model.approvalNeeded(app.settings)' ng-disabled="app.launching" class="auth-button btn btn-success" id="button-farm-{{app.selected}}-done" ng-click="app.launching = true; launch(app);">Request application</button>
                             </div>
                           </div>
                         </form>
