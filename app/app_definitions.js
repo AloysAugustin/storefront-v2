@@ -254,7 +254,7 @@ app.factory('appDefinitions', function(){
 
 	var iisDef = {
 		name: "Microsoft IIS",
-		logoUrl: "https://www.datadoghq.com/wp-content/uploads/2015/04/Integrations-MicrosoftIIS-340x216.png",
+		logoUrl: "http://www.asphostcentral.com/Images/logo_iis75.png",
 		price: defaultPriceFunction,
 		recipeId: 'winiis',
 		description: "IIS on Server 2008 r2, with SQL Server 2012",
