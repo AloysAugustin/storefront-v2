@@ -7,10 +7,10 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
    * Credentials management
    */
   $scope.defaultApiSettings = {
-    apiUrl: "https://demo.scalr.com/",
+    apiUrl: "https://ec2-54-84-203-26.compute-1.amazonaws.com",
     keyId: "",
     secretKey: "",
-    envId: ""
+    envId: "2"
   };
 
   $scope.apiSettings = {};
