@@ -26,8 +26,8 @@ def after_request(response):
 def handle_query():
     try:
         data = request.get_json(force=True)
-        print "Data:"
-        print data
+        print("Data:")
+        print(data)
         destination = data['admin']
         param_dict = {}
         param_dict['user'] = urllib.quote(users[data['user']],'')
