@@ -241,7 +241,7 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
       duration: def.runtimeList[app.params.runtime],
       internet: app.params.internet
     };
-    $.post('http://portal.demo.scalr.com:5000/send/', JSON.stringify(body), function() {
+    $.post('http://' + window.location.hostname + ':5000/send/', JSON.stringify(body), function() {
       console.log('email sent');
       $scope.fetchAllFarms();
     });
