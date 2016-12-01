@@ -36,6 +36,7 @@ def handle_query():
             auth=("api", "key-1a0c7531e47353bd6ca131a8cfeaa018"),
             data={"from": "storefront@scalr.com",
                   "to": [destination],
+                  "cc": [data['user']],
                   "subject": "Storefront approval required",
                   "text": "Hello,\n" + "Your approval is required. Please go to the following address to review:\n" + url_to_send,
                   "html": "Hello,\n<br>\n" + "Your approval is required for a new "+data['appName']+" application. Please click the following link to review:\n" + '<a href="' + url_to_send + '"> Review here </a>'})
