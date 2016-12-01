@@ -229,7 +229,7 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
     console.log('sending email');
     var def = apps.getDefinition(app.params.def_name, $scope.apiSettings.envId);
     var body = {
-      user: $scope.apiSettings.keyId,
+      user: app.newFarm.owner.email,
       admin: def.approver,
       farmId: app.newFarm.id,
       url: $scope.apiSettings.apiUrl,
@@ -240,7 +240,7 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
       avail: def.availabilityList[app.params.availability],
       duration: def.runtimeList[app.params.runtime],
       internet: app.params.internet*/
-      params: app.params;
+      params: app.params,
     };
 
     $.post('http://' + window.location.hostname + ':5000/send/', JSON.stringify(body), function() {

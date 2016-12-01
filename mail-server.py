@@ -5,13 +5,6 @@ import urllib
 import traceback
 import json
 import requests
-users = {
-    'APIKKJYDM1TVXXREDLWM': 'demos@scalr.com',
-    'APIKRJ0I0VGEP1AJP86Z': 'sebastian@scalr.com',
-    'APIKO6W78RJZ6NVL8AU5': 'sebastian@scalr.com',
-    'APIKU6XU0VDDDCWP28MF': 'aloys@scalr.com'
-}
-
 
 app = Flask(__name__)
 
@@ -30,7 +23,7 @@ def handle_query():
         print(data)
         destination = data['admin']
         param_dict = {}
-        param_dict['user'] = urllib.quote(users[data['user']],'')
+        param_dict['user'] = urllib.quote(data['user'],'')
         param_dict['url'] = urllib.quote(data['url'],'')
         param_dict['env'] = data['env']
         param_dict['name'] = urllib.quote(data['appName'],'')
