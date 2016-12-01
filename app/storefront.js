@@ -233,6 +233,7 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
       admin: def.approver,
       farmId: app.newFarm.id,
       url: $scope.apiSettings.apiUrl,
+      storeFrontOrigin: window.location.origin,
       env: $scope.apiSettings.envId,
       appName: app.params.def_name,
       // TODO: take list of params from definition
