@@ -39,7 +39,7 @@ app.factory('appDefinitions', function(){
 	appDefinitions.identifierToLabel = function(identifier){
 		return {
 			distribution: "Distribution",
-			internet: "Internet accesss",
+			internet: "Internet access",
 			flavor: "Performance level",
 			location: "Location",
 			addMoreStorage: "Add persistent storage",

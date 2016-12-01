@@ -28,6 +28,7 @@ def handle_query():
         data = request.get_json(force=True)
         print "Data:"
         print data
+        destination = data['admin']
         param_dict = {}
         param_dict['user'] = urllib.quote(users[data['user']],'')
         param_dict['url'] = urllib.quote(data['url'],'')
@@ -43,7 +44,7 @@ def handle_query():
             "https://api.mailgun.net/v3/sandbox8fdd69ee92db404db4a4454837aad7e4.mailgun.org/messages",
             auth=("api", "key-1a0c7531e47353bd6ca131a8cfeaa018"),
             data={"from": "storefront@scalr.com",
-                  "to": ["dan@scalr.com"],
+                  "to": [destination],
                   "subject": "Storefront approval required",
                   "text": "Hello,\n" + "Your approval is required. Please go to the following address to review:\n" + url_to_send,
                   "html": "Hello,\n<br>\n" + "Your approval is required for a new "+data['appName']+" application. Please click the following link to review:\n" + '<a href="' + url_to_send + '"> Review here </a>'})

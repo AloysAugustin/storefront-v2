@@ -225,20 +225,21 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
     });
   };
 
-  $scope.request_approval = function(result) {
+  $scope.request_approval = function(app) {
     console.log('sending email');
-    var def = apps.getDefinition(result.params.def_name, $scope.apiSettings.envId);
+    var def = apps.getDefinition(app.params.def_name, $scope.apiSettings.envId);
     var body = {
       user: $scope.apiSettings.keyId,
-      farmId: result.newFarm.id,
+      admin: def.approver,
+      farmId: app.newFarm.id,
       url: $scope.apiSettings.apiUrl,
       env: $scope.apiSettings.envId,
-      appName: result.params.def_name,
+      appName: app.params.def_name,
       // TODO: take list of params from definition
-      perf: def.flavorList[result.params.flavor],
-      avail: def.availabilityList[result.params.availability],
-      duration: def.runtimeList[result.params.runtime],
-      internet: result.params.internet
+      perf: def.flavorList[app.params.flavor],
+      avail: def.availabilityList[app.params.availability],
+      duration: def.runtimeList[app.params.runtime],
+      internet: app.params.internet
     };
     $.post('http://portal.demo.scalr.com:5000/send/', JSON.stringify(body), function() {
       console.log('email sent');
