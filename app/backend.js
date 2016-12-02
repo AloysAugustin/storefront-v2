@@ -27,11 +27,12 @@ app.factory('backend', ['appDefinitions', 'apiRecipes', 'localStorageService','r
         apiRecipes.run('listFarms', params, success_cb, failure_cb);
     };
 
-    backend.stopApp = function(credentials, instId, success_cb, failure_cb) {
+    backend.stopApp = function(credentials, app, success_cb, failure_cb) {
         ScalrAPI.setSettings(credentials);
         var params = {
             envId: credentials.envId,
-            farmId: instId
+            farmId: app.id,
+            approvalNeeded: app.model.approvalNeeded(app.settings)
         };
         apiRecipes.run('stopFarm', params, success_cb, failure_cb);
     };

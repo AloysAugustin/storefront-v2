@@ -135,7 +135,7 @@ app.factory('apiRecipes', function() {
         };
     }
 
-    apiRecipes.register('stopFarm', makeFarmOp('POST', 'actions/terminate/'));
+    //apiRecipes.register('stopFarm', makeFarmOp('POST', 'actions/terminate/'));
     apiRecipes.register('startFarm', makeFarmOp('POST', 'actions/launch/'));
     apiRecipes.register('deleteFarm', makeFarmOp('DELETE', ''));
 
@@ -203,6 +203,29 @@ app.factory('apiRecipes', function() {
         ]
     });
 
+    apiRecipes.register('stopFarm',{
+        data: {},
+        validateParams: apiRecipes.mkValidateParams(['envId', 'farmId', 'approvalNeeded']),
+        steps: [
+            {
+                description: 'Stop if possible',
+                method: 'POST',
+                url: function(data, params) {
+                    if (params.approvalNeeded) {
+                        return '';
+                    }
+                    else {
+                        return '/api/v1beta0/user/{envId}/farms/{farmId}/actions/terminate/'.
+                        replace('{envId}', params.envId).
+                        replace('{farmId}', params.farmId);
+                    }
+                },
+                done: function(response, data, params) {
+                    return;
+                }
+            }
+        ]
+    });
     apiRecipes.recipes = recipes;
     return apiRecipes;
 });

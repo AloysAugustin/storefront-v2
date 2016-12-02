@@ -25,6 +25,22 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
   };
 
   $scope.accept = function() {
+    // If it is a termination request, just do it
+    if ($scope.jParams.action == 'stop'){
+      var path = '/api/v1beta0/user/{envId}/farms/{farmId}/actions/terminate/';
+      path = path.replace('{envId}', $scope.apiSettings.envId);
+      path = path.replace('{farmId}', $scope.farmId);
+      ScalrAPI.setSettings($scope.apiSettings);
+      ScalrAPI.create(path, '',function(response){
+        $scope.done = true;
+        $scope.$apply();
+      },
+      function(response){
+        alert('Termination failed');
+      });
+      return;
+    }
+
     // Fetch the Farm, then edit it
     var path = '/api/v1beta0/user/{envId}/farms/{farmId}/';
     path = path.replace('{envId}', $scope.apiSettings.envId);
@@ -65,7 +81,11 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
   };
 
   $scope.reject = function() {
-    // Delete the Farm
+    // Delete the Farm if it is a launch request
+    if ($scope.jParams.action != 'launch'){
+      $scope.done = true;
+      return;
+    }
     var path = '/api/v1beta0/user/{envId}/farms/{farmId}/';
     path = path.replace('{envId}', $scope.apiSettings.envId);
     path = path.replace('{farmId}', $scope.farmId);
@@ -86,6 +106,7 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
   $scope.user = args['u'];
   $scope.appName = args['t'];
   var params = JSON.parse(args['p']);
+  $scope.jParams = params;
   $scope.params = JSON.stringify(params, null, 2);
   $scope.farmId = args['f'];
   $scope.done = false;

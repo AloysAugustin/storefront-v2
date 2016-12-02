@@ -1,8 +1,16 @@
 var app = angular.module('ScalrStorefront', ['LocalStorageModule', 'angular.filter', 'ui.bootstrap']);
 
-app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "$location", "$filter", "localStorageService",
-  function (back, apps, $scope, $location, $filter, localStorageService) {
-
+app.controller('StorefrontController', [
+  "backend",
+  "appDefinitions",
+  "environments",
+  "$scope",
+  "$location",
+  "$filter",
+  "$interval",
+  "localStorageService",
+  function (back, apps, environments, $scope, $location, $filter, $interval, localStorageService) {
+  for (var anyEnv in environments) break;
   /*
    * Credentials management
    */
@@ -10,7 +18,7 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
     apiUrl: "https://demo.scalr.com/",
     keyId: "",
     secretKey: "",
-    envId: "2"
+    envId: anyEnv,
   };
 
   $scope.apiSettings = {};
@@ -51,10 +59,12 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
   }, true);
 
   $scope.apiSettingsDone = function() {
-    $scope.fetchAllFarms();
+
     $scope.credentialsSaved = false;
     $scope.loggedIn = true;
     $scope.settings.advanced_user = back.isUserAdvanced($scope.apiSettings);
+    $scope.fetchCatalog();
+    $scope.fetchAllFarms();
   }
 
   // TODO: validation
@@ -64,15 +74,17 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
    */
   $scope.myApps = [];
   $scope.apps = [];
+  $scope.availableEnvs = environments;
 
   $scope.showError = function(reason, obj) {
     console.log(reason, obj);
   };
 
-  $scope.fetchAllFarms = function() {
+  $scope.fetchCatalog = function() {
+    if (!$scope.loggedIn){
+      return;
+    }
     $scope.apps.length = 0;
-    $scope.myApps.length = 0;
-
     var env_apps = apps.getEnvApps($scope.apiSettings.envId);
     console.log(env_apps);
     for (var i = 0; i < env_apps.length; i ++) {
@@ -85,7 +97,18 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
         settings: $scope.default_settings(form, env_apps[i].name)
       });
     }
+  }
 
+  $scope.fetchAllFarms = function() {
+    if (!$scope.loggedIn){
+      return;
+    }
+    //$scope.myApps.length = 0;
+    //Create a set with myApps
+    var myAppsSet = {};
+    for (var i = 0; i < $scope.myApps.length; i ++) {
+      myAppsSet[$scope.myApps[i].id] = $scope.myApps[i];
+    }
     back.listAppsByAPIKey($scope.apiSettings, function(data) {
       var myFarms = data.myFarms;
       console.log(myFarms);
@@ -136,19 +159,43 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
         } else {
           status = 'stopped';
         }
-
-        $scope.myApps.push({
-          id: farm.id,
-          model: angular.copy(def),
-          settings: angular.copy(farm.description.settings),
-          orig_settings: angular.copy(farm.description.settings),
-          status: angular.copy(status),
-          form: apps.parseDefToDict(def),
-          props: angular.copy(readOnlyProperties),
-          showDetails: false,
-          working: false,
-          show_edition: false
-        });
+        //Look if the current app is already loaded
+        if (farm.id in myAppsSet){
+          myAppsSet[farm.id].id = farm.id;
+          myAppsSet[farm.id].ownerEmail = farm.owner.email;
+          myAppsSet[farm.id].model = angular.copy(def);
+          myAppsSet[farm.id].settings = angular.copy(farm.description.settings);
+          myAppsSet[farm.id].orig_settings = angular.copy(farm.description.settings);
+          myAppsSet[farm.id].status = angular.copy(status);
+          myAppsSet[farm.id].form = apps.parseDefToDict(def);
+          myAppsSet[farm.id].props = angular.copy(readOnlyProperties);
+          myAppsSet[farm.id].old = false;
+        } else {
+          $scope.myApps.push({
+            id: farm.id,
+            ownerEmail: farm.owner.email,
+            model: angular.copy(def),
+            settings: angular.copy(farm.description.settings),
+            orig_settings: angular.copy(farm.description.settings),
+            status: angular.copy(status),
+            form: apps.parseDefToDict(def),
+            props: angular.copy(readOnlyProperties),
+            showDetails: false,
+            working: false,
+            show_edition: false,
+            old: false,
+          });
+        }
+        
+      }
+      //Delete old apps
+      for (var i = 0; i < $scope.myApps.length; i++){
+        if ($scope.myApps[i].old){
+          $scope.myApps.splice(i,1);
+          i--;
+        } else {
+          $scope.myApps[i].old = true;
+        }
       }
       console.log($scope.myApps);
       $scope.$apply();
@@ -161,6 +208,7 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
 
   $scope.applyChanges = function(app) {
     back.updateApp($scope.apiSettings, app.id, app.settings, function() {
+      $scope.fetchCatalog();
       $scope.fetchAllFarms();
     }, null)
   };
@@ -224,69 +272,100 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
     back.runAppDef($scope.apiSettings, app.model, app.settings, function(result) {
       app.launching = false;
       if (app.settings.approval_required) {
-        $scope.request_approval(result);
+        $scope.request_approval(result, 'launch');
       } else {
+        $scope.fetchCatalog();
         $scope.fetchAllFarms();
       }
     }, function() {
       alert("Farm launched failed. Please check that you don't already have a farm by this name.");
+      $scope.fetchCatalog();
       $scope.fetchAllFarms();
     });
   };
 
-  $scope.request_approval = function(app) {
+  $scope.request_approval = function(app, action) {
     console.log('sending email');
-    var def = apps.getDefinition(app.params.def_name, $scope.apiSettings.envId);
-    var params = angular.copy(app.params);
+    var params = {};
+    var def = {};
+    if (action == 'launch'){
+      params = angular.copy(app.params);
+      def = apps.getDefinition(params.def_name, $scope.apiSettings.envId);
+    }
+    if (action == 'stop'){
+      params = angular.copy(app.settings);
+      def = app.model;
+    }
     delete params['def_name']
     delete params['keyId']
     delete params['name']
     delete params['approval_required']
+    params['action'] = action;
     var body = {
-      user: app.newFarm.owner.email,
       admin: def.approver,
-      farmId: app.newFarm.id,
       url: $scope.apiSettings.apiUrl,
       storeFrontOrigin: window.location.origin,
       env: $scope.apiSettings.envId,
-      appName: app.params.def_name,
-      // TODO: take list of params from definition
-      /*perf: def.flavorList[app.params.flavor],
-      avail: def.availabilityList[app.params.availability],
-      duration: def.runtimeList[app.params.runtime],
-      internet: app.params.internet*/
+      appName: def.name,
       params: params,
     };
-
-    $.post('http://' + window.location.hostname + ':5000/send/', JSON.stringify(body), function() {
+    if (action == 'stop') {
+      body.farmId = app.id;
+      body.user = app.ownerEmail;
+    }
+    if (action == 'launch') {
+      body.farmId = app.newFarm.id;
+      body.user = app.newFarm.owner.email;
+    }
+    $.post('http://' + window.location.hostname + '/send/', JSON.stringify(body), function() {
       console.log('email sent');
+      $scope.fetchCatalog();
       $scope.fetchAllFarms();
     });
   }
 
   $scope.startApp = function(app) {
     back.startApp($scope.apiSettings, app.id, function() {
+      app.working = false;
+      app.showDetails = false;
+      $scope.fetchCatalog();
       $scope.fetchAllFarms();
     }, function() {
+      app.working = false;
       alert("Operation failed.");
+      $scope.fetchCatalog();
       $scope.fetchAllFarms();
     });
   };
 
   $scope.stopApp = function(app) {
-    back.stopApp($scope.apiSettings, app.id, function() {
-      $scope.fetchAllFarms();
+    back.stopApp($scope.apiSettings, app, function() {
+      app.working = false;
+      app.showDetails = false;
+      if (app.model.approvalNeeded(app.settings)){
+        $scope.request_approval(app, 'stop');
+      } else {
+        $scope.fetchCatalog();
+        $scope.fetchAllFarms();
+      }
     }, function() {
       alert("Operation failed.");
+      app.working = false;
+      $scope.fetchCatalog();
       $scope.fetchAllFarms();
     });
   };
 
   $scope.deleteApp = function(app) {
     back.deleteApp($scope.apiSettings, app.id, function() {
+      app.working = false;
+      app.showDetails = false;
+      $scope.fetchCatalog();
       $scope.fetchAllFarms();
     }, function() {
       alert("Operation failed.");
+      app.working = false;
+      $scope.fetchCatalog();
       $scope.fetchAllFarms();
     });
   };
@@ -304,7 +383,7 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
   }
 
   $scope.loadApiSettings();
-
+  $scope.pollingPromise = $interval($scope.fetchAllFarms, 10000);
 
 
   /*

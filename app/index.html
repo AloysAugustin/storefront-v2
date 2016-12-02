@@ -17,6 +17,18 @@
     <div class="navbar-wagon">
       <a href="/" class="navbar-wagon-brand"><img src="static/logo.png" /> Cloud Portal</a>
       <div class="navbar-wagon-right hidden-xs hidden-sm">
+      <div class="navbar-wagon-item">
+          <div class="dropdown">
+            <div class="dropdown-toggle" data-toggle="dropdown" >
+              {{availableEnvs[apiSettings.envId].label}}
+            </div>
+            <ul class="dropdown-menu dropdown-menu-right navbar-wagon-dropdown-menu">
+                <li ng-repeat="(envId,e) in availableEnvs">
+                  <a ng-click="apiSettings.envId = envId; saveApiSettings(); fetchAllFarms();">{{e.label}}</a>
+                </li>
+            </ul>
+          </div>
+        </div>
         <div class="navbar-wagon-item">
           <div class="dropdown" ng-show="loggedIn">
             <img src="static/avatar.png" width='40' class="avatar dropdown-toggle" id="navbar-wagon-menu" data-toggle="dropdown" />
@@ -44,10 +56,6 @@
             <div class="form-group">
                <label class="">Secret Key :</label>
               <input required id="auth-secret" class="auth-input form-control input-lg" name="secret" ng-model="apiSettings.secretKey" type="password" />
-            </div>
-            <div class="form-group">
-              <label class="">Environment ID :</label>
-              <input required id="auth-envid" class="auth-input form-control input-lg" name="envid" ng-model="apiSettings.envId" type="text" />
             </div>
             <div class='form-group padding-sm-top text-center'>
               <button type="button" ng-click="apiSettingsDone()" class="auth-button btn btn-success" id="auth-button-done">Done</button>
@@ -114,7 +122,8 @@
                           <ul>
                             <li ng-repeat="(fr, servers) in app.props.endpoints">{{fr}}: <span ng-repeat="ep in servers track by $index">{{ep}} </span></li>
                           </ul>
-                          <button type="button" ng-disabled="app.working" ng-click="app.working=true; stopApp(app)" class="btn btn-danger" id="farm-{{app.id}}-button-stop">Stop application</button>
+                          <button type="button" ng-show="!app.model.approvalNeeded(app.settings)" ng-disabled="app.working" ng-click="app.working=true; stopApp(app)" class="btn btn-danger" id="farm-{{app.id}}-button-stop">Stop application</button>
+                          <button type="button" ng-show="app.model.approvalNeeded(app.settings)" ng-disabled="app.working" ng-click="app.working=true; stopApp(app)" class="btn btn-danger" id="farm-{{app.id}}-button-stop">Request application stop</button>
                           <img src="static/throbber.gif" ng-show="app.working"/>
                         </div>
                         <div ng-show=hasModifiableSettings(app.form);>
@@ -185,7 +194,7 @@
                               </div>
                             </div>
                           </div>
-                          <div class="form-group" ng-repeat="option in app.form | filter:{advOption: false}" ng-show="settings.advanced_user || !option.advUser">
+                          <div class="form-group" ng-repeat="option in app.form | filter:{advOption: false}" ng-show="(settings.advanced_user || !option.advUser) && (!option.approvalOnly || app.model.approvalNeeded(app.settings))">
                             <div class='label-settings-form'><h5>{{option.label}}</h5></div>
                             <!-- <label for="platform-select-{{app.selected}}" class="control-label col-sm-3">Platform:</label> -->
                             <div class="col-sm-12 text-center" ng-show="option.type == 'option'">
@@ -262,5 +271,6 @@
   <script src="backend.js"></script>
   <script src="recipes.js"></script>
   <script src="api_recipe.js"></script>
+  <script src="environments.js"></script>
 </body>
 </html>

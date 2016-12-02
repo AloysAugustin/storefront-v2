@@ -45,6 +45,7 @@ app.factory('appDefinitions', function(){
 			availability: "Availability level",
 			runtime: "Application lifetime",
 			platform: "Cloud platform",
+			justification: "Justification"
 		}[identifier];
 	};
 	appDefinitions.isAdvancedUser = function(identifier){
@@ -53,6 +54,11 @@ app.factory('appDefinitions', function(){
 	};
 	appDefinitions.isAdvancedOption = function(identifier){
 		return ([
+			].indexOf(identifier) >= 0);
+	};
+	appDefinitions.isApprovalOnlyOption = function(identifier){
+		return ([
+				"justification"
 			].indexOf(identifier) >= 0);
 	};
 	appDefinitions.isModifiable = function(identifier){
@@ -90,6 +96,7 @@ app.factory('appDefinitions', function(){
 					options: def[key],
 					advUser: appDefinitions.isAdvancedUser(k),
 					advOption: appDefinitions.isAdvancedOption(k),
+					approvalOnly: appDefinitions.isApprovalOnlyOption(k),
 					isModifiable: appDefinitions.isModifiable(k)
 				});
 			}
@@ -101,6 +108,7 @@ app.factory('appDefinitions', function(){
 					label: appDefinitions.identifierToLabel(k),
 					advUser: appDefinitions.isAdvancedUser(k),
 					advOption: appDefinitions.isAdvancedOption(k),
+					approvalOnly: appDefinitions.isApprovalOnlyOption(k),
 					isModifiable: appDefinitions.isModifiable(k)
 				});
 			}
@@ -113,6 +121,7 @@ app.factory('appDefinitions', function(){
 					text: def[key],
 					advUser: appDefinitions.isAdvancedUser(k),
 					advOption: appDefinitions.isAdvancedOption(k),
+					approvalOnly: appDefinitions.isApprovalOnlyOption(k),
 					isModifiable: appDefinitions.isModifiable(k)
 				})
 			}
@@ -157,10 +166,10 @@ app.factory('appDefinitions', function(){
 		return true;
 	}
 
-        var never = function(settings) {
-            return false;
-        }
-
+	var never = function(settings) {
+		return false;
+	}
+	
 	var defaultApprover = 'dan@scalr.com';
 
 	var ubuntuDef = {
@@ -192,6 +201,7 @@ app.factory('appDefinitions', function(){
 		internetBox: 'Make this application accessible from the internet',
 		approvalNeeded: always,
 		approver: defaultApprover,
+		justificationField: 'Justification',
 		//Advanced User Options are here
 	};
 	appDefinitions.registerDef(largeUbuntuDef);
