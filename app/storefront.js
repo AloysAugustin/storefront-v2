@@ -138,6 +138,7 @@ app.controller('StorefrontController', [
 
         $scope.myApps.push({
           id: farm.id,
+          ownerEmail: farm.owner.email,
           model: angular.copy(def),
           settings: angular.copy(farm.description.settings),
           orig_settings: angular.copy(farm.description.settings),
@@ -223,7 +224,7 @@ app.controller('StorefrontController', [
     back.runAppDef($scope.apiSettings, app.model, app.settings, function(result) {
       app.launching = false;
       if (app.settings.approval_required) {
-        $scope.request_approval(result);
+        $scope.request_approval(result, 'launch');
       } else {
         $scope.fetchAllFarms();
       }
@@ -233,30 +234,39 @@ app.controller('StorefrontController', [
     });
   };
 
-  $scope.request_approval = function(app) {
+  $scope.request_approval = function(app, action) {
     console.log('sending email');
-    var def = apps.getDefinition(app.params.def_name, $scope.apiSettings.envId);
-    var params = angular.copy(app.params);
+    var params = {};
+    var def = {};
+    if (action == 'launch'){
+      params = angular.copy(app.params);
+      def = apps.getDefinition(params.def_name, $scope.apiSettings.envId);
+    }
+    if (action == 'stop'){
+      params = angular.copy(app.settings);
+      def = app.model;
+    }
     delete params['def_name']
     delete params['keyId']
     delete params['name']
     delete params['approval_required']
+    params['action'] = action;
     var body = {
-      user: app.newFarm.owner.email,
       admin: def.approver,
-      farmId: app.newFarm.id,
       url: $scope.apiSettings.apiUrl,
       storeFrontOrigin: window.location.origin,
       env: $scope.apiSettings.envId,
-      appName: app.params.def_name,
-      // TODO: take list of params from definition
-      /*perf: def.flavorList[app.params.flavor],
-      avail: def.availabilityList[app.params.availability],
-      duration: def.runtimeList[app.params.runtime],
-      internet: app.params.internet*/
+      appName: def.name,
       params: params,
     };
-
+    if (action == 'stop') {
+      body.farmId = app.id;
+      body.user = app.ownerEmail;
+    }
+    if (action == 'launch') {
+      body.farmId = app.newFarm.id;
+      body.user = app.newFarm.owner.email;
+    }
     $.post('http://' + window.location.hostname + ':5000/send/', JSON.stringify(body), function() {
       console.log('email sent');
       $scope.fetchAllFarms();
@@ -273,8 +283,12 @@ app.controller('StorefrontController', [
   };
 
   $scope.stopApp = function(app) {
-    back.stopApp($scope.apiSettings, app.id, function() {
-      $scope.fetchAllFarms();
+    back.stopApp($scope.apiSettings, app, function() {
+      if (app.model.approvalNeeded(app.settings)){
+        $scope.request_approval(app, 'stop');
+      } else {
+        $scope.fetchAllFarms();
+      }
     }, function() {
       alert("Operation failed.");
       $scope.fetchAllFarms();

@@ -124,7 +124,8 @@
                         <div ng-show="app.status == 'running'">
                           <p>Application running</p>
                           <p>Endpoint: <a target="_blank" href="http://{{app.props.address}}">{{app.props.address}}</a></p>
-                          <button type="button" ng-disabled="app.working" ng-click="app.working=true; stopApp(app)" class="btn btn-danger" id="farm-{{app.id}}-button-stop">Stop application</button>
+                          <button type="button" ng-show="!app.model.approvalNeeded(app.settings)" ng-disabled="app.working" ng-click="app.working=true; stopApp(app)" class="btn btn-danger" id="farm-{{app.id}}-button-stop">Stop application</button>
+                          <button type="button" ng-show="app.model.approvalNeeded(app.settings)" ng-disabled="app.working" ng-click="app.working=true; stopApp(app)" class="btn btn-danger" id="farm-{{app.id}}-button-stop">Request application stop</button>
                           <img src="static/throbber.gif" ng-show="app.working"/>
                         </div>
                         <div ng-show=hasModifiableSettings(app.form);>
