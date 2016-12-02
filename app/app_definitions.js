@@ -104,13 +104,13 @@ app.factory('appDefinitions', function(){
 	var defaultYesNoList = {no:"No", yes:"Yes"};
 
 	var tempDef = {
-		name: "Placeholder",
+		name: "QAD-EE-2016-AND-UI",
 		logoUrl: "https://api-explorer.scalr.com/images/scalr-logo-retina.png",
 		price: function(settings) {
 			return "1.86";
 		},
-		recipeId: 'temp',
-		description: "placeholder",
+		recipeId: 'qadEE2016ui',
+		description: "QAD application with a windows UI server",
 	};
 	appDefinitions.registerDef(tempDef);
 

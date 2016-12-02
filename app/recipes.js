@@ -79,6 +79,6 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
     }
 
 
-    apiRecipes.register('temp', mkStdFarmRecipe(1));
+    apiRecipes.register('qadEE2016ui', mkStdFarmRecipe(4));
 }]);
 
