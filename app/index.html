@@ -17,6 +17,18 @@
     <div class="navbar-wagon">
       <a href="/" class="navbar-wagon-brand"><img src="static/logo.png" /> Cloud Portal</a>
       <div class="navbar-wagon-right hidden-xs hidden-sm">
+      <div class="navbar-wagon-item">
+          <div class="dropdown">
+            <div class="dropdown-toggle" data-toggle="dropdown" >
+              {{availableEnvs[apiSettings.envId].label}}
+            </div>
+            <ul class="dropdown-menu dropdown-menu-right navbar-wagon-dropdown-menu">
+                <li ng-repeat="(envId,e) in availableEnvs">
+                  <a ng-click="apiSettings.envId = envId; fetchAllFarms();">{{e.label}}</a>
+                </li>
+            </ul>
+          </div>
+        </div>
         <div class="navbar-wagon-item">
           <div class="dropdown" ng-show="loggedIn">
             <img src="static/avatar.png" width='40' class="avatar dropdown-toggle" id="navbar-wagon-menu" data-toggle="dropdown" />
@@ -260,5 +272,6 @@
   <script src="backend.js"></script>
   <script src="recipes.js"></script>
   <script src="api_recipe.js"></script>
+  <script src="environments.js"></script>
 </body>
 </html>

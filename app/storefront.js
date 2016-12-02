@@ -1,8 +1,15 @@
 var app = angular.module('ScalrStorefront', ['LocalStorageModule', 'angular.filter', 'ui.bootstrap']);
 
-app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "$location", "$filter", "localStorageService",
-  function (back, apps, $scope, $location, $filter, localStorageService) {
-
+app.controller('StorefrontController', [
+  "backend",
+  "appDefinitions",
+  "environments",
+  "$scope",
+  "$location",
+  "$filter",
+  "localStorageService",
+  function (back, apps, environments, $scope, $location, $filter, localStorageService) {
+  for (var anyEnv in environments) break;
   /*
    * Credentials management
    */
@@ -10,7 +17,7 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
     apiUrl: "https://demo.scalr.com/",
     keyId: "",
     secretKey: "",
-    envId: "2"
+    envId: anyEnv,
   };
 
   $scope.apiSettings = {};
@@ -64,6 +71,7 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
    */
   $scope.myApps = [];
   $scope.apps = [];
+  $scope.availableEnvs = environments;
 
   $scope.showError = function(reason, obj) {
     console.log(reason, obj);
