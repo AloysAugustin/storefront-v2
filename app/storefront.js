@@ -109,7 +109,7 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
         var readOnlyProperties = {};
         var status = '';
         for (var j = 0; j < farm.servers.length; j ++) {
-          if (farm.servers[j].status == 'running') {
+          if (farm.servers[j].status != 'pending_terminate' && farm.servers[j].status != 'terminated') {
             farm.running_servers.push(farm.servers[j]);
           } else if (farm.servers[j].status == 'pending_terminate'){
             farm.terminating_servers_count ++;
