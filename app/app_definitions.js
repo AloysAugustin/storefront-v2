@@ -52,6 +52,7 @@ app.factory('appDefinitions', function(){
 			mysqlcomponentVersion: "Version",
 			apachecomponentVersion: "Version",
 			platform: "Cloud platform",
+			justification: "Justification"
 		}[identifier];
 	};
 	appDefinitions.isAdvancedUser = function(identifier){
@@ -74,6 +75,11 @@ app.factory('appDefinitions', function(){
 				"jbcomponentVersion",
 				"mysqlcomponentVersion",
 				"apachecomponentVersion"
+			].indexOf(identifier) >= 0);
+	};
+	appDefinitions.isApprovalOnlyOption = function(identifier){
+		return ([
+				"justification"
 			].indexOf(identifier) >= 0);
 	};
 	appDefinitions.isModifiable = function(identifier){
@@ -111,6 +117,7 @@ app.factory('appDefinitions', function(){
 					options: def[key],
 					advUser: appDefinitions.isAdvancedUser(k),
 					advOption: appDefinitions.isAdvancedOption(k),
+					approvalOnly: appDefinitions.isApprovalOnlyOption(k),
 					isModifiable: appDefinitions.isModifiable(k)
 				});
 			}
@@ -122,6 +129,7 @@ app.factory('appDefinitions', function(){
 					label: appDefinitions.identifierToLabel(k),
 					advUser: appDefinitions.isAdvancedUser(k),
 					advOption: appDefinitions.isAdvancedOption(k),
+					approvalOnly: appDefinitions.isApprovalOnlyOption(k),
 					isModifiable: appDefinitions.isModifiable(k)
 				});
 			}
@@ -134,6 +142,7 @@ app.factory('appDefinitions', function(){
 					text: def[key],
 					advUser: appDefinitions.isAdvancedUser(k),
 					advOption: appDefinitions.isAdvancedOption(k),
+					approvalOnly: appDefinitions.isApprovalOnlyOption(k),
 					isModifiable: appDefinitions.isModifiable(k)
 				})
 			}
@@ -215,6 +224,7 @@ app.factory('appDefinitions', function(){
 		internetBox: 'Make this application accessible from the internet',
 		approvalNeeded: always,
 		approver: defaultApprover,
+		justificationField: 'Justification',
 		//Advanced User Options are here
 	};
 	appDefinitions.registerDef(largeUbuntuDef);
