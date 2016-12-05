@@ -162,6 +162,7 @@ app.factory('appDefinitions', function(){
 		approvalNeeded: always,
 		approver: defaultApprover,
 		recipeId: 'rhel7approval',
+		justificationField: 'justification',
 		description: "Just a RedHat 7 server",
 	};
 	appDefinitions.registerDef(rhel7Def);
