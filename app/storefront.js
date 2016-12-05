@@ -7,8 +7,9 @@ app.controller('StorefrontController', [
   "$scope",
   "$location",
   "$filter",
+  "$interval",
   "localStorageService",
-  function (back, apps, environments, $scope, $location, $filter, localStorageService) {
+  function (back, apps, environments, $scope, $location, $filter, $interval, localStorageService) {
   for (var anyEnv in environments) break;
   /*
    * Credentials management
@@ -58,6 +59,7 @@ app.controller('StorefrontController', [
   }, true);
 
   $scope.apiSettingsDone = function() {
+    $scope.fetchCatalog();
     $scope.fetchAllFarms();
     $scope.credentialsSaved = false;
     $scope.loggedIn = true;
@@ -77,10 +79,8 @@ app.controller('StorefrontController', [
     console.log(reason, obj);
   };
 
-  $scope.fetchAllFarms = function() {
+  $scope.fetchCatalog = function() {
     $scope.apps.length = 0;
-    $scope.myApps.length = 0;
-
     var env_apps = apps.getEnvApps($scope.apiSettings.envId);
     console.log(env_apps);
     for (var i = 0; i < env_apps.length; i ++) {
@@ -93,7 +93,15 @@ app.controller('StorefrontController', [
         settings: $scope.default_settings(form, env_apps[i].name)
       });
     }
+  }
 
+  $scope.fetchAllFarms = function() {
+    //$scope.myApps.length = 0;
+    //Create a set with myApps
+    var myAppsSet = {};
+    for (var i = 0; i < $scope.myApps.length; i ++) {
+      myAppsSet[$scope.myApps[i].id] = $scope.myApps[i];
+    }
     back.listAppsByAPIKey($scope.apiSettings, function(data) {
       var myFarms = data.myFarms;
       console.log(myFarms);
@@ -135,20 +143,43 @@ app.controller('StorefrontController', [
         } else {
           status = 'stopped';
         }
-
-        $scope.myApps.push({
-          id: farm.id,
-          ownerEmail: farm.owner.email,
-          model: angular.copy(def),
-          settings: angular.copy(farm.description.settings),
-          orig_settings: angular.copy(farm.description.settings),
-          status: angular.copy(status),
-          form: apps.parseDefToDict(def),
-          props: angular.copy(readOnlyProperties),
-          showDetails: false,
-          working: false,
-          show_edition: false
-        });
+        //Look if the current app is already loaded
+        if (farm.id in myAppsSet){
+          myAppsSet[farm.id].id = farm.id;
+          myAppsSet[farm.id].ownerEmail = farm.owner.email;
+          myAppsSet[farm.id].model = angular.copy(def);
+          myAppsSet[farm.id].settings = angular.copy(farm.description.settings);
+          myAppsSet[farm.id].orig_settings = angular.copy(farm.description.settings);
+          myAppsSet[farm.id].status = angular.copy(status);
+          myAppsSet[farm.id].form = apps.parseDefToDict(def);
+          myAppsSet[farm.id].props = angular.copy(readOnlyProperties);
+          myAppsSet[farm.id].old = false;
+        } else {
+          $scope.myApps.push({
+            id: farm.id,
+            ownerEmail: farm.owner.email,
+            model: angular.copy(def),
+            settings: angular.copy(farm.description.settings),
+            orig_settings: angular.copy(farm.description.settings),
+            status: angular.copy(status),
+            form: apps.parseDefToDict(def),
+            props: angular.copy(readOnlyProperties),
+            showDetails: false,
+            working: false,
+            show_edition: false,
+            old: false,
+          });
+        }
+        
+      }
+      //Delete old apps
+      for (var i = 0; i < $scope.myApps.length; i++){
+        if ($scope.myApps[i].old){
+          $scope.myApps.splice(i,1);
+          i--;
+        } else {
+          $scope.myApps[i].old = true;
+        }
       }
       console.log($scope.myApps);
       $scope.$apply();
@@ -161,6 +192,7 @@ app.controller('StorefrontController', [
 
   $scope.applyChanges = function(app) {
     back.updateApp($scope.apiSettings, app.id, app.settings, function() {
+      $scope.fetchCatalog();
       $scope.fetchAllFarms();
     }, null)
   };
@@ -226,10 +258,12 @@ app.controller('StorefrontController', [
       if (app.settings.approval_required) {
         $scope.request_approval(result, 'launch');
       } else {
+        $scope.fetchCatalog();
         $scope.fetchAllFarms();
       }
     }, function() {
       alert("Farm launched failed. Please check that you don't already have a farm by this name.");
+      $scope.fetchCatalog();
       $scope.fetchAllFarms();
     });
   };
@@ -269,37 +303,53 @@ app.controller('StorefrontController', [
     }
     $.post('http://' + window.location.hostname + ':5000/send/', JSON.stringify(body), function() {
       console.log('email sent');
+      $scope.fetchCatalog();
       $scope.fetchAllFarms();
     });
   }
 
   $scope.startApp = function(app) {
     back.startApp($scope.apiSettings, app.id, function() {
+      app.working = false;
+      app.showDetails = false;
+      $scope.fetchCatalog();
       $scope.fetchAllFarms();
     }, function() {
+      app.working = false;
       alert("Operation failed.");
+      $scope.fetchCatalog();
       $scope.fetchAllFarms();
     });
   };
 
   $scope.stopApp = function(app) {
     back.stopApp($scope.apiSettings, app, function() {
+      app.working = false;
+      app.showDetails = false;
       if (app.model.approvalNeeded(app.settings)){
         $scope.request_approval(app, 'stop');
       } else {
+        $scope.fetchCatalog();
         $scope.fetchAllFarms();
       }
     }, function() {
       alert("Operation failed.");
+      app.working = false;
+      $scope.fetchCatalog();
       $scope.fetchAllFarms();
     });
   };
 
   $scope.deleteApp = function(app) {
     back.deleteApp($scope.apiSettings, app.id, function() {
+      app.working = false;
+      app.showDetails = false;
+      $scope.fetchCatalog();
       $scope.fetchAllFarms();
     }, function() {
       alert("Operation failed.");
+      app.working = false;
+      $scope.fetchCatalog();
       $scope.fetchAllFarms();
     });
   };
@@ -317,7 +367,7 @@ app.controller('StorefrontController', [
   }
 
   $scope.loadApiSettings();
-
+  $scope.pollingPromise = $interval($scope.fetchAllFarms, 10000);
 
 
   /*

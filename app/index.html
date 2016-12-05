@@ -57,10 +57,6 @@
                <label class="">Secret Key :</label>
               <input required id="auth-secret" class="auth-input form-control input-lg" name="secret" ng-model="apiSettings.secretKey" type="password" />
             </div>
-            <div class="form-group">
-              <label class="">Environment ID :</label>
-              <input required id="auth-envid" class="auth-input form-control input-lg" name="envid" ng-model="apiSettings.envId" type="text" />
-            </div>
             <div class='form-group padding-sm-top text-center'>
               <button type="button" ng-click="apiSettingsDone()" class="auth-button btn btn-success" id="auth-button-done">Done</button>
               <button type="button" ng-click="saveApiSettings()" class="auth-button btn btn-success btn-save-credentials" id="auth-button-save">Save credentials locally</button>
