@@ -43,10 +43,10 @@ def build_message(data):
           <head></head>
           <body>
             Hello,<br>
-            Your approval is required {a} application. Please click the following link to review:
-            <a href="{link}"> Review here </a>
+            Your approval is required {} application. Please click the following link to review:
+            <a href="{}"> Review here </a>
           </body>
-        </html>""".format({'a': ( "to terminate a " if data['params']['action'] == 'stop' else "for a new ") + data['appName'], 'link': url_to_send})
+        </html>""".format(( "to terminate a " if data['params']['action'] == 'stop' else "for a new ") + data['appName'], 'link': url_to_send)
     part1 = MIMEText(text, 'plain') 
     part2 = MIMEText(html, 'html')
     msg.attach(part1)
