@@ -59,11 +59,12 @@ app.controller('StorefrontController', [
   }, true);
 
   $scope.apiSettingsDone = function() {
-    $scope.fetchCatalog();
-    $scope.fetchAllFarms();
+
     $scope.credentialsSaved = false;
     $scope.loggedIn = true;
     $scope.settings.advanced_user = back.isUserAdvanced($scope.apiSettings);
+    $scope.fetchCatalog();
+    $scope.fetchAllFarms();
   }
 
   // TODO: validation
