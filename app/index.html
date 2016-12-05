@@ -24,7 +24,7 @@
             </div>
             <ul class="dropdown-menu dropdown-menu-right navbar-wagon-dropdown-menu">
                 <li ng-repeat="(envId,e) in availableEnvs">
-                  <a ng-click="apiSettings.envId = envId; fetchAllFarms();">{{e.label}}</a>
+                  <a ng-click="apiSettings.envId = envId; saveApiSettings(); fetchAllFarms();">{{e.label}}</a>
                 </li>
             </ul>
           </div>
