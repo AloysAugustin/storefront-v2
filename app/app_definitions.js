@@ -146,7 +146,7 @@ app.factory('appDefinitions', function(){
 		name: "RHEL7 Server",
 		logoUrl: "http://img.clubic.com/02104444-photo-red-hat-logo.jpg",
 		price: defaultPriceFunction,
-		environment: 2,
+		environment: 6,
 		approvalNeeded: never,
 		approver: defaultApprover,
 		recipeId: 'rhel7',

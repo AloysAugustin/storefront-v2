@@ -1,10 +1,10 @@
 var app = angular.module('ScalrStorefront');
 app.factory('environments', function() {
     return {
-        '2':{
+        '6':{
                 'label':'Test',
             },
-        '39':{
+        '15':{
                 'label':'Production',
             }
     };
