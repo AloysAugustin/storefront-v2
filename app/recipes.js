@@ -66,5 +66,6 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
     }
 
     apiRecipes.register('rhel7', mkStdFarmRecipe(24));
+    apiRecipes.register('rhel7approval', mkStdFarmRecipe(36));
 }]);
 

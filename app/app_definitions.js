@@ -154,5 +154,18 @@ app.factory('appDefinitions', function(){
 	};
 	appDefinitions.registerDef(rhel7Def);
 
+		var rhel7Def = {
+		name: "RHEL7 Server",
+		logoUrl: "http://img.clubic.com/02104444-photo-red-hat-logo.jpg",
+		price: defaultPriceFunction,
+		environment: 15,
+		approvalNeeded: always,
+		approver: defaultApprover,
+		recipeId: 'rhel7approval',
+		description: "Just a RedHat 7 server",
+	};
+	appDefinitions.registerDef(rhel7Def);
+
+
 	return appDefinitions;
 });
