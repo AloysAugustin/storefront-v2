@@ -80,6 +80,9 @@ app.controller('StorefrontController', [
   };
 
   $scope.fetchCatalog = function() {
+    if (!$scope.loggedIn){
+      return;
+    }
     $scope.apps.length = 0;
     var env_apps = apps.getEnvApps($scope.apiSettings.envId);
     console.log(env_apps);
@@ -96,6 +99,9 @@ app.controller('StorefrontController', [
   }
 
   $scope.fetchAllFarms = function() {
+    if (!$scope.loggedIn){
+      return;
+    }
     //$scope.myApps.length = 0;
     //Create a set with myApps
     var myAppsSet = {};
