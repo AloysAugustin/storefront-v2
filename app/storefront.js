@@ -307,7 +307,7 @@ app.controller('StorefrontController', [
       body.farmId = app.newFarm.id;
       body.user = app.newFarm.owner.email;
     }
-    $.post('http://' + window.location.hostname + ':5000/send/', JSON.stringify(body), function() {
+    $.post('http://' + window.location.hostname + '/send/', JSON.stringify(body), function() {
       console.log('email sent');
       $scope.fetchCatalog();
       $scope.fetchAllFarms();
