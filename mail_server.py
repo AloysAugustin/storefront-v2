@@ -36,8 +36,8 @@ def build_message(data):
     msg = MIMEMultipart('alternative')
     msg['Subject'] = "Storefront approval request"
     msg['From'] = "storefront@scalr.com"
-    msg['To'] = [destination]
-    msg['Cc'] = [data['user']]
+    msg['To'] = destination
+    msg['Cc'] = data['user']
     text = "Hello,\n" + "Your approval is required. Please go to the following address to review:\n" + url_to_send
     html = """<html>
           <head></head>
