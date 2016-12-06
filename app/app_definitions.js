@@ -302,6 +302,7 @@ app.factory('appDefinitions', function(){
 			return 20.16;
 		},
 		recipeId: 'sapHanaExpress',
+		environment: 2,
 		description: "An Ubuntu 14.04 with a running SAP Hana Express",
 		availabilityList: defaultAvailabilityList,
 		runtimeList: defaultRuntimeList,
