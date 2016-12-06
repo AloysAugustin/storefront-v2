@@ -318,5 +318,21 @@ app.factory('appDefinitions', function(){
 	};
 	appDefinitions.registerDef(windowsDef);
 
+	var sapHanaExpressDef = {
+		name: "SAP HANA Express",
+		logoUrl: "http://www.virtustream.com/images/SAP-HANA-logo_160330_154207.png",
+		price: function(settings) {
+			return 20.16;
+		},
+		recipeId: 'sapHanaExpress',
+		description: "An Ubuntu 14.04 with a running SAP Hana Express",
+		availabilityList: defaultAvailabilityList,
+		runtimeList: defaultRuntimeList,
+		internetBox: 'Make this application accessible from the internet',
+		approvalNeeded: defaultApprovalFunction,
+		approver: defaultApprover,
+	};
+	appDefinitions.registerDef(sapHanaExpressDef);
+
 	return appDefinitions;
 });

@@ -212,5 +212,6 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
     apiRecipes.register('node', mkStdFarmRecipe(188));
     apiRecipes.register('django', mkStdFarmRecipe(187));
     apiRecipes.register('rails', mkStdFarmRecipe(184));
+    apiRecipes.register('sapHanaExpress', mkStdFarmRecipe(760));
 }]);
 
