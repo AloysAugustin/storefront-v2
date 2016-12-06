@@ -42,38 +42,17 @@ app.factory('appDefinitions', function(){
 			internet: "Internet access",
 			flavor: "Performance level",
 			location: "Location",
-			addMoreStorage: "Add persistent storage",
 			availability: "Availability level",
 			runtime: "Application lifetime",
-			monitoring: "Monitoring",
-			backup: "Backup",
-			adminADGroup: "Admin AD Group",
-			jbcomponentVersion: "Version",
-			mysqlcomponentVersion: "Version",
-			apachecomponentVersion: "Version",
 			platform: "Cloud platform",
 		}[identifier];
 	};
 	appDefinitions.isAdvancedUser = function(identifier){
 		return ([
-				"location",
-				"addMoreStorage",
-				"monitoring",
-				"backup",
-				"adminADGroup",
-				"jbcomponentVersion",
-				"mysqlcomponentVersion",
-				"apachecomponentVersion"
 			].indexOf(identifier) >= 0);
 	};
 	appDefinitions.isAdvancedOption = function(identifier){
 		return ([
-				"monitoring",
-				"backup",
-				"adminADGroup",
-				"jbcomponentVersion",
-				"mysqlcomponentVersion",
-				"apachecomponentVersion"
 			].indexOf(identifier) >= 0);
 	};
 	appDefinitions.isModifiable = function(identifier){
@@ -144,9 +123,7 @@ app.factory('appDefinitions', function(){
 	var defaultFlavorList = {_01small:"Low", _02medium:"Medium", _03large:"High"};
 	var defaultAvailabilityList = {_01bh: "Business hours", _02_247: "24/7", _03ha: "HA"};
 	var defaultRuntimeList = {_01_7days: "7 days", _02forever: "Forever"}
-	var defaultLocationList = {ssf:"SSF", basel:"Basel", shanghai:"Shanghai"};
 	var defaultYesNoList = {no:"No", yes:"Yes"};
-	var defaultStorageList = {_01no:"No", _02s: "10GB", _03m:"100GB"};
 	var defaultPlatformList = {aws: "AWS", gce: "GCE"};
 
 	var defaultPriceFunction = function(settings){
@@ -180,7 +157,7 @@ app.factory('appDefinitions', function(){
 		return true;
 	}
 
-	var defaultApprover = 'aloys@scalr.com';
+	var defaultApprover = 'dan@scalr.com';
 
 	var ubuntuDef = {
 		name: "Ubuntu instance",
