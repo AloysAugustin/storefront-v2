@@ -157,6 +157,11 @@ app.factory('appDefinitions', function(){
 		return true;
 	}
 
+	var never = function (settings) {
+		return false;
+	}
+	//For now, never ask for approval (GE demo)
+	defaultApprovalFunction = never;
 	var defaultApprover = 'dan@scalr.com';
 
 	var ubuntuDef = {
