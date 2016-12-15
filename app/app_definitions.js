@@ -122,28 +122,9 @@ app.factory('appDefinitions', function(){
 
 	var defaultFlavorList = {_01small:"Low", _02medium:"Medium", _03large:"High"};
 	var defaultAvailabilityList = {_01bh: "Business hours", _02_247: "24/7", _03ha: "HA"};
-	var defaultRuntimeList = {_01_7days: "7 days", _02forever: "Forever"}
+	var defaultRuntimeList = {_01_1day: "24h", _02_7days: "7 days"};
 	var defaultYesNoList = {no:"No", yes:"Yes"};
-	var defaultPlatformList = {aws: "AWS", gce: "GCE"};
-
-	var defaultPriceFunction = function(settings){
-		var platform = "aws";
-		if (settings.platform) {
-			platform = settings.platform;
-		}
-		return {
-			aws: {
-			 	_01small: "1.61",
-			 	_02medium: "3.22",
-			 	_03large: "6.44"
-			},
-			gce: {
-				_01small: "1.85",
-			 	_02medium: "3.70",
-			 	_03large: "7.40"
-			}
-		}[platform][settings.flavor];
-	}
+	var defaultPlatformList = {aws: "AWS", gce: "GCE", openstack: "OpenStack", vmware: "VMWare"};
 
 	var defaultApprovalFunction = function(settings) {
 		return settings.flavor == '_03large' 
@@ -157,164 +138,26 @@ app.factory('appDefinitions', function(){
 		return true;
 	}
 
-        var never = function(settings) {
-            return false;
-        }
+	var never = function(settings) {
+		return false;
+	}
 
-	var defaultApprover = 'dan@scalr.com';
-
-	var ubuntuDef = {
-		name: "Ubuntu instance",
-		logoUrl: "http://design.ubuntu.com/wp-content/uploads/ubuntu-logo112.png",
-		price: defaultPriceFunction,
-		environment: 2,
-		recipeId: 'ubuntu',
-		description: "Just an Ubuntu Server",
-		flavorList: defaultFlavorList,
-		availabilityList: defaultAvailabilityList,
-		runtimeList: defaultRuntimeList,
-		platformList: defaultPlatformList,
-		internetBox: 'Make this application accessible from the internet',
-		approvalNeeded: defaultApprovalFunction,
-		approver: defaultApprover,
-		//Advanced User Options are here
-	};
-	appDefinitions.registerDef(ubuntuDef);
-
-	var largeUbuntuDef = {
-		name: "Large ubuntu instance",
-		logoUrl: "http://design.ubuntu.com/wp-content/uploads/ubuntu-logo112.png",
-		price: defaultPriceFunction,
-		environment: 39,
-		recipeId: 'ubuntu-approval',
-		description: "Just an Ubuntu Server",
-		flavorList: defaultFlavorList,
-		internetBox: 'Make this application accessible from the internet',
-		approvalNeeded: always,
-		approver: defaultApprover,
-		//Advanced User Options are here
-	};
-	appDefinitions.registerDef(largeUbuntuDef);
-
-	var railsDef = {
-		name: "Apache rails",
-		logoUrl: "https://upload.wikimedia.org/wikipedia/commons/1/16/Ruby_on_Rails-logo.png",
-		price: defaultPriceFunction,
-		environment: 2,
-		recipeId: 'rails',
-		description: "A Rails / Apache server",
-		flavorList: defaultFlavorList,
-		availabilityList: defaultAvailabilityList,
-		runtimeList: defaultRuntimeList,
-		internetBox: 'Make this application accessible from the internet',
-		approvalNeeded: defaultApprovalFunction,
-		approver: defaultApprover,
-		//Advanced User Options are here
-	};
-	appDefinitions.registerDef(railsDef);
-
-	var djangoDef = {
-		name: "Apache Django",
-		logoUrl: "http://www.unixstickers.com/image/data/stickers/django/django-neg.sh.png",
-		price: defaultPriceFunction,
-		environment: 2,
-		recipeId: 'django',
-		description: "A Django / Apache server",
-		flavorList: defaultFlavorList,
-		availabilityList: defaultAvailabilityList,
-		runtimeList: defaultRuntimeList,
-		internetBox: 'Make this application accessible from the internet',
-		approvalNeeded: defaultApprovalFunction,
-		approver: defaultApprover,
-		//Advanced User Options are here
-	};
-	appDefinitions.registerDef(djangoDef);
-
-	var nodeDef = {
-		name: "Node.JS",
-		logoUrl: "https://node-os.com/images/nodejs.png",
-		price: defaultPriceFunction,
-		environment: 2,
-		recipeId: 'node',
-		description: "A Node.JS server",
-		flavorList: defaultFlavorList,
-		availabilityList: defaultAvailabilityList,
-		runtimeList: defaultRuntimeList,
-		internetBox: 'Make this application accessible from the internet',
-		approvalNeeded: defaultApprovalFunction,
-		approver: defaultApprover,
-		//Advanced User Options are here
-	};
-	appDefinitions.registerDef(nodeDef);
-
-	var mysqlDef = {
-		name: "MySQL",
-		logoUrl: "https://www.mysql.fr/common/logos/logo-mysql-170x115.png",
-		price: defaultPriceFunction,
-		environment: 2,
-		recipeId: 'mysql',
-		description: "A MySQL server, on Ubuntu 14.04",
-		flavorList: defaultFlavorList,
-		availabilityList: defaultAvailabilityList,
-		runtimeList: defaultRuntimeList,
-		platformList: defaultPlatformList,
-		internetBox: 'Make this application accessible from the internet',
-		approvalNeeded: defaultApprovalFunction,
-		approver: defaultApprover,
-		//Advanced User Options are here
-	};
-	appDefinitions.registerDef(mysqlDef);
-
-	var redisDef = {
-		name: "Redis",
-		logoUrl: "https://upload.wikimedia.org/wikipedia/en/thumb/6/6b/Redis_Logo.svg/1280px-Redis_Logo.svg.png",
-		price: defaultPriceFunction,
-		environment: 2,
-		recipeId: 'redis',
-		description: "A Redis server",
-		flavorList: defaultFlavorList,
-		availabilityList: defaultAvailabilityList,
-		runtimeList: defaultRuntimeList,
-		internetBox: 'Make this application accessible from the internet',
-		approvalNeeded: defaultApprovalFunction,
-		approver: defaultApprover,
-		//Advanced User Options are here
-	};
-	appDefinitions.registerDef(redisDef);
-
-	var windowsDef = {
-		name: "Windows instance",
-		logoUrl: "http://itiscloudy.com/wp-content/uploads/2015/08/logo_winserver2012R2.png",
-		price: defaultPriceFunction,
-		environment: 2,
-		recipeId: 'windows',
-		description: "Just a Windows 2012 Server",
-		flavorList: defaultFlavorList,
-		availabilityList: defaultAvailabilityList,
-		runtimeList: defaultRuntimeList,
-		internetBox: 'Make this application accessible from the internet',
-		approvalNeeded: defaultApprovalFunction,
-		approver: defaultApprover,
-		//Advanced User Options are here
-	};
-	appDefinitions.registerDef(windowsDef);
-
-	var sapHanaExpressDef = {
-		name: "SAP HANA Express",
-		logoUrl: "http://www.virtustream.com/images/SAP-HANA-logo_160330_154207.png",
+	var qadDef = {
+		name: "QAD-EE-2016-AND-UI",
+		logoUrl: "https://api-explorer.scalr.com/images/scalr-logo-retina.png",
 		price: function(settings) {
-			return 20.16;
+			return "1.86";
 		},
-		recipeId: 'sapHanaExpress',
-		environment: 2,
-		description: "An Ubuntu 14.04 with a running SAP Hana Express",
-		availabilityList: defaultAvailabilityList,
+		recipeId: 'qadEE2016ui',
+		description: "QAD application with a windows UI server",
+		approvalNeeded: never,
+		environment: 1,
+		// Settings
+		platformList: defaultPlatformList,
+		flavorList: defaultFlavorList,
 		runtimeList: defaultRuntimeList,
-		internetBox: 'Make this application accessible from the internet',
-		approvalNeeded: defaultApprovalFunction,
-		approver: defaultApprover,
-	};
-	appDefinitions.registerDef(sapHanaExpressDef);
+	}
+	appDefinitions.registerDef(qadDef);
 
 	return appDefinitions;
 });

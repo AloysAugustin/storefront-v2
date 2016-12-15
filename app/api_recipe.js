@@ -113,31 +113,88 @@ app.factory('apiRecipes', function() {
         }
     }
 
-    makeFarmOp = function(method, operation) {
-        return {
-            data: {},   //Used to store data that needs to be saved across steps, and is passed to the success callback
-            validateParams: apiRecipes.mkValidateParams(['envId', 'farmId']),
-            steps: [
-                {
-                    description: method + ' farm ' + operation,
-                    method: method,
-                    url: function(data, params) {
-                        return '/api/v1beta0/user/{envId}/farms/{farmId}/{op}'.replace('{envId}', params.envId).replace('{farmId}', params.farmId).replace('{op}', operation);
-                    },
-                    done: function(response, data, params) {
-                        if (response) {
-                            data.result = response.data;
-                        }
+    apiRecipes.register('deleteFarm', {
+        data: {},   //Used to store data that needs to be saved across steps, and is passed to the success callback
+        validateParams: apiRecipes.mkValidateParams(['envId', 'farmId']),
+        steps: [
+            {
+                description: 'Delete Farm',
+                method: 'DELETE',
+                url: function(data, params) {
+                    return '/api/v1beta0/user/{envId}/farms/{farmId}/'.replace('{envId}', params.envId).replace('{farmId}', params.farmId);
+                },
+                done: function(response, data, params) {
+                    if (response) {
+                        data.result = response.data;
                     }
-                    // Undo not needed for last step (never executed)
                 }
-            ]
-        };
-    }
+                // Undo not needed for last step (never executed)
+            }
+        ]
+    });
 
-    apiRecipes.register('stopFarm', makeFarmOp('POST', 'actions/terminate/'));
-    apiRecipes.register('startFarm', makeFarmOp('POST', 'actions/launch/'));
-    apiRecipes.register('deleteFarm', makeFarmOp('DELETE', ''));
+    apiRecipes.register('stopFarm', {
+        data: {},   //Used to store data that needs to be saved across steps, and is passed to the success callback
+        validateParams: apiRecipes.mkValidateParams(['envId', 'farmId']),
+        steps: [
+            {
+                description: 'Stop farm',
+                method: 'POST',
+                url: function(data, params) {
+                    return '/api/v1beta0/user/{envId}/farms/{farmId}/actions/terminate/'.replace('{envId}', params.envId).replace('{farmId}');
+                },
+                done: function(response, data, params) {
+                    if (response) {
+                        data.result = response.data;
+                    }
+                }
+            },
+            {
+                description: 'Delete launch date GV',
+                method: 'DELETE',
+                url: function(data, params) {
+                    return '/api/v1beta0/user/{envId}/farms/{farmId}/global-variables/STOREFRONT_LAUNCH_DATE/'.replace('{envId}', params.envId).replace('{farmId}', data.newFarm.id);
+                },
+                done: function(response, data, params) {}
+            }
+        ]
+    });
+
+    apiRecipes.register('startFarm', {
+        data: {},   //Used to store data that needs to be saved across steps, and is passed to the success callback
+        validateParams: apiRecipes.mkValidateParams(['envId', 'farmId']),
+        steps: [
+            {
+                description: 'Start farm',
+                method: 'POST',
+                url: function(data, params) {
+                    return '/api/v1beta0/user/{envId}/farms/{farmId}/actions/launch/'.replace('{envId}', params.envId).replace('{farmId}', params.farmId);
+                },
+                done: function(response, data, params) {
+                    if (response) {
+                        data.result = response.data;
+                    }
+                }
+            },
+            {
+                description: 'Set launch date GV',
+                method: 'POST',
+                url: function(data, params) {
+                    return '/api/v1beta0/user/{envId}/farms/{farmId}/global-variables/'.replace('{envId}', params.envId).replace('{farmId}', params.farmId);
+                },
+                body: function(data, params) {
+                    return JSON.stringify({
+                        name: 'STOREFRONT_LAUNCH_DATE',
+                        category: 'STOREFRONT',
+                        value: Math.floor((new Date()).getTime() / 1000).toString()
+                    });
+                },
+                done: function(response, data, params) {}
+            }
+        ]
+    });
+
+
 
     apiRecipes.register('listFarms', {
         data: {},
