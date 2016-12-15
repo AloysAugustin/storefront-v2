@@ -177,6 +177,28 @@ app.factory('apiRecipes', function() {
                     data.myFarms[index].servers = response.all_data;
                 }
                 // Nothing to undo
+            },
+            {
+                description: 'Get farm roles for each farm',
+                type: 'parallel-for',
+                iterations: function(data, params) {
+                    return data.myFarms.length;
+                },
+                method: 'scroll',
+                url: function(data, params, index) {
+                    return '/api/v1beta0/user/{envId}/farms/{farmId}/farm-roles/'.replace('{envId}', params.envId).replace('{farmId}', data.myFarms[index].id);
+                },
+                done: function(response, data, params, index) {
+                    data.myFarms[index].farmRoles = response.all_data;
+                    for (var f = 0; f < data.myFarms[index].farmRoles.length; f ++) {
+                        data.myFarms[index].farmRoles[f].servers = [];
+                        for (var s = 0; s < data.myFarms[index].servers.length; s ++) {
+                            if (data.myFarms[index].farmRoles[f].id == data.myFarms[index].servers[s].farmRole.id) {
+                                data.myFarms[index].farmRoles[f].servers.push(data.myFarms[index].servers[s]);
+                            }
+                        }
+                    }
+                }
             }
         ]
     });

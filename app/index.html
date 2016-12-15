@@ -111,7 +111,9 @@
                         </div>
                         <div ng-show="app.status == 'running'">
                           <p>Application running</p>
-                          <p>Endpoint: <a target="_blank" href="http://{{app.props.address}}">{{app.props.address}}</a></p>
+                          <ul>
+                            <li ng-repeat="(fr, servers) in app.props.endpoints">{{fr}}: <span ng-repeat="ep in servers track by $index">{{ep}} </span></li>
+                          </ul>
                           <button type="button" ng-disabled="app.working" ng-click="app.working=true; stopApp(app)" class="btn btn-danger" id="farm-{{app.id}}-button-stop">Stop application</button>
                           <img src="static/throbber.gif" ng-show="app.working"/>
                         </div>
