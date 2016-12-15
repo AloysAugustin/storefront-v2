@@ -157,6 +157,10 @@ app.factory('appDefinitions', function(){
 		return true;
 	}
 
+        var never = function(settings) {
+            return false;
+        }
+
 	var defaultApprover = 'dan@scalr.com';
 
 	var ubuntuDef = {
