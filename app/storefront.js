@@ -125,7 +125,9 @@ app.controller('StorefrontController', ["backend", "appDefinitions", "$scope", "
           for (var j = 0; j < farm.farmRoles.length; j ++) {
             var serversEP = [];
             for (var k = 0; k < farm.farmRoles[j].servers.length; k ++) {
-              serversEP.push(farm.farmRoles[j].servers[k].publicIp[0]);
+              if (farm.farmRoles[j].servers[k].status != 'pending_terminate' && farm.farmRoles[j].servers[k].status != 'terminated') {
+                serversEP.push(farm.farmRoles[j].servers[k].publicIp[0]);
+              }
             }
             readOnlyProperties.endpoints[farm.farmRoles[j].alias] = serversEP;
           }
