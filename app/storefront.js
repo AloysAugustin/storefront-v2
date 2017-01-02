@@ -10,10 +10,10 @@ app.controller('StorefrontController', [
   "$interval",
   "localStorageService",
   function (back, apps, environments, $scope, $location, $filter, $interval, localStorageService) {
-  for (var anyEnv in environments) break;
   /*
    * Credentials management
    */
+  for (var anyEnv in environments) break;
   $scope.defaultApiSettings = {
     apiUrl: "https://demo.scalr.com/",
     keyId: "",
@@ -34,6 +34,9 @@ app.controller('StorefrontController', [
         if ($scope.defaultApiSettings.hasOwnProperty(prop) && !storedApiSettings.hasOwnProperty(prop)) {
           storedApiSettings[prop] = $scope.defaultApiSettings[prop];
         }
+      }
+      if (!(storedApiSettings.envId in environments)) {
+        storedApiSettings.envId = anyEnv;
       }
       $scope.storedApiSettings = storedApiSettings;
       $scope.apiSettings = angular.copy($scope.storedApiSettings);
