@@ -67,6 +67,13 @@ app.controller('StorefrontController', [
     $scope.fetchAllFarms();
   }
 
+  $scope.envIdChanged = function(envId) {
+    $scope.apiSettings.envId = envId;
+    $scope.storedApiSettings.envId = envId;
+    $scope.fetchCatalog();
+    $scope.fetchAllFarms();
+  }
+
   // TODO: validation
 
   /*
