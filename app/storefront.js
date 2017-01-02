@@ -30,6 +30,11 @@ app.controller('StorefrontController', [
       $scope.storedApiSettings = $scope.defaultApiSettings;
       $scope.apiSettings = angular.copy($scope.storedApiSettings);
     } else {
+      for (var prop in $scope.defaultApiSettings) {
+        if ($scope.defaultApiSettings.hasOwnProperty(prop) && !storedApiSettings.hasOwnProperty(prop)) {
+          storedApiSettings[prop] = $scope.defaultApiSettings[prop];
+        }
+      }
       $scope.storedApiSettings = storedApiSettings;
       $scope.apiSettings = angular.copy($scope.storedApiSettings);
       if ($scope.apiSettings.keyId.length > 0 && $scope.apiSettings.secretKey.length > 0 && $scope.apiSettings.envId.length > 0) {
