@@ -213,7 +213,6 @@ app.controller('StorefrontController', [
         }
       }
       console.log($scope.myApps);
-      $scope.$apply();
     }, function() {
       alert("Can't list applications. Check your credentials.");
       $scope.loggedIn = false;
