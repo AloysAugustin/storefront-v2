@@ -473,3 +473,7 @@ app.filter('safe', function() {
         return txt;
     };
 });
+
+/*angular.module('ScalrStorefront').config(function($locationProvider) {
+    $locationProvider.html5Mode(true).hashPrefix('!');
+  });*/

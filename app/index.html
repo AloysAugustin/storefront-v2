@@ -13,14 +13,14 @@
   <link rel="stylesheet" href="static/css/main.css" type='text/css'>
 </head>
 <body ng-app="ScalrStorefront">
-<!--<oauth2 authorization-url="https://accounts.google.com/o/oauth2/auth"
+<oauth2 authorization-url="http://28817e141ce8.test-env.scalr.com/#/core/oauth/grant"
         sign-out-url="https://accounts.google.com/o/oauth2/revoke?token="
         sign-out-append-token="true"
-        client-id="1025994295523-ac8bbdftr5herm80vp2g7l6ak1e4n7u4.apps.googleusercontent.com"
-        redirect-url="http://localhost:8000"
+        client-id="7ff71622c3ae"
+        redirect-url="http://oauth.demo.scalr.com/"
         response-type="token"
-        scope="openid"
-        auto-generate-nonce="false"> -->
+        scope="user:write account:read"
+        auto-generate-nonce="false">
 </oauth2>
   <div ng-controller="StorefrontController">
     <div class="navbar-wagon">
