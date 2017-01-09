@@ -13,16 +13,18 @@ app.factory('backend', ['appDefinitions', 'apiRecipes', 'localStorageService','r
         ScalrAPI.setSettings(credentials);
         var s = angular.copy(settings);
         s.def_name = def.name;
-        s.keyId = credentials.keyId;
+        s.uid = credentials.uid;
+        s.email = credentials.uid;
         s.envId = credentials.envId;
         apiRecipes.run(def.recipeId, s, success_cb, failure_cb);
     };
 
-    backend.listAppsByAPIKey = function(credentials, success_cb, failure_cb) {
+    backend.listAppsForUser= function(credentials, success_cb, failure_cb) {
         ScalrAPI.setSettings(credentials);
          var params = {
             envId: credentials.envId,
-            keyId: credentials.keyId
+            uid: credentials.uid,
+            email: credentials.email
         };
         apiRecipes.run('listFarms', params, success_cb, failure_cb);
     };
@@ -60,6 +62,13 @@ app.factory('backend', ['appDefinitions', 'apiRecipes', 'localStorageService','r
         apiRecipes.run('startFarm', params, success_cb, failure_cb);
     };
 
+    backend.retrieveUser = function(credentials, success_cb, failure_cb){
+        ScalrAPI.setSettings(credentials);
+        var params = {
+            envId: credentials.envId
+        }
+        apiRecipes.run('getUidAndEmail', params, success_cb, failure_cb);
+    }
 
     return backend;
 }]);

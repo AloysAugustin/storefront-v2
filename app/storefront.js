@@ -4,83 +4,61 @@ app.controller('StorefrontController', [
   "backend",
   "appDefinitions",
   "environments",
+  "settings",
+  "apiRecipes",
+  "recipes",
   "$scope",
+  "$rootScope",
   "$location",
   "$filter",
   "$interval",
   "localStorageService",
-  function (back, apps, environments, $scope, $location, $filter, $interval, localStorageService) {
+  function (back, apps, environments, globalSettings, apiRecipes, recipes, $scope, $rootScope, $location, $filter, $interval, localStorageService) {
   /*
    * Credentials management
    */
   for (var anyEnv in environments) break;
-  $scope.defaultApiSettings = {
-    apiUrl: "https://demo.scalr.com/",
-    keyId: "",
-    secretKey: "",
+
+  // Load configuration from settings
+  $scope.config = globalSettings;
+  $scope.apiSettings = {
+    apiUrl: $scope.config.apiV2Url,
     envId: anyEnv,
   };
 
-  $scope.apiSettings = {};
-  $scope.storedApiSettings = null;
-
-  $scope.loadApiSettings = function () {
-    var storedApiSettings = angular.fromJson(localStorageService.get('apiSettings'));
-    if (storedApiSettings === null) {
-      $scope.storedApiSettings = $scope.defaultApiSettings;
-      $scope.apiSettings = angular.copy($scope.storedApiSettings);
-    } else {
-      for (var prop in $scope.defaultApiSettings) {
-        if ($scope.defaultApiSettings.hasOwnProperty(prop) && !storedApiSettings.hasOwnProperty(prop)) {
-          storedApiSettings[prop] = $scope.defaultApiSettings[prop];
-        }
-      }
-      if (!(storedApiSettings.envId in environments)) {
-        storedApiSettings.envId = anyEnv;
-      }
-      $scope.storedApiSettings = storedApiSettings;
-      $scope.apiSettings = angular.copy($scope.storedApiSettings);
-      if ($scope.apiSettings.keyId.length > 0 && $scope.apiSettings.secretKey.length > 0 && $scope.apiSettings.envId.length > 0) {
-        $scope.autoLoggedIn = true;
-        $scope.apiSettingsDone();
-        $scope.credentialsSaved = true;
-      }
-    }
-  }
-
-  $scope.saveApiSettings = function () {
-    $scope.storedApiSettings = angular.copy($scope.apiSettings);
-    $scope.apiSettingsDone();
-    $scope.credentialsSaved = true;
-  }
-
-  $scope.clearApiSettings = function () {
-    $scope.storedApiSettings = angular.copy($scope.defaultApiSettings);
-    $scope.autoLoggedIn = false;
-    $scope.loggedIn = false;
-  }
-
-  // Update storage on save
-  $scope.$watch('storedApiSettings', function (newSettings, oldSettings) {
-    if (newSettings === oldSettings) return;  // Same object --> initialization.
-    localStorageService.set('apiSettings', angular.toJson(newSettings));
-  }, true);
-
-  $scope.apiSettingsDone = function() {
-
-    $scope.credentialsSaved = false;
-    $scope.loggedIn = true;
-    $scope.settings.advanced_user = back.isUserAdvanced($scope.apiSettings);
-    $scope.fetchCatalog();
-    $scope.fetchAllFarms();
-  }
-
   $scope.envIdChanged = function(envId) {
     $scope.apiSettings.envId = envId;
-    $scope.storedApiSettings.envId = envId;
     $scope.fetchCatalog();
     $scope.fetchAllFarms();
   }
+  /*
+   * Control the loggedIn variable according to the oAuth Code
+   */
+   $scope.loggedIn = false;
+
+   $scope.$on('oauth2:authExpired', function () {
+    console.log("Expired!");
+    $scope.loggedIn = false;
+   });
+
+   $scope.$on('oauth2:authSuccess', function () {
+    $scope.loggedIn = true;
+    back.retrieveUser($scope.apiSettings,
+      function(data){
+        //Success callback
+        $scope.apiSettings.uid = data.uid;
+        $scope.apiSettings.email = data.email;
+        console.log('Detected User : '+ data.email);
+      },
+      function(data){
+        //Err callback
+      }
+      );
+   });
+
+   $scope.logout = function() {
+    $rootScope.$broadcast('oauth2:authExpired');
+   };
 
   // TODO: validation
 
@@ -124,7 +102,7 @@ app.controller('StorefrontController', [
     for (var i = 0; i < $scope.myApps.length; i ++) {
       myAppsSet[$scope.myApps[i].id] = $scope.myApps[i];
     }
-    back.listAppsByAPIKey($scope.apiSettings, function(data) {
+    back.listAppsForUser($scope.apiSettings, function(data) {
       var myFarms = data.myFarms;
       console.log(myFarms);
       for (var i = 0; i < myFarms.length; i ++) {
@@ -215,8 +193,7 @@ app.controller('StorefrontController', [
       console.log($scope.myApps);
     }, function() {
       alert("Can't list applications. Check your credentials.");
-      $scope.loggedIn = false;
-      $scope.autoLoggedIn = false;
+      $scope.logout();
     });
   };
 
@@ -311,7 +288,8 @@ app.controller('StorefrontController', [
       def = app.model;
     }
     delete params['def_name']
-    delete params['keyId']
+    delete params['uid']
+    delete params['email']
     delete params['name']
     delete params['approval_required']
     params['action'] = action;
@@ -388,15 +366,12 @@ app.controller('StorefrontController', [
    * Initialisation
    */
   $scope.loggedIn = false;
-  $scope.autoLoggedIn = false;
-  $scope.credentialsSaved = false;
 
   $scope.settings = {
     advanced_user: true,
     show_advanced: false,
   }
 
-  $scope.loadApiSettings();
   $scope.pollingPromise = $interval($scope.fetchAllFarms, 10000);
 
 

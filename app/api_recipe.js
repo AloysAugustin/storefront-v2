@@ -141,7 +141,7 @@ app.factory('apiRecipes', function() {
 
     apiRecipes.register('listFarms', {
         data: {},
-        validateParams: apiRecipes.mkValidateParams(['envId', 'keyId']),
+        validateParams: apiRecipes.mkValidateParams(['envId', 'uid', 'email']),
         steps: [
             {
                 description: 'List all farms',
@@ -152,10 +152,10 @@ app.factory('apiRecipes', function() {
                 done: function(response, data, params) {
                     data.farms = response.all_data;
                     var myFarms = [];
-                    // Filter farms by key id
+                    // Filter farms by uid
                     for (var i = 0; i < data.farms.length; i ++) {
-                        if (data.farms[i].name.startsWith('['+params.keyId+']')) {
-                            data.farms[i].name = data.farms[i].name.replace('['+params.keyId+']', '');
+                        if (data.farms[i].name.startsWith('[STOREFRONT-'+params.uid+']')) {
+                            data.farms[i].name = data.farms[i].name.replace('[STOREFRONT-'+params.uid+']', '');
                             myFarms.push(data.farms[i]);
                         }
                     }

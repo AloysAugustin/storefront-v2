@@ -57,24 +57,17 @@
       queryString = this.makeQueryString(params);
     }
 
-    /*if (body && typeof body === 'object') {
-      body = JSON.stringify(body);
-    }*/
-
     if (scalrAddress.endsWith('/')) {
       scalrAddress = scalrAddress.substring(0, scalrAddress.length - 1);
     }
 
-    headers = this.makeAuthHeaders(method, timestamp, path, queryString, body);
+    //headers = this.makeAuthHeaders(method, timestamp, path, queryString, body);
 
     return this.http({
       method: method,
       url: scalrAddress + path + (queryString.length > 0 ? '?' + queryString : ''),
-      //contentType: "application/json; charset=utf-8",
       data: body,
-      headers: headers,
-      //success: onSuccess,
-      //error: onError
+      headers: headers
     })
     .success(function(data, status, headers, config) {
       onSuccess(data);

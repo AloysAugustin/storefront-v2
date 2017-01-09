@@ -7,7 +7,7 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
             data: {
                 initialFarmId: initialFarmId
             },
-            validateParams: apiRecipes.mkValidateParams(['keyId', 'envId', 'flavor', 'name', 'approval_required']),
+            validateParams: apiRecipes.mkValidateParams(['uid', 'envId', 'flavor', 'name', 'approval_required', 'email']),
             steps: [
                 {
                     description: 'Clone base farm',
@@ -17,9 +17,9 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
                     },
                     body: function(data, params) {
                         if (!params.approval_required) {
-                            var name = '[' + params.keyId + ']' + params.name;
+                            var name = '[STOREFRONT-' + params.uid + ']' + params.name;
                         } else {
-                            var name = '[' + params.keyId + '][PENDING_APPROVAL]' + params.name
+                            var name = '[STOREFRONT-' + params.uid + '][PENDING_APPROVAL]' + params.name
                         }
                         return JSON.stringify({
                             'name': name
@@ -44,7 +44,7 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
                     },
                     body: function(data, params) {
                         var settings = angular.copy(params);
-                        delete settings.keyId;
+                        delete settings.uid;
                         return JSON.stringify({
                             description: JSON.stringify({
                                 settings: settings
@@ -107,7 +107,7 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
             data: {
                 initialFarmIds: initialFarmIds
             },
-            validateParams: apiRecipes.mkValidateParams(['keyId', 'envId', 'name', 'flavor', 'approval_required', 'platform']),
+            validateParams: apiRecipes.mkValidateParams(['uid', 'envId', 'name', 'flavor', 'approval_required', 'platform']),
             steps: [
                 {
                     description: 'Clone base farm',
@@ -118,9 +118,9 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
                     },
                     body: function(data, params) {
                         if (!params.approval_required) {
-                            var name = '[' + params.keyId + ']' + params.name;
+                            var name = '[STOREFRONT-' + params.uid + ']' + params.name;
                         } else {
-                            var name = '[' + params.keyId + '][PENDING_APPROVAL]' + params.name
+                            var name = '[STOREFRONT-' + params.uid + '][PENDING_APPROVAL]' + params.name
                         }
                         return JSON.stringify({
                             'name': name
@@ -145,7 +145,7 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
                     },
                     body: function(data, params) {
                         var settings = angular.copy(params);
-                        delete settings.keyId;
+                        delete settings.uid;
                         return JSON.stringify({
                             description: JSON.stringify({
                                 settings: settings
@@ -204,6 +204,58 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
         };
     }
 
+    var getUidAndEmailRecipe = {
+        data: {},
+        validateParams: apiRecipes.mkValidateParams(['envId']),
+        steps: [
+            {
+                description: 'Get any farm to get an existing projectId',
+                method: 'scroll',
+                url: function(data, params){
+                    return '/api/v1beta0/user/{envId}/farms/'.replace('{envId}',params.envId);
+                },
+                body: function(data, params){
+                    return '';
+                },
+                done: function(response, data, params){
+                    data.projectId = response.data[0].project.id;
+                }
+            },
+            {
+                description: 'Create a dummy farm',
+                method: 'POST',
+                url: function(data, params){
+                    return '/api/v1beta0/user/{envId}/farms/'.replace('{envId}',params.envId);
+                },
+                body: function(data, params){
+                    return JSON.stringify({
+                        name: Math.random().toString(36).substring(7),
+                        project: {
+                            id: data.projectId,
+                        },
+                    });
+                },
+                done: function(response, data, params){
+                    data.farmId = response.data.id;
+                    data.uid = response.data.owner.id;
+                    data.email = response.data.owner.email;
+                }
+            },
+            {
+                description: 'Delete the dummy farm',
+                method: 'DELETE',
+                url: function(data, params){
+                    return '/api/v1beta0/user/{envId}/farms/{farmId}/'.replace('{envId}',params.envId).replace('{farmId}',data.farmId);
+                },
+                body: function(data, params){
+                    return '';
+                },
+                done: function(response, data, params){
+                }
+            }
+        ]
+    };
+    apiRecipes.register('getUidAndEmail', getUidAndEmailRecipe);
     apiRecipes.register('ubuntu', mkMultiPlatformFarmRecipe({aws: 183, gce: 654}));
     apiRecipes.register('ubuntu-approval', mkStdFarmRecipe(806));
     apiRecipes.register('redis', mkStdFarmRecipe(191));
