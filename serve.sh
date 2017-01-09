@@ -1,5 +1,8 @@
 #!/bin/bash
 
 pushd app
-python -m SimpleHTTPServer 8008
+PORT=80
+[ "$1" == "" ] || PORT="$1";
+echo "$PORT"
+python -m SimpleHTTPServer $PORT
 
