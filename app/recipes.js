@@ -204,14 +204,6 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
         };
     }
 
-    apiRecipes.register('ubuntu', mkMultiPlatformFarmRecipe({aws: 183, gce: 654}));
-    apiRecipes.register('ubuntu-approval', mkStdFarmRecipe(806));
-    apiRecipes.register('redis', mkStdFarmRecipe(191));
-    apiRecipes.register('windows', mkStdFarmRecipe(192));
-    apiRecipes.register('mysql', mkMultiPlatformFarmRecipe({aws: 190, gce: 655}));
-    apiRecipes.register('node', mkStdFarmRecipe(188));
-    apiRecipes.register('django', mkStdFarmRecipe(187));
-    apiRecipes.register('rails', mkStdFarmRecipe(184));
-    apiRecipes.register('sapHanaExpress', mkStdFarmRecipe(760));
+    apiRecipes.register('ubuntu', mkStdFarmRecipe(1));
 }]);
 

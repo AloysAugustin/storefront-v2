@@ -170,161 +170,22 @@ app.factory('appDefinitions', function(){
 		return false;
 	}
 	
-	var defaultApprover = 'dan@scalr.com';
+	var defaultApprover = 'example@example.com';
 
 	var ubuntuDef = {
 		name: "Ubuntu instance",
 		logoUrl: "http://design.ubuntu.com/wp-content/uploads/ubuntu-logo112.png",
 		price: defaultPriceFunction,
-		environment: 2,
+		environment: 1,
 		recipeId: 'ubuntu',
 		description: "Just an Ubuntu Server",
 		flavorList: defaultFlavorList,
-		availabilityList: defaultAvailabilityList,
-		runtimeList: defaultRuntimeList,
-		platformList: defaultPlatformList,
-		internetBox: 'Make this application accessible from the internet',
-		approvalNeeded: defaultApprovalFunction,
+		approvalNeeded: never,
 		approver: defaultApprover,
 		//Advanced User Options are here
 	};
 	appDefinitions.registerDef(ubuntuDef);
 
-	var largeUbuntuDef = {
-		name: "Large ubuntu instance",
-		logoUrl: "http://design.ubuntu.com/wp-content/uploads/ubuntu-logo112.png",
-		price: defaultPriceFunction,
-		environment: 39,
-		recipeId: 'ubuntu-approval',
-		description: "Just an Ubuntu Server",
-		flavorList: defaultFlavorList,
-		internetBox: 'Make this application accessible from the internet',
-		approvalNeeded: always,
-		approver: defaultApprover,
-		justificationField: 'Justification',
-		//Advanced User Options are here
-	};
-	appDefinitions.registerDef(largeUbuntuDef);
-
-	var railsDef = {
-		name: "Apache rails",
-		logoUrl: "https://upload.wikimedia.org/wikipedia/commons/1/16/Ruby_on_Rails-logo.png",
-		price: defaultPriceFunction,
-		environment: 2,
-		recipeId: 'rails',
-		description: "A Rails / Apache server",
-		flavorList: defaultFlavorList,
-		availabilityList: defaultAvailabilityList,
-		runtimeList: defaultRuntimeList,
-		internetBox: 'Make this application accessible from the internet',
-		approvalNeeded: defaultApprovalFunction,
-		approver: defaultApprover,
-		//Advanced User Options are here
-	};
-	appDefinitions.registerDef(railsDef);
-
-	var djangoDef = {
-		name: "Apache Django",
-		logoUrl: "http://www.unixstickers.com/image/data/stickers/django/django-neg.sh.png",
-		price: defaultPriceFunction,
-		environment: 2,
-		recipeId: 'django',
-		description: "A Django / Apache server",
-		flavorList: defaultFlavorList,
-		availabilityList: defaultAvailabilityList,
-		runtimeList: defaultRuntimeList,
-		internetBox: 'Make this application accessible from the internet',
-		approvalNeeded: defaultApprovalFunction,
-		approver: defaultApprover,
-		//Advanced User Options are here
-	};
-	appDefinitions.registerDef(djangoDef);
-
-	var nodeDef = {
-		name: "Node.JS",
-		logoUrl: "https://node-os.com/images/nodejs.png",
-		price: defaultPriceFunction,
-		environment: 2,
-		recipeId: 'node',
-		description: "A Node.JS server",
-		flavorList: defaultFlavorList,
-		availabilityList: defaultAvailabilityList,
-		runtimeList: defaultRuntimeList,
-		internetBox: 'Make this application accessible from the internet',
-		approvalNeeded: defaultApprovalFunction,
-		approver: defaultApprover,
-		//Advanced User Options are here
-	};
-	appDefinitions.registerDef(nodeDef);
-
-	var mysqlDef = {
-		name: "MySQL",
-		logoUrl: "https://www.mysql.fr/common/logos/logo-mysql-170x115.png",
-		price: defaultPriceFunction,
-		environment: 2,
-		recipeId: 'mysql',
-		description: "A MySQL server, on Ubuntu 14.04",
-		flavorList: defaultFlavorList,
-		availabilityList: defaultAvailabilityList,
-		runtimeList: defaultRuntimeList,
-		platformList: defaultPlatformList,
-		internetBox: 'Make this application accessible from the internet',
-		approvalNeeded: defaultApprovalFunction,
-		approver: defaultApprover,
-		//Advanced User Options are here
-	};
-	appDefinitions.registerDef(mysqlDef);
-
-	var redisDef = {
-		name: "Redis",
-		logoUrl: "https://upload.wikimedia.org/wikipedia/en/thumb/6/6b/Redis_Logo.svg/1280px-Redis_Logo.svg.png",
-		price: defaultPriceFunction,
-		environment: 2,
-		recipeId: 'redis',
-		description: "A Redis server",
-		flavorList: defaultFlavorList,
-		availabilityList: defaultAvailabilityList,
-		runtimeList: defaultRuntimeList,
-		internetBox: 'Make this application accessible from the internet',
-		approvalNeeded: defaultApprovalFunction,
-		approver: defaultApprover,
-		//Advanced User Options are here
-	};
-	appDefinitions.registerDef(redisDef);
-
-	var windowsDef = {
-		name: "Windows instance",
-		logoUrl: "http://itiscloudy.com/wp-content/uploads/2015/08/logo_winserver2012R2.png",
-		price: defaultPriceFunction,
-		environment: 2,
-		recipeId: 'windows',
-		description: "Just a Windows 2012 Server",
-		flavorList: defaultFlavorList,
-		availabilityList: defaultAvailabilityList,
-		runtimeList: defaultRuntimeList,
-		internetBox: 'Make this application accessible from the internet',
-		approvalNeeded: defaultApprovalFunction,
-		approver: defaultApprover,
-		//Advanced User Options are here
-	};
-	appDefinitions.registerDef(windowsDef);
-
-	var sapHanaExpressDef = {
-		name: "SAP HANA Express",
-		logoUrl: "http://www.virtustream.com/images/SAP-HANA-logo_160330_154207.png",
-		price: function(settings) {
-			return 20.16;
-		},
-		recipeId: 'sapHanaExpress',
-		environment: 2,
-		description: "An Ubuntu 14.04 with a running SAP Hana Express",
-		availabilityList: defaultAvailabilityList,
-		runtimeList: defaultRuntimeList,
-		internetBox: 'Make this application accessible from the internet',
-		approvalNeeded: defaultApprovalFunction,
-		approver: defaultApprover,
-	};
-	appDefinitions.registerDef(sapHanaExpressDef);
 
 	return appDefinitions;
 });
