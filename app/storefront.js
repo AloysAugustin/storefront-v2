@@ -164,7 +164,18 @@ app.controller('StorefrontController', [
             var serversEP = [];
             for (var k = 0; k < farm.farmRoles[j].servers.length; k ++) {
               if (farm.farmRoles[j].servers[k].status != 'pending_terminate' && farm.farmRoles[j].servers[k].status != 'terminated') {
-                serversEP.push(farm.farmRoles[j].servers[k].publicIp[0]);
+                var eps = '';
+                var server = farm.farmRoles[j].servers[k];
+                for (var i in server.publicIp) {
+                  eps += 'Public: ' + server.publicIp[i] + ' ';
+                }
+                for (var i in server.privateIp) {
+                  eps += 'Private: ' + server.privateIp[i] + ' ';
+                }
+                if (eps.length == 0) {
+                  eps = 'Server IP not available yet';
+                }
+                serversEP.push(eps);
               }
             }
             readOnlyProperties.endpoints[farm.farmRoles[j].alias] = serversEP;
