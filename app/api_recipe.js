@@ -154,8 +154,8 @@ app.factory('apiRecipes', function() {
                     var myFarms = [];
                     // Filter farms by uid
                     for (var i = 0; i < data.farms.length; i ++) {
-                        if (data.farms[i].name.startsWith('[STOREFRONT-'+params.uid+']')) {
-                            data.farms[i].name = data.farms[i].name.replace('[STOREFRONT-'+params.uid+']', '');
+                        if (data.farms[i].name.startsWith('[STOREFRONT'+params.uid+']')) {
+                            data.farms[i].name = data.farms[i].name.replace('[STOREFRONT'+params.uid+']', '');
                             myFarms.push(data.farms[i]);
                         }
                     }
