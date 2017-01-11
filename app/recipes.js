@@ -17,9 +17,9 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
                     },
                     body: function(data, params) {
                         if (!params.approval_required) {
-                            var name = '[STOREFRONT' + params.uid + ']' + params.name;
+                            var name = '[STOREFRONT-' + params.uid + ']' + params.name;
                         } else {
-                            var name = '[STOREFRONT' + params.uid + '][PENDING_APPROVAL]' + params.name
+                            var name = '[STOREFRONT-' + params.uid + '][PENDING_APPROVAL]' + params.name
                         }
                         return JSON.stringify({
                             'name': name
@@ -118,9 +118,9 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
                     },
                     body: function(data, params) {
                         if (!params.approval_required) {
-                            var name = '[STOREFRONT' + params.uid + ']' + params.name;
+                            var name = '[STOREFRONT-' + params.uid + ']' + params.name;
                         } else {
-                            var name = '[STOREFRONT' + params.uid + '][PENDING_APPROVAL]' + params.name
+                            var name = '[STOREFRONT-' + params.uid + '][PENDING_APPROVAL]' + params.name
                         }
                         return JSON.stringify({
                             'name': name
