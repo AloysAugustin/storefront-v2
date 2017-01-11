@@ -49,6 +49,8 @@ app.controller('StorefrontController', [
         $scope.apiSettings.uid = data.uid;
         $scope.apiSettings.email = data.email;
         console.log('Detected User : '+ data.email);
+        $scope.fetchCatalog();
+        $scope.fetchAllFarms();
       },
       function(data){
         //Err callback
