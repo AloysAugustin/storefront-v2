@@ -62,12 +62,12 @@ app.factory('backend', ['appDefinitions', 'apiRecipes', 'localStorageService','r
         apiRecipes.run('startFarm', params, success_cb, failure_cb);
     };
 
-    backend.retrieveUser = function(credentials, success_cb, failure_cb){
+    backend.retrieveUserAndEnvs = function(credentials, settings, success_cb, failure_cb){
         ScalrAPI.setSettings(credentials);
         var params = {
-            envId: credentials.envId
+            activated_envs: settings.environments
         }
-        apiRecipes.run('getUidAndEmail', params, success_cb, failure_cb);
+        apiRecipes.run('getUserAndEnvs', params, success_cb, failure_cb);
     }
 
     return backend;

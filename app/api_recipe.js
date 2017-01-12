@@ -8,6 +8,10 @@ app.factory('apiRecipes', function() {
 
     apiRecipes.run = function(recipe, params, onSuccess, onError) {
         var run = angular.copy(apiRecipes.get(recipe));
+        if (!run) {
+            console.log('Recipe not found! ' + recipe);
+            onError();
+        }
         run.params = angular.copy(params);
         console.log(run);
         if (!run.validateParams(run.data, params)) {
@@ -226,6 +230,74 @@ app.factory('apiRecipes', function() {
             }
         ]
     });
+
+    apiRecipes.register('getUserAndEnvs', {
+        data: {},
+        validateParams: apiRecipes.mkValidateParams([]),
+        steps: [
+            {
+                description: 'List environments in the user\'s account',
+                method: 'scroll',
+                url: function(data, params) {
+                    return '/api/v1beta0/account/environments/';
+                },
+                done: function(response, data, params) {
+                    data.all_envs = response.data;
+                    data.envs = {};
+                    for (var i = 0; i < data.all_envs.length; i ++) {
+                        var env = data.all_envs[i];
+                        if (params.activated_envs.indexOf(env.id.toString()) != -1) {
+                            data.envs[env.id.toString()] = env;
+                            data.test_env = env;
+                        }
+                    }
+                }
+            },
+            {
+                description: 'Get any farm to get an existing projectId',
+                method: 'scroll',
+                url: function(data, params) {
+                    return '/api/v1beta0/user/{envId}/farms/'.replace('{envId}', data.test_env.id);
+                },
+                body: function(data, params) {
+                    return '';
+                },
+                done: function(response, data, params) {
+                    data.projectId = response.data[0].project.id;
+                }
+            },
+            {
+                description: 'Create a dummy farm',
+                method: 'POST',
+                url: function(data, params) {
+                    return '/api/v1beta0/user/{envId}/farms/'.replace('{envId}', data.test_env.id);
+                },
+                body: function(data, params) {
+                    return JSON.stringify({
+                        name: '[STOREFRONT-TEMP]' + Math.random().toString(36).substring(7),
+                        project: {
+                            id: data.projectId,
+                        },
+                    });
+                },
+                done: function(response, data, params) {
+                    data.farmId = response.data.id;
+                    data.uid = response.data.owner.id;
+                    data.email = response.data.owner.email;
+                }
+            },
+            {
+                description: 'Delete the dummy farm',
+                method: 'DELETE',
+                url: function(data, params) {
+                    return '/api/v1beta0/user/{envId}/farms/{farmId}/'.replace('{envId}', data.test_env.id).replace('{farmId}', data.farmId);
+                },
+                done: function(response, data, params) {
+                }
+            }
+        ]
+    });
+
     apiRecipes.recipes = recipes;
     return apiRecipes;
 });

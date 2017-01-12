@@ -204,58 +204,6 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
         };
     }
 
-    var getUidAndEmailRecipe = {
-        data: {},
-        validateParams: apiRecipes.mkValidateParams(['envId']),
-        steps: [
-            {
-                description: 'Get any farm to get an existing projectId',
-                method: 'scroll',
-                url: function(data, params){
-                    return '/api/v1beta0/user/{envId}/farms/'.replace('{envId}',params.envId);
-                },
-                body: function(data, params){
-                    return '';
-                },
-                done: function(response, data, params){
-                    data.projectId = response.data[0].project.id;
-                }
-            },
-            {
-                description: 'Create a dummy farm',
-                method: 'POST',
-                url: function(data, params){
-                    return '/api/v1beta0/user/{envId}/farms/'.replace('{envId}',params.envId);
-                },
-                body: function(data, params){
-                    return JSON.stringify({
-                        name: Math.random().toString(36).substring(7),
-                        project: {
-                            id: data.projectId,
-                        },
-                    });
-                },
-                done: function(response, data, params){
-                    data.farmId = response.data.id;
-                    data.uid = response.data.owner.id;
-                    data.email = response.data.owner.email;
-                }
-            },
-            {
-                description: 'Delete the dummy farm',
-                method: 'DELETE',
-                url: function(data, params){
-                    return '/api/v1beta0/user/{envId}/farms/{farmId}/'.replace('{envId}',params.envId).replace('{farmId}',data.farmId);
-                },
-                body: function(data, params){
-                    return '';
-                },
-                done: function(response, data, params){
-                }
-            }
-        ]
-    };
-    apiRecipes.register('getUidAndEmail', getUidAndEmailRecipe);
     apiRecipes.register('ubuntu', mkMultiPlatformFarmRecipe({aws: 183, gce: 654}));
     apiRecipes.register('ubuntu-approval', mkStdFarmRecipe(806));
     apiRecipes.register('redis', mkStdFarmRecipe(191));

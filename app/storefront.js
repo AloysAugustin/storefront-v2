@@ -3,7 +3,6 @@ var app = angular.module('ScalrStorefront', ['LocalStorageModule', 'angular.filt
 app.controller('StorefrontController', [
   "backend",
   "appDefinitions",
-  "environments",
   "settings",
   "apiRecipes",
   "recipes",
@@ -13,17 +12,15 @@ app.controller('StorefrontController', [
   "$filter",
   "$interval",
   "localStorageService",
-  function (back, apps, environments, globalSettings, apiRecipes, recipes, $scope, $rootScope, $location, $filter, $interval, localStorageService) {
+  function (back, apps, globalSettings, apiRecipes, recipes, $scope, $rootScope, $location, $filter, $interval, localStorageService) {
   /*
    * Credentials management
    */
-  for (var anyEnv in environments) break;
 
   // Load configuration from settings
   $scope.config = globalSettings;
   $scope.apiSettings = {
     apiUrl: $scope.config.apiV2Url,
-    envId: anyEnv,
   };
 
   $scope.envIdChanged = function(envId) {
@@ -34,29 +31,43 @@ app.controller('StorefrontController', [
   /*
    * Control the loggedIn variable according to the oAuth Code
    */
-   $scope.loggedIn = false;
+  $scope.loggedIn = false;
+  $scope.loggingIn = false;
 
-   $scope.$on('oauth2:authExpired', function () {
+  $scope.$on('oauth2:authExpired', function () {
     console.log("Expired!");
     $scope.loggedIn = false;
-   });
+    $scope.availableEnvs = {};
+    delete $scope.apiSettings.uid;
+    delete $scope.apiSettings.email;
+    delete $scope.apiSettings.envId;
+  });
 
-   $scope.$on('oauth2:authSuccess', function () {
-    $scope.loggedIn = true;
-    back.retrieveUser($scope.apiSettings,
+  $scope.$on('oauth2:authSuccess', function () {
+    $scope.loggingIn = true;
+    back.retrieveUserAndEnvs($scope.apiSettings, globalSettings,
       function(data){
         //Success callback
         $scope.apiSettings.uid = data.uid;
         $scope.apiSettings.email = data.email;
+        $scope.availableEnvs = data.envs;
+        for (var env in $scope.availableEnvs) {
+          $scope.apiSettings.envId = env;
+          break;
+        }
         console.log('Detected User : '+ data.email);
+        $scope.loggingIn = false;
+        $scope.loggedIn = true;
         $scope.fetchCatalog();
         $scope.fetchAllFarms();
       },
       function(data){
-        //Err callback
+        alert('Cannot infer your identity, please check you have access to Environment ' + $scope.apiSettings.envId);
+        $scope.loggingIn = false;
+        $scope.loggedIn = false;
       }
-      );
-   });
+    );
+  });
 
    $scope.logout = function() {
     $rootScope.$broadcast('oauth2:authExpired');
@@ -69,7 +80,6 @@ app.controller('StorefrontController', [
    */
   $scope.myApps = [];
   $scope.apps = [];
-  $scope.availableEnvs = environments;
 
   $scope.showError = function(reason, obj) {
     console.log(reason, obj);

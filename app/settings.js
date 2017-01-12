@@ -5,6 +5,7 @@ app.factory('settings', function() {
         'oAuthGrantUrl' : "https://demo.scalr.com/public/oauth",
         'oAuthClientId' : "56866536e49f",
         'oAuthRedirectUrl' : "http://oauth.demo.scalr.com/",
-        'oAuthRedirectUrlApproval' : "http://oauth.demo.scalr.com/approval/"
+        'oAuthRedirectUrlApproval' : "http://oauth.demo.scalr.com/approval/",
+        'environments' : ['2', '5']
     };
 });
