@@ -4,6 +4,7 @@ app.factory('settings', function() {
         'apiV2Url' : "https://demo.scalr.com/",
         'oAuthGrantUrl' : "https://demo.scalr.com/public/oauth",
         'oAuthClientId' : "56866536e49f",
-        'oAuthRedirectUrl' : "http://oauth.demo.scalr.com/"
+        'oAuthRedirectUrl' : "http://oauth.demo.scalr.com/",
+        'oAuthRedirectUrlApproval' : "http://oauth.demo.scalr.com/approval/"
     };
 });

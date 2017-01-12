@@ -1,29 +1,23 @@
-var app = angular.module('ScalrStorefront', ['LocalStorageModule', 'angular.filter', 'ui.bootstrap']);
+var app = angular.module('ScalrStorefront', ['LocalStorageModule', 'angular.filter', 'ui.bootstrap', 'ngRoute','ngStorage', 'afOAuth2']);
 
-app.controller('StorefrontController', ["$scope", "$location", "$filter", "localStorageService",
-  function ($scope, $location, $filter, localStorageService) {
+app.controller('StorefrontController', ["settings", "$http", "$scope", "$location", "$filter", "localStorageService",
+  function (globalSettings, $http, $scope, $location, $filter, localStorageService) {
 
-  /*
-   * Credentials management
-   */
-  $scope.defaultApiSettings = {
-    apiUrl: "",
-    keyId: "",
-    secretKey: "",
-    envId: ""
-  };
-
+  ScalrAPI.setHTTPService($http);
   $scope.apiSettings = {};
+  $scope.config = globalSettings;
+  $scope.loggedIn = false;
+  /*
+   * Handlers for oAuth events
+   */
+   $scope.$on('oauth2:authExpired', function () {
+    console.log("Expired!");
+    $scope.loggedIn = false;
+   });
 
-  $scope.loadApiSettings = function () {
-    var storedApiSettings = angular.fromJson(localStorageService.get('apiSettings'));
-    if (storedApiSettings === null) {
-      $scope.apiSettings = $scope.defaultApiSettings;
-    } else {
-      $scope.apiSettings = storedApiSettings;
-    }
-  };
-
+   $scope.$on('oauth2:authSuccess', function () {
+    $scope.loggedIn = true;
+   });
   $scope.accept = function() {
     // If it is a termination request, just do it
     if ($scope.jParams.action == 'stop'){
@@ -99,9 +93,26 @@ app.controller('StorefrontController', ["$scope", "$location", "$filter", "local
     });
   };
 
-  $scope.loadApiSettings();
+  var base64UrlEncode = function(str){
+    return encodeURIComponent(window.btoa(str))
+  };
+
+  var base64UrlDecode = function(str){
+    return window.atob(decodeURIComponent(decodeURIComponent(str)));
+  };
 
   var args = $location.search();
+  console.log(args);
+  if ( ('u' in args) ){
+    console.log('state not found');
+    $scope.requestData = base64UrlEncode(JSON.stringify(args));
+  }
+  else {
+    var re = new RegExp("&*state=([^&]+)");
+    stateString = re.exec(window.location.hash)[1];
+    args = JSON.parse(base64UrlDecode(stateString));
+    $scope.requestData = base64UrlEncode(JSON.stringify(args));
+  }
 
   $scope.user = args['u'];
   $scope.appName = args['t'];
