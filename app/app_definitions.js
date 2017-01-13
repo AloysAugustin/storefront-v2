@@ -170,7 +170,7 @@ app.factory('appDefinitions', function(){
 		return false;
 	}
 	
-	var defaultApprover = 'dan@scalr.com';
+	var defaultApprover = 'mohammed@scalr.com';
 
 	var ubuntuDef = {
 		name: "Ubuntu instance",
