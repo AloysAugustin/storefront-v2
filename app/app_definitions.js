@@ -2,7 +2,7 @@
 
 var app = angular.module('ScalrStorefront');
 //This services contains all the app definitions
-// An app definition is a dictonary whose fields are either:
+// An app definition is a dictionary whose fields are either:
 // def-scope values like name and logoUrl
 // List values corresponds to list of choices. The name of the fields end with List. E.g. distributionList
 // Field values corresponds to a field the user can type in. E.g. adminADGroupField

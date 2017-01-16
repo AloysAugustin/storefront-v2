@@ -176,6 +176,7 @@ app.controller('StorefrontController', [
           myAppsSet[farm.id].form = apps.parseDefToDict(def);
           myAppsSet[farm.id].props = angular.copy(readOnlyProperties);
           myAppsSet[farm.id].old = false;
+
         } else {
           $scope.myApps.push({
             id: farm.id,
@@ -235,11 +236,7 @@ app.controller('StorefrontController', [
         r[form[i].identifier] = localStorageService.get("userPrefs." + form[i].identifier);
       }
       if (form[i].type == 'checkbox') {
-        if (localStorageService.get("userPrefs." + form[i].identifier)) {
-          r[form[i].identifier] = true;
-        } else {
-          r[form[i].identifier] = false;
-        }
+        r[form[i].identifier] = !!localStorageService.get("userPrefs." + form[i].identifier);
       }
     }
     return r;

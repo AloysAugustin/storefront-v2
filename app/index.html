@@ -81,7 +81,7 @@
                 <div ng-hide="myApps.length == 0" class="ng-hide">
                   <div ng-repeat="app in myApps" class="running-farm-desc">
                       <div class="farm-wrap">
-                        <div class="farm running-farm col-xs-6 {{shouldHideRunning(!app.showDetails)}}" ng-click="app.showDetails = ! app.showDetails" ng-class="{'full-width': app.showDetails}">
+                        <div class="farm running-farm col-xs-6 {{shouldHideRunning(!app.showDetails)}}" ng-click="app['showDetails'] = !app['showDetails']" ng-class="{'full-width': app.showDetails}">
                           <div class='farm-body text-center'>
                             <h3>{{app.settings.name}}</h3>
                             <!--p>{{farm.description.description}}</p-->
@@ -111,7 +111,7 @@
                         <h3>{{app.settings.name}} details:</h3>
                         <div ng-hide="app.status == 'running'">
                           <p>This application is not running.</p>
-                          <button type="button" ng-disabled="app.working || app.status == 'pending_approval'" ng-click="app.working=true; startApp(app)" class="btn btn-success" id="farm-{{app.id}}-button-start">Start application</button>
+                          <button type="button" ng-disabled="app.working || app.status == 'pending_approval'" ng-click="app['working']=true; startApp(app)" class="btn btn-success" id="farm-{{app.id}}-button-start">Start application</button>
                           <button type="button" ng-disabled="app.working || app.status == 'terminating'" confirmed-click="deleteApp(app);" ng-confirm-click="Are you sure that you want to delete this application? This cannot be undone." class="btn btn-danger" id="farm-{{app.id}}-button-delete">Delete application</button>
                           <img src="static/throbber.gif" ng-show="app.working"/>
                         </div>
@@ -120,13 +120,13 @@
                           <ul>
                             <li ng-repeat="(fr, servers) in app.props.endpoints">{{fr}}: <span ng-repeat="ep in servers track by $index">{{ep}} </span></li>
                           </ul>
-                          <button type="button" ng-show="!app.model.approvalNeeded(app.settings)" ng-disabled="app.working" ng-click="app.working=true; stopApp(app)" class="btn btn-danger" id="farm-{{app.id}}-button-stop">Stop application</button>
-                          <button type="button" ng-show="app.model.approvalNeeded(app.settings)" ng-disabled="app.working" ng-click="app.working=true; stopApp(app)" class="btn btn-danger" id="farm-{{app.id}}-button-stop">Request application stop</button>
+                          <button type="button" ng-show="!app.model.approvalNeeded(app.settings)" ng-disabled="app.working" ng-click="app['working']=true; stopApp(app)" class="btn btn-danger" id="farm-{{app.id}}-button-stop">Stop application</button>
+                          <button type="button" ng-show="app.model.approvalNeeded(app.settings)" ng-disabled="app.working" ng-click="app['working']=true; stopApp(app)" class="btn btn-danger" id="farm-{{app.id}}-button-request-stop">Request application stop</button>
                           <img src="static/throbber.gif" ng-show="app.working"/>
                         </div>
                         <div ng-show=hasModifiableSettings(app.form);>
                         <br/>
-                        <h4><a ng-click="app.show_edition = ! app.show_edition">Application services</a></h4>
+                        <h4><a ng-click="app['show_edition'] = ! app['show_edition']">Application services</a></h4>
                         <div class="app-edit" ng-show="app.show_edition">
                           <form class="form-horizontal padding-sm-top">
                             <div class="form-group" ng-repeat="option in app.form | filter:{isModifiable: true}" ng-show="settings.advanced_user || !option.advUser">
@@ -146,9 +146,9 @@
                                 <input type="checkbox" ng-model="app.settings[option.identifier]"><p class="business-hours-label">{{option.text}}</p>
                               </div>
                             </div>
-                            <div class='form-group padding-sm-top' id="button-container">
+                            <div class='form-group padding-sm-top' id="button-container-2">
                               <div class="text-center">
-                                <button type="button" ng-disabled="app.working" class="auth-button btn btn-success" id="button-farm-{{app.id}}-done" ng-click="app.working = true; applyChanges(app);">Apply changes</button>
+                                <button type="button" ng-disabled="app.working" class="auth-button btn btn-success" id="button-farm-{{app.id}}-done" ng-click="app['working'] = true; applyChanges(app);">Apply changes</button>
                               </div>
                             </div>
                           </form>
@@ -170,7 +170,7 @@
               <div ng-hide="apps.length == 0" class="ng-hide">
                 <div class="farm-group">
                   <div ng-repeat="app in apps" class="available-farm-desc">
-                      <div class="farm catalog-farm col-xs-6 {{shouldHideFarmSet(!app.show_launch)}}" ng-class="{'full-width': app.show_launch}" ng-click="app.show_launch = ! app.show_launch">
+                      <div class="farm catalog-farm col-xs-6 {{shouldHideFarmSet(!app.show_launch)}}" ng-class="{'full-width': app.show_launch}" ng-click="app['show_launch'] = !app['show_launch']">
                         <div class='farm-body text-center'>
                           <h3 class="farm-name" ng-class="{'font-size-lg': app.show_launch}">{{ app.model.name }}</h3>
                           <p class="farm-description">{{ app.model.description }}</p>
@@ -210,7 +210,7 @@
                             </div>
                           </div>
                           <div class="text-center underline pointer" ng-show="numAdvancedSettings(app.form) > 0 && settings.advanced_user && !settings.show_advanced">
-                            <p class='advanded-settings' ng-click="settings.show_advanced = ! settings.show_advanced">Advanced Settings</p>
+                            <p class='advanded-settings' ng-click="settings['show_advanced'] = !settings['show_advanced']">Advanced Settings</p>
                           </div>
                           <div id="advanced" ng-show="settings.advanced_user && settings.show_advanced">
                             <div id="template-{{app.model.name | safe}}-advanced-settings">
@@ -235,12 +235,12 @@
                             </div>
                           </div>
                           <div class="text-center underline pointer" ng-show="settings.advanced_user && settings.show_advanced">
-                            <p class='advanded-settings' ng-click="settings.show_advanced = ! settings.show_advanced">Hide Advanced Settings </p>
+                            <p class='advanded-settings' ng-click="settings['show_advanced'] = !settings['show_advanced']">Hide Advanced Settings </p>
                           </div>
                           <div class='form-group padding-sm-top' id="button-container">
                             <div class="text-center">
-                              <button type="button" ng-hide='app.model.approvalNeeded(app.settings)' ng-disabled="app.launching" class="auth-button btn btn-success" id="button-farm-{{app.selected}}-done" ng-click="app.launching = true; launch(app);">Launch for ${{app.model.price(app.settings)}} / day</button>
-                              <button type="button" ng-show='app.model.approvalNeeded(app.settings)' ng-disabled="app.launching" class="auth-button btn btn-success" id="button-farm-{{app.selected}}-done" ng-click="app.launching = true; launch(app);">Request application</button>
+                              <button type="button" ng-hide='app.model.approvalNeeded(app.settings)' ng-disabled="app.launching" class="auth-button btn btn-success" id="button-farm-{{app.selected}}-done" ng-click="app['launching'] = true; launch(app);">Launch for ${{app.model.price(app.settings)}} / day</button>
+                              <button type="button" ng-show='app.model.approvalNeeded(app.settings)' ng-disabled="app.launching" class="auth-button btn btn-success" id="button-farm-{{app.selected}}-request-done" ng-click="app['launching'] = true; launch(app);">Request application</button>
                             </div>
                           </div>
                         </form>
