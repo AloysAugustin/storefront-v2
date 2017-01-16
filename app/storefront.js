@@ -111,13 +111,14 @@ app.controller('StorefrontController', [
     //$scope.myApps.length = 0;
     //Create a set with myApps
     var myAppsSet = {};
-    for (var i = 0; i < $scope.myApps.length; i ++) {
+    var i,j;
+    for (i = 0; i < $scope.myApps.length; i ++) {
       myAppsSet[$scope.myApps[i].id] = $scope.myApps[i];
     }
     back.listAppsForUser($scope.apiSettings, function(data) {
       var myFarms = data.myFarms;
       console.log(myFarms);
-      for (var i = 0; i < myFarms.length; i ++) {
+      for (i = 0; i < myFarms.length; i ++) {
         var farm = myFarms[i];
         farm.terminating_servers_count = 0;
         try {
@@ -136,7 +137,7 @@ app.controller('StorefrontController', [
         farm.running_servers = [];
         var readOnlyProperties = {};
         var status = '';
-        for (var j = 0; j < farm.servers.length; j ++) {
+        for (j = 0; j < farm.servers.length; j ++) {
           if (farm.servers[j].status != 'pending_terminate' && farm.servers[j].status != 'terminated') {
             farm.running_servers.push(farm.servers[j]);
           } else if (farm.servers[j].status == 'pending_terminate'){
@@ -150,14 +151,14 @@ app.controller('StorefrontController', [
         } else if (farm.running_servers.length > 0) {
           status = 'running';
           readOnlyProperties.endpoints = {};
-          for (var j = 0; j < farm.farmRoles.length; j ++) {
+          for (j = 0; j < farm.farmRoles.length; j ++) {
             var serversEP = [];
             for (var k = 0; k < farm.farmRoles[j].servers.length; k ++) {
               if (farm.farmRoles[j].servers[k].status != 'pending_terminate' && farm.farmRoles[j].servers[k].status != 'terminated') {
-                serversEP.push(farm.farmRoles[j].servers[k].publicIp[0]);
+                serversEP.push(farm.farmRoles[j].servers[k]['publicIp[0]']);
               }
             }
-            readOnlyProperties.endpoints[farm.farmRoles[j].alias] = serversEP;
+            readOnlyProperties.endpoints[farm.farmRoles[j]['alias']] = serversEP;
           }
         } else if (farm.terminating_servers_count > 0) {
           status = 'terminating';
@@ -167,7 +168,7 @@ app.controller('StorefrontController', [
         //Look if the current app is already loaded
         if (farm.id in myAppsSet){
           myAppsSet[farm.id].id = farm.id;
-          myAppsSet[farm.id].ownerEmail = farm.owner.email;
+          myAppsSet[farm.id].ownerEmail = farm['owner']['email'];
           myAppsSet[farm.id].model = angular.copy(def);
           myAppsSet[farm.id].settings = angular.copy(farm.description.settings);
           myAppsSet[farm.id].orig_settings = angular.copy(farm.description.settings);
@@ -178,7 +179,7 @@ app.controller('StorefrontController', [
         } else {
           $scope.myApps.push({
             id: farm.id,
-            ownerEmail: farm.owner.email,
+            ownerEmail: farm['owner']['email'],
             model: angular.copy(def),
             settings: angular.copy(farm.description.settings),
             orig_settings: angular.copy(farm.description.settings),
@@ -194,7 +195,7 @@ app.controller('StorefrontController', [
         
       }
       //Delete old apps
-      for (var i = 0; i < $scope.myApps.length; i++){
+      for (i = 0; i < $scope.myApps.length; i++){
         if ($scope.myApps[i].old){
           $scope.myApps.splice(i,1);
           i--;
@@ -319,7 +320,7 @@ app.controller('StorefrontController', [
     }
     if (action == 'launch') {
       body.farmId = app.newFarm.id;
-      body.user = app.newFarm.owner.email;
+      body.user = app.newFarm['owner']['email'];
     }
     $.post('http://' + window.location.hostname + '/send/', JSON.stringify(body), function() {
       console.log('email sent');
@@ -442,8 +443,8 @@ app.directive('ngConfirmClick', [
                 priority: 1,
                 terminal: true,
                 link: function (scope, element, attr) {
-                    var msg = attr.ngConfirmClick || "Are you sure?";
-                    var clickAction = attr.confirmedClick;
+                    var msg = attr['ngConfirmClick'] || "Are you sure?";
+                    var clickAction = attr['confirmedClick'];
                     element.bind('click',function (event) {
                         if ( window.confirm(msg) ) {
                             scope.$apply(clickAction);

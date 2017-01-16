@@ -20,8 +20,9 @@ app.controller('StorefrontController', ["settings", "$http", "$scope", "$locatio
    });
   $scope.accept = function() {
     // If it is a termination request, just do it
+    var path;
     if ($scope.jParams.action == 'stop'){
-      var path = '/api/v1beta0/user/{envId}/farms/{farmId}/actions/terminate/';
+      path = '/api/v1beta0/user/{envId}/farms/{farmId}/actions/terminate/';
       path = path.replace('{envId}', $scope.apiSettings.envId);
       path = path.replace('{farmId}', $scope.farmId);
       ScalrAPI.setSettings($scope.apiSettings);
@@ -35,7 +36,7 @@ app.controller('StorefrontController', ["settings", "$http", "$scope", "$locatio
     }
 
     // Fetch the Farm, then edit it
-    var path = '/api/v1beta0/user/{envId}/farms/{farmId}/';
+    path = '/api/v1beta0/user/{envId}/farms/{farmId}/';
     path = path.replace('{envId}', $scope.apiSettings.envId);
     path = path.replace('{farmId}', $scope.farmId);
     ScalrAPI.setSettings($scope.apiSettings);

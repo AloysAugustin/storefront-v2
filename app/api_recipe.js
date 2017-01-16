@@ -81,15 +81,17 @@ app.factory('apiRecipes', function() {
             //skip this step if path is empty
             return onSuccess({});
         }
+        var p;
         if ('params' in obj) {
-            var p = obj.params(data, params, index);
+            p = obj.params(data, params, index);
         } else {
-            var p = '';
+            p = '';
         }
+        var body;
         if ('body' in obj) {
-            var body = obj.body(data, params, index);
+            body = obj.body(data, params, index);
         } else {
-            var body = '';
+            body = '';
         }
         if (method == 'scroll') {
             return ScalrAPI.scroll(path, p, onSuccess, onError);
@@ -197,7 +199,7 @@ app.factory('apiRecipes', function() {
                     for (var f = 0; f < data.myFarms[index].farmRoles.length; f ++) {
                         data.myFarms[index].farmRoles[f].servers = [];
                         for (var s = 0; s < data.myFarms[index].servers.length; s ++) {
-                            if (data.myFarms[index].farmRoles[f].id == data.myFarms[index].servers[s].farmRole.id) {
+                            if (data.myFarms[index].farmRoles[f].id == data.myFarms[index].servers[s]['farmRole']['id']) {
                                 data.myFarms[index].farmRoles[f].servers.push(data.myFarms[index].servers[s]);
                             }
                         }
@@ -282,8 +284,8 @@ app.factory('apiRecipes', function() {
                 },
                 done: function(response, data, params) {
                     data.farmId = response.data.id;
-                    data.uid = response.data.owner.id;
-                    data.email = response.data.owner.email;
+                    data.uid = response.data['owner']['id'];
+                    data.email = response.data['owner']['email'];
                 }
             },
             {

@@ -23,11 +23,10 @@
       <div>
         <div class="auth col-md-6 col-md-offset-3 margin-md-top">
           <h3>Request approval</h3>
-          <p>{{user}} wants to {{jParams.action}} a new {{appName}} with the following characteristics:
+          <p>{{user}} wants to {{jParams.action}} a new {{appName}} with the following characteristics:</p>
             <pre>
               <code>{{params}}</code>
             </pre>
-          </p>
           <form id="loginForm" class="form-horizontal padding-sm-top">
             <div class="form-group padding-sm-top text-center">
               <oauth2 authorization-url="{{config.oAuthGrantUrl}}"

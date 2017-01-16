@@ -86,9 +86,10 @@ app.factory('appDefinitions', function(){
 
 	appDefinitions.parseDefToDict = function(def){
 		var res = [];
+		var k;
 		for (var key in def){
 			if (key.endsWith("List")){
-				var k = key.slice(0,-4);
+				k = key.slice(0,-4);
 				res.push({
 					type: "option",
 					identifier: k,
@@ -101,7 +102,7 @@ app.factory('appDefinitions', function(){
 				});
 			}
 			if (key.endsWith("Field")){
-				var k = key.slice(0,-5);
+				k = key.slice(0,-5);
 				res.push({
 					type: "text",
 					identifier: k,
@@ -113,7 +114,7 @@ app.factory('appDefinitions', function(){
 				});
 			}
 			if (key.endsWith("Box")) {
-				var k = key.slice(0, -3);
+				k = key.slice(0, -3);
 				res.push({
 					type: 'checkbox',
 					identifier: k,
