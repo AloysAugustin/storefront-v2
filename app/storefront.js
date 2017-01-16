@@ -155,7 +155,7 @@ app.controller('StorefrontController', [
             var serversEP = [];
             for (var k = 0; k < farm.farmRoles[j].servers.length; k ++) {
               if (farm.farmRoles[j].servers[k].status != 'pending_terminate' && farm.farmRoles[j].servers[k].status != 'terminated') {
-                serversEP.push(farm.farmRoles[j].servers[k]['publicIp[0]']);
+                serversEP.push(farm.farmRoles[j].servers[k]['publicIp'][0]);
               }
             }
             readOnlyProperties.endpoints[farm.farmRoles[j]['alias']] = serversEP;
