@@ -43,7 +43,8 @@
                       button-class="btn btn-success"
                       ng-hide="loggedIn">
               </oauth2>
-            <div class='form-group padding-sm-top text-center'>
+            </div>
+            <div class='form-group padding-sm-top text-center' ng-show="loggedIn">
               <button type="button" ng-click="accept()" class="auth-button btn btn-success" id="auth-button-done">Accept</button>
               <button type="button" ng-click="reject()" class="auth-button btn btn-success btn-save-credentials" id="auth-button-save">Reject</button>
             </div>

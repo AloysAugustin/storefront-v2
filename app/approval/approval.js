@@ -27,7 +27,6 @@ app.controller('StorefrontController', ["settings", "$http", "$scope", "$locatio
       ScalrAPI.setSettings($scope.apiSettings);
       ScalrAPI.create(path, '',function(response){
         $scope.done = true;
-        $scope.$apply();
       },
       function(response){
         alert('Termination failed');
@@ -68,7 +67,6 @@ app.controller('StorefrontController', ["settings", "$http", "$scope", "$locatio
     ScalrAPI.create(path, {}, function(response) {
       console.log("All set");
       $scope.done = true;
-      $scope.$apply();
     }, function(response) {
       alert('Launching failed');
     });
@@ -87,7 +85,6 @@ app.controller('StorefrontController', ["settings", "$http", "$scope", "$locatio
     ScalrAPI.delete(path, function(response) {
       console.log('Deletion successful');
       $scope.done = true;
-      $scope.$apply();
     },function(response) {
       alert('Deletion failed');
     });
