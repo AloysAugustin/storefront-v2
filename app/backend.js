@@ -2,27 +2,29 @@
 
 var app = angular.module('ScalrStorefront');
 
-app.factory('backend', ['appDefinitions', 'apiRecipes', 'localStorageService','recipes', function(appDefinitions, apiRecipes, localStorageService, recipes) {
+app.factory('backend', ['appDefinitions', 'apiRecipes', 'localStorageService','recipes','$http', function(appDefinitions, apiRecipes, localStorageService, recipes, $http) {
     var backend = {};
 
     backend.isUserAdvanced = function(credentials) {
         return true;
     };
-
+    ScalrAPI.setHTTPService($http);
     backend.runAppDef = function(credentials, def, settings, success_cb, failure_cb) {
         ScalrAPI.setSettings(credentials);
         var s = angular.copy(settings);
         s.def_name = def.name;
-        s.keyId = credentials.keyId;
+        s.uid = credentials.uid;
+        s.email = credentials.uid;
         s.envId = credentials.envId;
         apiRecipes.run(def.recipeId, s, success_cb, failure_cb);
     };
 
-    backend.listAppsByAPIKey = function(credentials, success_cb, failure_cb) {
+    backend.listAppsForUser= function(credentials, success_cb, failure_cb) {
         ScalrAPI.setSettings(credentials);
          var params = {
             envId: credentials.envId,
-            keyId: credentials.keyId
+            uid: credentials.uid,
+            email: credentials.email
         };
         apiRecipes.run('listFarms', params, success_cb, failure_cb);
     };
@@ -60,6 +62,13 @@ app.factory('backend', ['appDefinitions', 'apiRecipes', 'localStorageService','r
         apiRecipes.run('startFarm', params, success_cb, failure_cb);
     };
 
+    backend.retrieveUserAndEnvs = function(credentials, settings, success_cb, failure_cb){
+        ScalrAPI.setSettings(credentials);
+        var params = {
+            activated_envs: settings.environments
+        }
+        apiRecipes.run('getUserAndEnvs', params, success_cb, failure_cb);
+    }
 
     return backend;
 }]);

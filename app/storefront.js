@@ -1,86 +1,77 @@
-var app = angular.module('ScalrStorefront', ['LocalStorageModule', 'angular.filter', 'ui.bootstrap']);
+var app = angular.module('ScalrStorefront', ['LocalStorageModule', 'angular.filter', 'ui.bootstrap','ngRoute','ngStorage', 'afOAuth2']);
 
 app.controller('StorefrontController', [
   "backend",
   "appDefinitions",
-  "environments",
+  "settings",
+  "apiRecipes",
+  "recipes",
   "$scope",
+  "$rootScope",
   "$location",
   "$filter",
   "$interval",
   "localStorageService",
-  function (back, apps, environments, $scope, $location, $filter, $interval, localStorageService) {
+  function (back, apps, globalSettings, apiRecipes, recipes, $scope, $rootScope, $location, $filter, $interval, localStorageService) {
   /*
    * Credentials management
    */
-  for (var anyEnv in environments) break;
-  $scope.defaultApiSettings = {
-    apiUrl: "https://demo.scalr.com/",
-    keyId: "",
-    secretKey: "",
-    envId: anyEnv,
+
+  // Load configuration from settings
+  $scope.config = globalSettings;
+  $scope.apiSettings = {
+    apiUrl: $scope.config.apiV2Url,
   };
-
-  $scope.apiSettings = {};
-  $scope.storedApiSettings = null;
-
-  $scope.loadApiSettings = function () {
-    var storedApiSettings = angular.fromJson(localStorageService.get('apiSettings'));
-    if (storedApiSettings === null) {
-      $scope.storedApiSettings = $scope.defaultApiSettings;
-      $scope.apiSettings = angular.copy($scope.storedApiSettings);
-    } else {
-      for (var prop in $scope.defaultApiSettings) {
-        if ($scope.defaultApiSettings.hasOwnProperty(prop) && !storedApiSettings.hasOwnProperty(prop)) {
-          storedApiSettings[prop] = $scope.defaultApiSettings[prop];
-        }
-      }
-      if (!(storedApiSettings.envId in environments)) {
-        storedApiSettings.envId = anyEnv;
-      }
-      $scope.storedApiSettings = storedApiSettings;
-      $scope.apiSettings = angular.copy($scope.storedApiSettings);
-      if ($scope.apiSettings.keyId.length > 0 && $scope.apiSettings.secretKey.length > 0 && $scope.apiSettings.envId.length > 0) {
-        $scope.autoLoggedIn = true;
-        $scope.apiSettingsDone();
-        $scope.credentialsSaved = true;
-      }
-    }
-  }
-
-  $scope.saveApiSettings = function () {
-    $scope.storedApiSettings = angular.copy($scope.apiSettings);
-    $scope.apiSettingsDone();
-    $scope.credentialsSaved = true;
-  }
-
-  $scope.clearApiSettings = function () {
-    $scope.storedApiSettings = angular.copy($scope.defaultApiSettings);
-    $scope.autoLoggedIn = false;
-    $scope.loggedIn = false;
-  }
-
-  // Update storage on save
-  $scope.$watch('storedApiSettings', function (newSettings, oldSettings) {
-    if (newSettings === oldSettings) return;  // Same object --> initialization.
-    localStorageService.set('apiSettings', angular.toJson(newSettings));
-  }, true);
-
-  $scope.apiSettingsDone = function() {
-
-    $scope.credentialsSaved = false;
-    $scope.loggedIn = true;
-    $scope.settings.advanced_user = back.isUserAdvanced($scope.apiSettings);
-    $scope.fetchCatalog();
-    $scope.fetchAllFarms();
-  }
 
   $scope.envIdChanged = function(envId) {
     $scope.apiSettings.envId = envId;
-    $scope.storedApiSettings.envId = envId;
     $scope.fetchCatalog();
     $scope.fetchAllFarms();
   }
+  /*
+   * Control the loggedIn variable according to the oAuth Code
+   */
+  $scope.loggedIn = false;
+  $scope.loggingIn = false;
+
+  $scope.$on('oauth2:authExpired', function () {
+    console.log("Expired!");
+    $scope.loggedIn = false;
+    $scope.availableEnvs = {};
+    delete $scope.apiSettings.uid;
+    delete $scope.apiSettings.email;
+    delete $scope.apiSettings.envId;
+  });
+
+  $scope.$on('oauth2:authSuccess', function () {
+    $scope.loggingIn = true;
+    back.retrieveUserAndEnvs($scope.apiSettings, globalSettings,
+      function(data){
+        //Success callback
+        $scope.apiSettings.uid = data.uid;
+        $scope.apiSettings.email = data.email;
+        $scope.availableEnvs = data.envs;
+        for (var env in $scope.availableEnvs) {
+          $scope.apiSettings.envId = env;
+          break;
+        }
+        console.log('Detected User : '+ data.email);
+        $scope.loggingIn = false;
+        $scope.loggedIn = true;
+        $scope.fetchCatalog();
+        $scope.fetchAllFarms();
+      },
+      function(data){
+        alert('Cannot infer your identity, please check you have access to Environment ' + $scope.apiSettings.envId);
+        $scope.loggingIn = false;
+        $scope.loggedIn = false;
+      }
+    );
+  });
+
+   $scope.logout = function() {
+    $rootScope.$broadcast('oauth2:authExpired');
+   };
 
   // TODO: validation
 
@@ -89,7 +80,6 @@ app.controller('StorefrontController', [
    */
   $scope.myApps = [];
   $scope.apps = [];
-  $scope.availableEnvs = environments;
 
   $scope.showError = function(reason, obj) {
     console.log(reason, obj);
@@ -121,13 +111,14 @@ app.controller('StorefrontController', [
     //$scope.myApps.length = 0;
     //Create a set with myApps
     var myAppsSet = {};
-    for (var i = 0; i < $scope.myApps.length; i ++) {
+    var i,j;
+    for (i = 0; i < $scope.myApps.length; i ++) {
       myAppsSet[$scope.myApps[i].id] = $scope.myApps[i];
     }
-    back.listAppsByAPIKey($scope.apiSettings, function(data) {
+    back.listAppsForUser($scope.apiSettings, function(data) {
       var myFarms = data.myFarms;
       console.log(myFarms);
-      for (var i = 0; i < myFarms.length; i ++) {
+      for (i = 0; i < myFarms.length; i ++) {
         var farm = myFarms[i];
         farm.terminating_servers_count = 0;
         try {
@@ -146,7 +137,7 @@ app.controller('StorefrontController', [
         farm.running_servers = [];
         var readOnlyProperties = {};
         var status = '';
-        for (var j = 0; j < farm.servers.length; j ++) {
+        for (j = 0; j < farm.servers.length; j ++) {
           if (farm.servers[j].status != 'pending_terminate' && farm.servers[j].status != 'terminated') {
             farm.running_servers.push(farm.servers[j]);
           } else if (farm.servers[j].status == 'pending_terminate'){
@@ -160,14 +151,14 @@ app.controller('StorefrontController', [
         } else if (farm.running_servers.length > 0) {
           status = 'running';
           readOnlyProperties.endpoints = {};
-          for (var j = 0; j < farm.farmRoles.length; j ++) {
+          for (j = 0; j < farm.farmRoles.length; j ++) {
             var serversEP = [];
             for (var k = 0; k < farm.farmRoles[j].servers.length; k ++) {
               if (farm.farmRoles[j].servers[k].status != 'pending_terminate' && farm.farmRoles[j].servers[k].status != 'terminated') {
-                serversEP.push(farm.farmRoles[j].servers[k].publicIp[0]);
+                serversEP.push(farm.farmRoles[j].servers[k]['publicIp'][0]);
               }
             }
-            readOnlyProperties.endpoints[farm.farmRoles[j].alias] = serversEP;
+            readOnlyProperties.endpoints[farm.farmRoles[j]['alias']] = serversEP;
           }
         } else if (farm.terminating_servers_count > 0) {
           status = 'terminating';
@@ -177,7 +168,7 @@ app.controller('StorefrontController', [
         //Look if the current app is already loaded
         if (farm.id in myAppsSet){
           myAppsSet[farm.id].id = farm.id;
-          myAppsSet[farm.id].ownerEmail = farm.owner.email;
+          myAppsSet[farm.id].ownerEmail = farm['owner']['email'];
           myAppsSet[farm.id].model = angular.copy(def);
           myAppsSet[farm.id].settings = angular.copy(farm.description.settings);
           myAppsSet[farm.id].orig_settings = angular.copy(farm.description.settings);
@@ -185,10 +176,11 @@ app.controller('StorefrontController', [
           myAppsSet[farm.id].form = apps.parseDefToDict(def);
           myAppsSet[farm.id].props = angular.copy(readOnlyProperties);
           myAppsSet[farm.id].old = false;
+
         } else {
           $scope.myApps.push({
             id: farm.id,
-            ownerEmail: farm.owner.email,
+            ownerEmail: farm['owner']['email'],
             model: angular.copy(def),
             settings: angular.copy(farm.description.settings),
             orig_settings: angular.copy(farm.description.settings),
@@ -204,7 +196,7 @@ app.controller('StorefrontController', [
         
       }
       //Delete old apps
-      for (var i = 0; i < $scope.myApps.length; i++){
+      for (i = 0; i < $scope.myApps.length; i++){
         if ($scope.myApps[i].old){
           $scope.myApps.splice(i,1);
           i--;
@@ -213,11 +205,9 @@ app.controller('StorefrontController', [
         }
       }
       console.log($scope.myApps);
-      $scope.$apply();
     }, function() {
       alert("Can't list applications. Check your credentials.");
-      $scope.loggedIn = false;
-      $scope.autoLoggedIn = false;
+      $scope.logout();
     });
   };
 
@@ -246,11 +236,7 @@ app.controller('StorefrontController', [
         r[form[i].identifier] = localStorageService.get("userPrefs." + form[i].identifier);
       }
       if (form[i].type == 'checkbox') {
-        if (localStorageService.get("userPrefs." + form[i].identifier)) {
-          r[form[i].identifier] = true;
-        } else {
-          r[form[i].identifier] = false;
-        }
+        r[form[i].identifier] = !!localStorageService.get("userPrefs." + form[i].identifier);
       }
     }
     return r;
@@ -312,7 +298,8 @@ app.controller('StorefrontController', [
       def = app.model;
     }
     delete params['def_name']
-    delete params['keyId']
+    delete params['uid']
+    delete params['email']
     delete params['name']
     delete params['approval_required']
     params['action'] = action;
@@ -330,7 +317,7 @@ app.controller('StorefrontController', [
     }
     if (action == 'launch') {
       body.farmId = app.newFarm.id;
-      body.user = app.newFarm.owner.email;
+      body.user = app.newFarm['owner']['email'];
     }
     $.post('http://' + window.location.hostname + '/send/', JSON.stringify(body), function() {
       console.log('email sent');
@@ -389,15 +376,12 @@ app.controller('StorefrontController', [
    * Initialisation
    */
   $scope.loggedIn = false;
-  $scope.autoLoggedIn = false;
-  $scope.credentialsSaved = false;
 
   $scope.settings = {
     advanced_user: true,
     show_advanced: false,
   }
 
-  $scope.loadApiSettings();
   $scope.pollingPromise = $interval($scope.fetchAllFarms, 10000);
 
 
@@ -456,8 +440,8 @@ app.directive('ngConfirmClick', [
                 priority: 1,
                 terminal: true,
                 link: function (scope, element, attr) {
-                    var msg = attr.ngConfirmClick || "Are you sure?";
-                    var clickAction = attr.confirmedClick;
+                    var msg = attr['ngConfirmClick'] || "Are you sure?";
+                    var clickAction = attr['confirmedClick'];
                     element.bind('click',function (event) {
                         if ( window.confirm(msg) ) {
                             scope.$apply(clickAction);
@@ -473,3 +457,7 @@ app.filter('safe', function() {
         return txt;
     };
 });
+
+/*angular.module('ScalrStorefront').config(function($locationProvider) {
+    $locationProvider.html5Mode(true).hashPrefix('!');
+  });*/

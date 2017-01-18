@@ -7,7 +7,7 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
             data: {
                 initialFarmId: initialFarmId
             },
-            validateParams: apiRecipes.mkValidateParams(['keyId', 'envId', 'flavor', 'name', 'approval_required']),
+            validateParams: apiRecipes.mkValidateParams(['uid', 'envId', 'flavor', 'name', 'approval_required', 'email']),
             steps: [
                 {
                     description: 'Clone base farm',
@@ -16,10 +16,11 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
                         return '/api/v1beta0/user/{envId}/farms/{farmId}/actions/clone/'.replace('{envId}', params.envId).replace('{farmId}', data.initialFarmId);
                     },
                     body: function(data, params) {
+                        var name;
                         if (!params.approval_required) {
-                            var name = '[' + params.keyId + ']' + params.name;
+                            name = '[STOREFRONT-' + params.uid + ']' + params.name;
                         } else {
-                            var name = '[' + params.keyId + '][PENDING_APPROVAL]' + params.name
+                            name = '[STOREFRONT-' + params.uid + '][PENDING_APPROVAL]' + params.name
                         }
                         return JSON.stringify({
                             'name': name
@@ -44,7 +45,7 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
                     },
                     body: function(data, params) {
                         var settings = angular.copy(params);
-                        delete settings.keyId;
+                        delete settings.uid;
                         return JSON.stringify({
                             description: JSON.stringify({
                                 settings: settings
@@ -107,7 +108,7 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
             data: {
                 initialFarmIds: initialFarmIds
             },
-            validateParams: apiRecipes.mkValidateParams(['keyId', 'envId', 'name', 'flavor', 'approval_required', 'platform']),
+            validateParams: apiRecipes.mkValidateParams(['uid', 'envId', 'name', 'flavor', 'approval_required', 'platform']),
             steps: [
                 {
                     description: 'Clone base farm',
@@ -117,10 +118,11 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
                         return '/api/v1beta0/user/{envId}/farms/{farmId}/actions/clone/'.replace('{envId}', params.envId).replace('{farmId}', farmId);
                     },
                     body: function(data, params) {
+                        var name;
                         if (!params.approval_required) {
-                            var name = '[' + params.keyId + ']' + params.name;
+                            name = '[STOREFRONT-' + params.uid + ']' + params.name;
                         } else {
-                            var name = '[' + params.keyId + '][PENDING_APPROVAL]' + params.name
+                            name = '[STOREFRONT-' + params.uid + '][PENDING_APPROVAL]' + params.name;
                         }
                         return JSON.stringify({
                             'name': name
@@ -145,7 +147,7 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
                     },
                     body: function(data, params) {
                         var settings = angular.copy(params);
-                        delete settings.keyId;
+                        delete settings.uid;
                         return JSON.stringify({
                             description: JSON.stringify({
                                 settings: settings
