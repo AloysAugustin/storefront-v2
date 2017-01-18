@@ -136,7 +136,7 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
                             _01bh: 0,
                             _02_247: 1,
                             _03ha: 1,
-                            _03_125: 0,
+                            _02_125: 0,
                         }[params.availability];
                         return JSON.stringify(scalingObject);
                     },
@@ -157,7 +157,7 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
                             "ruleType": "DateAndTimeScalingRule",
                             "schedule": []
                         };
-                        if (params.availability === '_03_125'){
+                        if (params.availability === '_02_125'){
                             scalingRule.schedule.push({
                                 "daysOfWeek": [
                                     "mon","tue","wed","thu","fri"
@@ -211,11 +211,11 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
                     description: 'Set lifetime GV',
                     method: 'POST',
                     url: function(data, params) {
-                        if (!('runtime' in params) || params.runtime === '_02forever') return '';
+                        if (!('runtime' in params) || params.runtime === '_03forever') return '';
                         return '/api/v1beta0/user/{envId}/farms/{farmId}/global-variables/'.replace('{envId}', params.envId).replace('{farmId}', data.newFarm.id);
                     },
                     body: function(data, params) {
-                        var val = {_02_1day: '86400', _01_7days: '604800'}[params.runtime];
+                        var val = {_01_1day: '86400', _02_7days: '604800'}[params.runtime];
                         return JSON.stringify({
                             name: 'STOREFRONT_LIFETIME',
                             category: 'STOREFRONT',
@@ -365,7 +365,7 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
                             _01bh: 0,
                             _02_247: 1,
                             _03ha: 1,
-                            _03_125: 0,
+                            _02_125: 0,
                         }[params.availability];
                         return JSON.stringify(scalingObject);
                     },
@@ -386,7 +386,7 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
                             "ruleType": "DateAndTimeScalingRule",
                             "schedule": []
                         };
-                        if (params.availability === '_03_125'){
+                        if (params.availability === '_02_125'){
                             scalingRule.schedule.push({
                                 "daysOfWeek": [
                                     "mon","tue","wed","thu","fri"
@@ -440,11 +440,11 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
                     description: 'Set lifetime GV',
                     method: 'POST',
                     url: function(data, params) {
-                        if (!('runtime' in params) || params.runtime === '_02forever') return '';
+                        if (!('runtime' in params) || params.runtime === '_03forever') return '';
                         return '/api/v1beta0/user/{envId}/farms/{farmId}/global-variables/'.replace('{envId}', params.envId).replace('{farmId}', data.newFarm.id);
                     },
                     body: function(data, params) {
-                        var val = {_02_1day: '86400', _01_7days: '604800'}[params.runtime];
+                        var val = {_01_1day: '86400', _02_7days: '604800'}[params.runtime];
                         return JSON.stringify({
                             name: 'STOREFRONT_LIFETIME',
                             category: 'STOREFRONT',
