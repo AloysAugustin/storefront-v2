@@ -23,22 +23,27 @@
       <div>
         <div class="auth col-md-6 col-md-offset-3 margin-md-top">
           <h3>Request approval</h3>
-          <p>{{user}} wants to {{jParams.action}} a new {{appName}} with the following characteristics:
+          <p>{{user}} wants to {{jParams.action}} a new {{appName}} with the following characteristics:</p>
             <pre>
               <code>{{params}}</code>
             </pre>
-            Fill in your credentials below to accept or reject this request
-            </p>
           <form id="loginForm" class="form-horizontal padding-sm-top">
-            <div class="form-group">
-              <label class="">API Key ID :</label>
-              <input required id="auth-keyid" class="auth-input form-control input-lg" name="keyid" ng-model="apiSettings.keyId" type="text"/>
+            <div class="form-group padding-sm-top text-center">
+              <oauth2 authorization-url="{{config.oAuthGrantUrl}}"
+                      sign-out-url=""
+                      sign-out-append-token="true"
+                      client-id="{{config.oAuthClientId}}"
+                      redirect-url="{{config.oAuthRedirectUrlApproval}}"
+                      response-type="token"
+                      scope="user:write account:read"
+                      auto-generate-nonce="false"
+                      state="{{requestData}}"
+                      sign-in-text="LOGIN WITH SCALR"
+                      button-class="btn btn-success"
+                      ng-hide="loggedIn">
+              </oauth2>
             </div>
-            <div class="form-group">
-               <label class="">Secret Key :</label>
-              <input required id="auth-secret" class="auth-input form-control input-lg" name="secret" ng-model="apiSettings.secretKey" type="password" />
-            </div>
-            <div class='form-group padding-sm-top text-center'>
+            <div class='form-group padding-sm-top text-center' ng-show="loggedIn">
               <button type="button" ng-click="accept()" class="auth-button btn btn-success" id="auth-button-done">Accept</button>
               <button type="button" ng-click="reject()" class="auth-button btn btn-success btn-save-credentials" id="auth-button-save">Reject</button>
             </div>
@@ -56,6 +61,9 @@
   <script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
   <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular-route.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ngStorage/0.3.11/ngStorage.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-md5/0.1.10/angular-md5.min.js"></script>
   <script src="../static/angular-local-storage.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-filter/0.5.8/angular-filter.js"></script>
   <script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.13.4.js"></script>
@@ -63,5 +71,7 @@
   <script src="../static/enc-base64-min.js"></script>
   <script src="../static/scalr-api.js"></script>
   <script src="approval.js"></script>
+  <script src="../settings.js"></script>
+  <script src="../static/angularJsOAuth2.js"></script>
 </body>
 </html>

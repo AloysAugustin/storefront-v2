@@ -8,6 +8,10 @@ app.factory('apiRecipes', function() {
 
     apiRecipes.run = function(recipe, params, onSuccess, onError) {
         var run = angular.copy(apiRecipes.get(recipe));
+        if (!run) {
+            console.log('Recipe not found! ' + recipe);
+            onError();
+        }
         run.params = angular.copy(params);
         console.log(run);
         if (!run.validateParams(run.data, params)) {
@@ -77,15 +81,17 @@ app.factory('apiRecipes', function() {
             //skip this step if path is empty
             return onSuccess({});
         }
+        var p;
         if ('params' in obj) {
-            var p = obj.params(data, params, index);
+            p = obj.params(data, params, index);
         } else {
-            var p = '';
+            p = '';
         }
+        var body;
         if ('body' in obj) {
-            var body = obj.body(data, params, index);
+            body = obj.body(data, params, index);
         } else {
-            var body = '';
+            body = '';
         }
         if (method == 'scroll') {
             return ScalrAPI.scroll(path, p, onSuccess, onError);
@@ -141,7 +147,7 @@ app.factory('apiRecipes', function() {
 
     apiRecipes.register('listFarms', {
         data: {},
-        validateParams: apiRecipes.mkValidateParams(['envId', 'keyId']),
+        validateParams: apiRecipes.mkValidateParams(['envId', 'uid', 'email']),
         steps: [
             {
                 description: 'List all farms',
@@ -152,10 +158,10 @@ app.factory('apiRecipes', function() {
                 done: function(response, data, params) {
                     data.farms = response.all_data;
                     var myFarms = [];
-                    // Filter farms by key id
+                    // Filter farms by uid
                     for (var i = 0; i < data.farms.length; i ++) {
-                        if (data.farms[i].name.startsWith('['+params.keyId+']')) {
-                            data.farms[i].name = data.farms[i].name.replace('['+params.keyId+']', '');
+                        if (data.farms[i].name.startsWith('[STOREFRONT-'+params.uid+']')) {
+                            data.farms[i].name = data.farms[i].name.replace('[STOREFRONT-'+params.uid+']', '');
                             myFarms.push(data.farms[i]);
                         }
                     }
@@ -193,7 +199,7 @@ app.factory('apiRecipes', function() {
                     for (var f = 0; f < data.myFarms[index].farmRoles.length; f ++) {
                         data.myFarms[index].farmRoles[f].servers = [];
                         for (var s = 0; s < data.myFarms[index].servers.length; s ++) {
-                            if (data.myFarms[index].farmRoles[f].id == data.myFarms[index].servers[s].farmRole.id) {
+                            if (data.myFarms[index].farmRoles[f].id == data.myFarms[index].servers[s]['farmRole']['id']) {
                                 data.myFarms[index].farmRoles[f].servers.push(data.myFarms[index].servers[s]);
                             }
                         }
@@ -226,6 +232,74 @@ app.factory('apiRecipes', function() {
             }
         ]
     });
+
+    apiRecipes.register('getUserAndEnvs', {
+        data: {},
+        validateParams: apiRecipes.mkValidateParams([]),
+        steps: [
+            {
+                description: 'List environments in the user\'s account',
+                method: 'scroll',
+                url: function(data, params) {
+                    return '/api/v1beta0/account/environments/';
+                },
+                done: function(response, data, params) {
+                    data.all_envs = response.data;
+                    data.envs = {};
+                    for (var i = 0; i < data.all_envs.length; i ++) {
+                        var env = data.all_envs[i];
+                        if (params.activated_envs.indexOf(env.id.toString()) != -1) {
+                            data.envs[env.id.toString()] = env;
+                            data.test_env = env;
+                        }
+                    }
+                }
+            },
+            {
+                description: 'Get any farm to get an existing projectId',
+                method: 'scroll',
+                url: function(data, params) {
+                    return '/api/v1beta0/user/{envId}/farms/'.replace('{envId}', data.test_env.id);
+                },
+                body: function(data, params) {
+                    return '';
+                },
+                done: function(response, data, params) {
+                    data.projectId = response.data[0].project.id;
+                }
+            },
+            {
+                description: 'Create a dummy farm',
+                method: 'POST',
+                url: function(data, params) {
+                    return '/api/v1beta0/user/{envId}/farms/'.replace('{envId}', data.test_env.id);
+                },
+                body: function(data, params) {
+                    return JSON.stringify({
+                        name: '[STOREFRONT-TEMP]' + Math.random().toString(36).substring(7),
+                        project: {
+                            id: data.projectId,
+                        },
+                    });
+                },
+                done: function(response, data, params) {
+                    data.farmId = response.data.id;
+                    data.uid = response.data['owner']['id'];
+                    data.email = response.data['owner']['email'];
+                }
+            },
+            {
+                description: 'Delete the dummy farm',
+                method: 'DELETE',
+                url: function(data, params) {
+                    return '/api/v1beta0/user/{envId}/farms/{farmId}/'.replace('{envId}', data.test_env.id).replace('{farmId}', data.farmId);
+                },
+                done: function(response, data, params) {
+                }
+            }
+        ]
+    });
+
     apiRecipes.recipes = recipes;
     return apiRecipes;
 });

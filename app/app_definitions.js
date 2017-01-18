@@ -2,7 +2,7 @@
 
 var app = angular.module('ScalrStorefront');
 //This services contains all the app definitions
-// An app definition is a dictonary whose fields are either:
+// An app definition is a dictionary whose fields are either:
 // def-scope values like name and logoUrl
 // List values corresponds to list of choices. The name of the fields end with List. E.g. distributionList
 // Field values corresponds to a field the user can type in. E.g. adminADGroupField
@@ -86,9 +86,10 @@ app.factory('appDefinitions', function(){
 
 	appDefinitions.parseDefToDict = function(def){
 		var res = [];
+		var k;
 		for (var key in def){
 			if (key.endsWith("List")){
-				var k = key.slice(0,-4);
+				k = key.slice(0,-4);
 				res.push({
 					type: "option",
 					identifier: k,
@@ -101,7 +102,7 @@ app.factory('appDefinitions', function(){
 				});
 			}
 			if (key.endsWith("Field")){
-				var k = key.slice(0,-5);
+				k = key.slice(0,-5);
 				res.push({
 					type: "text",
 					identifier: k,
@@ -113,7 +114,7 @@ app.factory('appDefinitions', function(){
 				});
 			}
 			if (key.endsWith("Box")) {
-				var k = key.slice(0, -3);
+				k = key.slice(0, -3);
 				res.push({
 					type: 'checkbox',
 					identifier: k,
@@ -169,7 +170,7 @@ app.factory('appDefinitions', function(){
 	var never = function(settings) {
 		return false;
 	}
-	
+
 	var defaultApprover = 'example@example.com';
 
 	var ubuntuDef = {
