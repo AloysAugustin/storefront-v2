@@ -45,7 +45,8 @@ app.factory('appDefinitions', function(){
 			availability: "Availability level",
 			runtime: "Application lifetime",
 			platform: "Cloud platform",
-			justification: "Justification"
+			justification: "Justification",
+			availabilityZone: "Availability Zone"
 		}[identifier];
 	};
 	appDefinitions.isAdvancedUser = function(identifier){
@@ -136,7 +137,7 @@ app.factory('appDefinitions', function(){
 	var defaultRuntimeList = {_01_7days: "7 days", _02forever: "Forever", _02_1day:"1 day"};
 	var defaultYesNoList = {no:"No", yes:"Yes"};
 	var defaultPlatformList = {aws: "AWS", gce: "GCE"};
-
+	var defaultZoneList = {_01any:"Any", a: "A", b:"B", c:"C", d:"D", e:"E"};
 	var defaultPriceFunction = function(settings){
 		var platform = "aws";
 		if (settings.platform) {
@@ -185,6 +186,7 @@ app.factory('appDefinitions', function(){
 		availabilityList: defaultAvailabilityList2,
 		runtimeList: defaultRuntimeList,
 		platformList: defaultPlatformList,
+		availabilityZoneList: defaultZoneList,
 		internetBox: 'Make this application accessible from the internet',
 		approvalNeeded: defaultApprovalFunction,
 		approver: defaultApprover,
@@ -218,6 +220,7 @@ app.factory('appDefinitions', function(){
 		flavorList: defaultFlavorList,
 		availabilityList: defaultAvailabilityList,
 		runtimeList: defaultRuntimeList,
+        availabilityZoneList: defaultZoneList,
 		internetBox: 'Make this application accessible from the internet',
 		approvalNeeded: defaultApprovalFunction,
 		approver: defaultApprover,

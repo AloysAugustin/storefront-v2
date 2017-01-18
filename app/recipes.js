@@ -88,6 +88,23 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
                     // The Farm Role will be deleted with the farm, nothing to undo
                 },
                 {
+                    description: 'Set new farm role availability zone',
+                    method: 'PATCH',
+                    url: function(data, params) {
+                        if (data.newFarmRoles[0].platform !== 'ec2' || !('availabilityZone' in params) || params.availabilityZone === '_01any') return '';
+                        return '/api/v1beta0/user/{envId}/farm-roles/{farmRoleId}/placement/'.replace('{envId}', params.envId).replace('{farmRoleId}', data.newFarmRoles[0].id);
+                    },
+                    body: function(data, params) {
+                        return JSON.stringify({
+                                "placementConfigurationType": data.newFarmRoles[0].placement.placementConfigurationType,
+                                "region": data.newFarmRoles[0].placement.region,
+                                "availabilityZones": [data.newFarmRoles[0].placement.region + params.availabilityZone]
+                        });
+                    },
+                    done: function(response, data, params) {},
+                    // The Farm Role will be deleted with the farm, nothing to undo
+                },
+                {
                     description: 'Adjust min instances',
                     method: 'PATCH',
                     url: function(data, params) {
@@ -275,6 +292,23 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
                             instanceType: {
                               id: instanceType
                             }
+                        });
+                    },
+                    done: function(response, data, params) {},
+                    // The Farm Role will be deleted with the farm, nothing to undo
+                },
+                {
+                    description: 'Set new farm role availability zone',
+                    method: 'PATCH',
+                    url: function(data, params) {
+                        if (data.newFarmRoles[0].platform !== 'ec2' || !('availabilityZone' in params) || params.availabilityZone === '_01any') return '';
+                        return '/api/v1beta0/user/{envId}/farm-roles/{farmRoleId}/placement/'.replace('{envId}', params.envId).replace('{farmRoleId}', data.newFarmRoles[0].id);
+                    },
+                    body: function(data, params) {
+                        return JSON.stringify({
+                            "placementConfigurationType": data.newFarmRoles[0].placement.placementConfigurationType,
+                            "region": data.newFarmRoles[0].placement.region,
+                            "availabilityZones": [data.newFarmRoles[0].placement.region + params.availabilityZone]
                         });
                     },
                     done: function(response, data, params) {},
