@@ -132,7 +132,7 @@ app.factory('appDefinitions', function(){
 
 	var defaultFlavorList = {_01small:"Low", _02medium:"Medium", _03large:"High"};
 	var defaultAvailabilityList = {_01bh: "Business hours", _02_247: "24/7", _03ha: "HA"};
-	var defaultAvailabilityList2 = {_01bh: "Business hours", _02_247: "24/7"};
+	var defaultAvailabilityList2 = {_01bh: "Business hours", _02_247: "24/7", _03_125: "12/5 (8am-8pm)"};
 	var defaultRuntimeList = {_01_7days: "7 days", _02forever: "Forever"};
 	var defaultYesNoList = {no:"No", yes:"Yes"};
 	var defaultPlatformList = {aws: "AWS", gce: "GCE"};
@@ -182,7 +182,7 @@ app.factory('appDefinitions', function(){
 		recipeId: 'ubuntu',
 		description: "Just an Ubuntu Server",
 		flavorList: defaultFlavorList,
-		availabilityList: defaultAvailabilityList,
+		availabilityList: defaultAvailabilityList2,
 		runtimeList: defaultRuntimeList,
 		platformList: defaultPlatformList,
 		internetBox: 'Make this application accessible from the internet',

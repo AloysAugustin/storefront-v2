@@ -99,7 +99,8 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
                         scalingObject.minInstances = {
                             _01bh: 0,
                             _02_247: 1,
-                            _03ha: 1
+                            _03ha: 1,
+                            _03_125: 0,
                         }[params.availability];
                         return JSON.stringify(scalingObject);
                     },
@@ -109,7 +110,7 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
                     description: 'Set DateTime Scaling Rules',
                     method: 'POST',
                     url : function(data,params) {
-                        if (!('availability' in params)){
+                        if (!('availability' in params) || params.availability === '_02_247'){
                             return '';
                         }
                         return '/api/v1beta0/user/{envId}/farm-roles/{farmRoleId}/scaling/'.replace('{envId}', params.envId).replace('{farmRoleId}', data.newFarmRoles[0].id);
@@ -120,12 +121,22 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
                             "ruleType": "DateAndTimeScalingRule",
                             "schedule": []
                         };
-                        if (params.availability === '_01bh'){
+                        if (params.availability === '_03_125'){
                             scalingRule.schedule.push({
                                 "daysOfWeek": [
                                     "mon","tue","wed","thu","fri"
                                 ],
                                 "end": "8:00 PM",
+                                "instanceCount": 1,
+                                "start": "8:00 AM"
+                            });
+                        }
+                        if (params.availability === '_01bh'){
+                            scalingRule.schedule.push({
+                                "daysOfWeek": [
+                                    "mon","tue","wed","thu","fri"
+                                ],
+                                "end": "6:00 PM",
                                 "instanceCount": 1,
                                 "start": "8:00 AM"
                             });
@@ -249,7 +260,8 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
                         scalingObject.minInstances = {
                             _01bh: 0,
                             _02_247: 1,
-                            _03ha: 1
+                            _03ha: 1,
+                            _03_125: 0,
                         }[params.availability];
                         return JSON.stringify(scalingObject);
                     },
@@ -259,7 +271,7 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
                     description: 'Set DateTime Scaling Rules',
                     method: 'POST',
                     url : function(data,params) {
-                        if (!('availability' in params)){
+                        if (!('availability' in params) || params.availability === '_02_247'){
                             return '';
                         }
                         return '/api/v1beta0/user/{envId}/farm-roles/{farmRoleId}/scaling/'.replace('{envId}', params.envId).replace('{farmRoleId}', data.newFarmRoles[0].id);
@@ -270,12 +282,22 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
                             "ruleType": "DateAndTimeScalingRule",
                             "schedule": []
                         };
-                        if (params.availability === '_01bh'){
+                        if (params.availability === '_03_125'){
                             scalingRule.schedule.push({
                                 "daysOfWeek": [
                                     "mon","tue","wed","thu","fri"
                                 ],
                                 "end": "8:00 PM",
+                                "instanceCount": 1,
+                                "start": "8:00 AM"
+                            });
+                        }
+                        if (params.availability === '_01bh'){
+                            scalingRule.schedule.push({
+                                "daysOfWeek": [
+                                    "mon","tue","wed","thu","fri"
+                                ],
+                                "end": "6:00 PM",
                                 "instanceCount": 1,
                                 "start": "8:00 AM"
                             });
