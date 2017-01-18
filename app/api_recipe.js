@@ -340,6 +340,28 @@ app.factory('apiRecipes', function() {
         ]
     });
 
+    apiRecipes.register('getAllProjects', {
+        data: {},
+        validateParams: apiRecipes.mkValidateParams(["envId"]),
+        steps: [
+            {
+                description: 'List all projects in current environment',
+                method: 'scroll',
+                url: function(data, params) {
+                    return '/api/v1beta0/user/{envId}/projects/'.replace('{envId}', params.envId);
+                },
+                done: function(response, data, params) {
+                    data.all_projs = response.data;
+                    data.projects = {};
+                    for (var i = 0; i < data.all_projs.length; i ++) {
+                        var project = data.all_projs[i];
+                        data.projects[project.id] = project.billingCode;
+                    }
+                }
+            }
+        ]
+    });
+
     apiRecipes.recipes = recipes;
     return apiRecipes;
 });

@@ -55,6 +55,25 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
                     done: function(response, data, params) {},
                 },
                 {
+                    description: 'Set farm billing code',
+                    method: 'PATCH',
+                    url: function(data, params) {
+                        if (!('projectCode' in params)) return '';
+                        return '/api/v1beta0/user/{envId}/farms/{farmId}/'.replace('{envId}', params.envId).replace('{farmId}', data.newFarm.id);
+                    },
+                    body: function(data, params) {
+                        var settings = angular.copy(params);
+                        delete settings.uid;
+                        return JSON.stringify({
+                            "project":{
+                                "id": settings.projectCode
+                            }
+                            ,
+                        });
+                    },
+                    done: function(response, data, params) {},
+                },
+                {
                     description: 'Get new farm role',
                     method: 'GET',
                     url: function(data, params) {
@@ -259,6 +278,25 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
                             description: JSON.stringify({
                                 settings: settings
                             }),
+                        });
+                    },
+                    done: function(response, data, params) {},
+                },
+                {
+                    description: 'Set farm billing code',
+                    method: 'PATCH',
+                    url: function(data, params) {
+                        if (!('projectCode' in params)) return '';
+                        return '/api/v1beta0/user/{envId}/farms/{farmId}/'.replace('{envId}', params.envId).replace('{farmId}', data.newFarm.id);
+                    },
+                    body: function(data, params) {
+                        var settings = angular.copy(params);
+                        delete settings.uid;
+                        return JSON.stringify({
+                            "project":{
+                                "id": settings.projectCode
+                            }
+                            ,
                         });
                     },
                     done: function(response, data, params) {},

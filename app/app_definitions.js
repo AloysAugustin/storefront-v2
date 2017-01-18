@@ -46,7 +46,8 @@ app.factory('appDefinitions', function(){
 			runtime: "Application lifetime",
 			platform: "Cloud platform",
 			justification: "Justification",
-			availabilityZone: "Availability Zone"
+			availabilityZone: "Availability Zone",
+			projectCode: "Billing Code"
 		}[identifier];
 	};
 	appDefinitions.isAdvancedUser = function(identifier){
@@ -138,6 +139,8 @@ app.factory('appDefinitions', function(){
 	var defaultYesNoList = {no:"No", yes:"Yes"};
 	var defaultPlatformList = {aws: "AWS", gce: "GCE"};
 	var defaultZoneList = {_01any:"Any", a: "A", b:"B", c:"C", d:"D", e:"E"};
+	var defaultProjectCodeList = {}; //TODO: This is a nasty hack. to be fixed
+	appDefinitions.defaultProjectCodeList = defaultProjectCodeList;
 	var defaultPriceFunction = function(settings){
 		var platform = "aws";
 		if (settings.platform) {
@@ -189,6 +192,7 @@ app.factory('appDefinitions', function(){
 		availabilityZoneList: defaultZoneList,
 		internetBox: 'Make this application accessible from the internet',
 		approvalNeeded: defaultApprovalFunction,
+		projectCodeList: defaultProjectCodeList,
 		approver: defaultApprover,
 		//Advanced User Options are here
 	};
