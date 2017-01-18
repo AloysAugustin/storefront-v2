@@ -133,7 +133,7 @@ app.factory('appDefinitions', function(){
 	var defaultFlavorList = {_01small:"Low", _02medium:"Medium", _03large:"High"};
 	var defaultAvailabilityList = {_01bh: "Business hours", _02_247: "24/7", _03ha: "HA"};
 	var defaultAvailabilityList2 = {_01bh: "Business hours", _02_247: "24/7", _03_125: "12/5 (8am-8pm)"};
-	var defaultRuntimeList = {_01_7days: "7 days", _02forever: "Forever"};
+	var defaultRuntimeList = {_01_7days: "7 days", _02forever: "Forever", _02_1day:"1 day"};
 	var defaultYesNoList = {no:"No", yes:"Yes"};
 	var defaultPlatformList = {aws: "AWS", gce: "GCE"};
 
@@ -160,7 +160,7 @@ app.factory('appDefinitions', function(){
 		return settings.flavor == '_03large' 
 		//|| settings.availability == '_03ha'
 		//|| settings.availability == '_02_247'
-		|| settings.runtime == '_02forever'
+		//|| settings.runtime == '_02forever'
 		|| settings.internet;
 	}
 

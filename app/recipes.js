@@ -155,7 +155,39 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
                         return '/api/v1beta0/user/{envId}/farms/{farmId}/actions/launch/'.replace('{envId}', params.envId).replace('{farmId}', data.newFarm.id);
                     },
                     done: function(response, data, params) {},
-                }
+                },
+                {
+                    description: 'Set launch date GV',
+                    method: 'POST',
+                    url: function(data, params) {
+                        return '/api/v1beta0/user/{envId}/farms/{farmId}/global-variables/'.replace('{envId}', params.envId).replace('{farmId}', data.newFarm.id);
+                    },
+                    body: function(data, params) {
+                        return JSON.stringify({
+                            name: 'STOREFRONT_LAUNCH_DATE',
+                            category: 'STOREFRONT',
+                            value: Math.floor((new Date()).getTime() / 1000).toString()
+                        });
+                    },
+                    done: function(response, data, params) {}
+                },
+                {
+                    description: 'Set lifetime GV',
+                    method: 'POST',
+                    url: function(data, params) {
+                        if (!('runtime' in params) || params.runtime === '_02forever') return '';
+                        return '/api/v1beta0/user/{envId}/farms/{farmId}/global-variables/'.replace('{envId}', params.envId).replace('{farmId}', data.newFarm.id);
+                    },
+                    body: function(data, params) {
+                        var val = {_02_1day: '86400', _01_7days: '604800'}[params.runtime];
+                        return JSON.stringify({
+                            name: 'STOREFRONT_LIFETIME',
+                            category: 'STOREFRONT',
+                            value: val
+                        });
+                    },
+                    done: function(response, data, params) {}
+                },
             ]
 
         };
@@ -316,7 +348,39 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
                         return '/api/v1beta0/user/{envId}/farms/{farmId}/actions/launch/'.replace('{envId}', params.envId).replace('{farmId}', data.newFarm.id);
                     },
                     done: function(response, data, params) {},
-                }
+                },
+                {
+                    description: 'Set launch date GV',
+                    method: 'POST',
+                    url: function(data, params) {
+                        return '/api/v1beta0/user/{envId}/farms/{farmId}/global-variables/'.replace('{envId}', params.envId).replace('{farmId}', data.newFarm.id);
+                    },
+                    body: function(data, params) {
+                        return JSON.stringify({
+                            name: 'STOREFRONT_LAUNCH_DATE',
+                            category: 'STOREFRONT',
+                            value: Math.floor((new Date()).getTime() / 1000).toString()
+                        });
+                    },
+                    done: function(response, data, params) {}
+                },
+                {
+                    description: 'Set lifetime GV',
+                    method: 'POST',
+                    url: function(data, params) {
+                        if (!('runtime' in params) || params.runtime === '_02forever') return '';
+                        return '/api/v1beta0/user/{envId}/farms/{farmId}/global-variables/'.replace('{envId}', params.envId).replace('{farmId}', data.newFarm.id);
+                    },
+                    body: function(data, params) {
+                        var val = {_02_1day: '86400', _01_7days: '604800'}[params.runtime];
+                        return JSON.stringify({
+                            name: 'STOREFRONT_LIFETIME',
+                            category: 'STOREFRONT',
+                            value: val
+                        });
+                    },
+                    done: function(response, data, params) {}
+                },
             ]
 
         };
