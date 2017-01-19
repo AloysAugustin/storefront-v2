@@ -25,7 +25,16 @@ app.controller('StorefrontController', [
 
   $scope.envIdChanged = function(envId) {
     $scope.apiSettings.envId = envId;
-    $scope.fetchCatalog();
+    back.getAllProjects($scope.apiSettings, function(data){
+              //Clear the projectList
+              console.log("Got projects");
+              for (var member in apps.defaultProjectCodeList) delete apps.defaultProjectCodeList[member];
+              for (var p in data.projects) apps.defaultProjectCodeList[p] = data.projects[p];
+              $scope.fetchCatalog();
+          },
+          function(){
+              console.log("Failed to fetch all projects");
+          });
     $scope.fetchAllFarms();
   }
   /*
@@ -52,7 +61,8 @@ app.controller('StorefrontController', [
         $scope.apiSettings.email = data.email;
         $scope.availableEnvs = data.envs;
         for (var env in $scope.availableEnvs) {
-          $scope.apiSettings.envId = env;
+          //$scope.apiSettings.envId = env;
+          $scope.envIdChanged(env);
           break;
         }
         console.log('Detected User : '+ data.email);
@@ -148,7 +158,7 @@ app.controller('StorefrontController', [
         if (farm.name.startsWith('[PENDING_APPROVAL]')) {
           farm.name = farm.name.replace('[PENDING_APPROVAL]', '');
           status = 'pending_approval';
-        } else if (farm.running_servers.length > 0) {
+        } else if (farm.running_servers.length > 0 || farm.status === 'running') {
           status = 'running';
           readOnlyProperties.endpoints = {};
           for (j = 0; j < farm.farmRoles.length; j ++) {

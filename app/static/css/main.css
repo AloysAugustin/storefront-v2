@@ -116,7 +116,7 @@ input[type='email']:focus, input[type='number']:focus, input[type='password']:fo
 .btn-cloud {
   background-color: white;
   color: #606C76;
-  width: 225px;
+  min-width: 150px;
   border: 1px solid #092EBB;
 }
 

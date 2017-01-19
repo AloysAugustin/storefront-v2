@@ -142,7 +142,39 @@ app.factory('apiRecipes', function() {
     }
 
     //apiRecipes.register('stopFarm', makeFarmOp('POST', 'actions/terminate/'));
-    apiRecipes.register('startFarm', makeFarmOp('POST', 'actions/launch/'));
+    apiRecipes.register('startFarm', {
+        data: {},   //Used to store data that needs to be saved across steps, and is passed to the success callback
+        validateParams: apiRecipes.mkValidateParams(['envId', 'farmId']),
+        steps: [
+            {
+                description: 'Start farm',
+                method: 'POST',
+                url: function(data, params) {
+                    return '/api/v1beta0/user/{envId}/farms/{farmId}/actions/launch/'.replace('{envId}', params.envId).replace('{farmId}', params.farmId);
+                },
+                done: function(response, data, params) {
+                    if (response) {
+                        data.result = response.data;
+                    }
+                }
+            },
+            {
+                description: 'Set launch date GV',
+                method: 'POST',
+                url: function(data, params) {
+                    return '/api/v1beta0/user/{envId}/farms/{farmId}/global-variables/'.replace('{envId}', params.envId).replace('{farmId}', params.farmId);
+                },
+                body: function(data, params) {
+                    return JSON.stringify({
+                        name: 'STOREFRONT_LAUNCH_DATE',
+                        category: 'STOREFRONT',
+                        value: Math.floor((new Date()).getTime() / 1000).toString()
+                    });
+                },
+                done: function(response, data, params) {}
+            }
+        ]
+    });
     apiRecipes.register('deleteFarm', makeFarmOp('DELETE', ''));
 
     apiRecipes.register('listFarms', {
@@ -229,6 +261,17 @@ app.factory('apiRecipes', function() {
                 done: function(response, data, params) {
                     return;
                 }
+            },
+            {
+                description: 'Delete launch date GV',
+                method: 'DELETE',
+                url: function(data, params) {
+                    if (params.approvalNeeded) {
+                        return '';
+                    }
+                    return '/api/v1beta0/user/{envId}/farms/{farmId}/global-variables/STOREFRONT_LAUNCH_DATE/'.replace('{envId}', params.envId).replace('{farmId}', params.farmId);
+                },
+                done: function(response, data, params) {}
             }
         ]
     });
@@ -295,6 +338,28 @@ app.factory('apiRecipes', function() {
                     return '/api/v1beta0/user/{envId}/farms/{farmId}/'.replace('{envId}', data.test_env.id).replace('{farmId}', data.farmId);
                 },
                 done: function(response, data, params) {
+                }
+            }
+        ]
+    });
+
+    apiRecipes.register('getAllProjects', {
+        data: {},
+        validateParams: apiRecipes.mkValidateParams(["envId"]),
+        steps: [
+            {
+                description: 'List all projects in current environment',
+                method: 'scroll',
+                url: function(data, params) {
+                    return '/api/v1beta0/user/{envId}/projects/'.replace('{envId}', params.envId);
+                },
+                done: function(response, data, params) {
+                    data.all_projs = response.data;
+                    data.projects = {};
+                    for (var i = 0; i < data.all_projs.length; i ++) {
+                        var project = data.all_projs[i];
+                        data.projects[project.id] = project.billingCode;
+                    }
                 }
             }
         ]
