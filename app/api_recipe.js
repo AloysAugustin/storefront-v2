@@ -266,6 +266,9 @@ app.factory('apiRecipes', function() {
                 description: 'Delete launch date GV',
                 method: 'DELETE',
                 url: function(data, params) {
+                    if (params.approvalNeeded) {
+                        return '';
+                    }
                     return '/api/v1beta0/user/{envId}/farms/{farmId}/global-variables/STOREFRONT_LAUNCH_DATE/'.replace('{envId}', params.envId).replace('{farmId}', params.farmId);
                 },
                 done: function(response, data, params) {}
