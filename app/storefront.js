@@ -25,7 +25,16 @@ app.controller('StorefrontController', [
 
   $scope.envIdChanged = function(envId) {
     $scope.apiSettings.envId = envId;
-    $scope.fetchCatalog();
+    back.getAllProjects($scope.apiSettings, function(data){
+              //Clear the projectList
+              console.log("Got projects");
+              for (var member in apps.defaultProjectCodeList) delete apps.defaultProjectCodeList[member];
+              for (var p in data.projects) apps.defaultProjectCodeList[p] = data.projects[p];
+              $scope.fetchCatalog();
+          },
+          function(){
+              console.log("Failed to fetch all projects");
+          });
     $scope.fetchAllFarms();
   }
   /*
@@ -52,7 +61,8 @@ app.controller('StorefrontController', [
         $scope.apiSettings.email = data.email;
         $scope.availableEnvs = data.envs;
         for (var env in $scope.availableEnvs) {
-          $scope.apiSettings.envId = env;
+          //$scope.apiSettings.envId = env;
+          $scope.envIdChanged(env);
           break;
         }
         console.log('Detected User : '+ data.email);

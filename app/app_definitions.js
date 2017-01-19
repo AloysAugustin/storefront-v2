@@ -46,7 +46,8 @@ app.factory('appDefinitions', function(){
 			runtime: "Application lifetime",
 			platform: "Cloud platform",
 			justification: "Justification",
-			availabilityZone: "Availability Zone"
+			availabilityZone: "Availability Zone",
+			projectCode: "Billing Code"
 		}[identifier];
 	};
 	appDefinitions.isAdvancedUser = function(identifier){
@@ -133,11 +134,13 @@ app.factory('appDefinitions', function(){
 
 	var defaultFlavorList = {_01small:"Low", _02medium:"Medium", _03large:"High"};
 	var defaultAvailabilityList = {_01bh: "Business hours", _02_247: "24/7", _03ha: "HA"};
-	var defaultAvailabilityList2 = {_01bh: "Business hours", _02_247: "24/7", _03_125: "12/5 (8am-8pm)"};
-	var defaultRuntimeList = {_01_7days: "7 days", _02forever: "Forever", _02_1day:"1 day"};
+	var defaultAvailabilityList2 = {_01bh: "Business hours", _02_125: "12/5 (8am-8pm)", _02_247: "24/7"};
+	var defaultRuntimeList = {_01_1day:"1 day", _02_7days: "7 days", _03forever: "Forever"};
 	var defaultYesNoList = {no:"No", yes:"Yes"};
 	var defaultPlatformList = {aws: "AWS", gce: "GCE"};
 	var defaultZoneList = {_01any:"Any", a: "A", b:"B", c:"C", d:"D", e:"E"};
+	var defaultProjectCodeList = {}; //TODO: This is a nasty hack. to be fixed
+	appDefinitions.defaultProjectCodeList = defaultProjectCodeList;
 	var defaultPriceFunction = function(settings){
 		var platform = "aws";
 		if (settings.platform) {
@@ -189,6 +192,7 @@ app.factory('appDefinitions', function(){
 		availabilityZoneList: defaultZoneList,
 		internetBox: 'Make this application accessible from the internet',
 		approvalNeeded: defaultApprovalFunction,
+		projectCodeList: defaultProjectCodeList,
 		approver: defaultApprover,
 		//Advanced User Options are here
 	};
