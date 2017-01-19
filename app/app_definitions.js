@@ -180,9 +180,9 @@ app.factory('appDefinitions', function(){
 
 	var stdLinuxDef = {
 		name: "Standard Linux Instance",
-		logoUrl: "http://design.ubuntu.com/wp-content/uploads/ubuntu-logo112.png",
+		logoUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Tux.svg/200px-Tux.svg.png",
 		price: defaultPriceFunction,
-		environment: 1,
+		environment: 2,
 		recipeId: 'stdLinux',
 		description: "Just a Linux Server",
 		flavorList: defaultFlavorList,
@@ -196,6 +196,25 @@ app.factory('appDefinitions', function(){
 		//Advanced User Options are here
 	};
 	appDefinitions.registerDef(stdLinuxDef);
+
+    var stdWinDef = {
+        name: "Standard Windows Instance",
+        logoUrl: "https://www.seeklogo.net/wp-content/uploads/2012/12/windows-8-icon-logo-vector-400x400.png",
+        price: defaultPriceFunction,
+        environment: 2,
+        recipeId: 'stdWin',
+        description: "Just a Windows Server",
+        //flavorList: defaultFlavorList,
+        approvalNeeded: never,
+        availabilityList: defaultAvailabilityList2,
+        runtimeList: defaultRuntimeList,
+        platformList: { aws:"AWS", azure:"Azure" },
+        availabilityZoneList: defaultZoneList,
+        projectCodeList: defaultProjectCodeList,
+        approver: defaultApprover,
+        //Advanced User Options are here
+    };
+    appDefinitions.registerDef(stdWinDef);
 
 	return appDefinitions;
 });
