@@ -178,24 +178,24 @@ app.factory('appDefinitions', function(){
 
 	var defaultApprover = 'example@example.com';
 
-	var ubuntuDef = {
-		name: "Ubuntu instance",
+	var stdLinuxDef = {
+		name: "Standard Linux Instance",
 		logoUrl: "http://design.ubuntu.com/wp-content/uploads/ubuntu-logo112.png",
 		price: defaultPriceFunction,
 		environment: 1,
-		recipeId: 'ubuntu',
-		description: "Just an Ubuntu Server",
+		recipeId: 'stdLinux',
+		description: "Just a Linux Server",
 		flavorList: defaultFlavorList,
 		approvalNeeded: never,
 		availabilityList: defaultAvailabilityList2,
 		runtimeList: defaultRuntimeList,
-		platformList: defaultPlatformList,
+		platformList: { vmware:"VMware" },
 		availabilityZoneList: defaultZoneList,
 		projectCodeList: defaultProjectCodeList,
 		approver: defaultApprover,
 		//Advanced User Options are here
 	};
-	appDefinitions.registerDef(ubuntuDef);
+	appDefinitions.registerDef(stdLinuxDef);
 
 	return appDefinitions;
 });

@@ -458,6 +458,6 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
         };
     }
 
-    apiRecipes.register('ubuntu', mkStdFarmRecipe(1));
+    apiRecipes.register('stdLinux', mkStdFarmRecipe(1));
 }]);
 
