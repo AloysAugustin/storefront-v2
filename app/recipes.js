@@ -460,6 +460,6 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
     }
 
     apiRecipes.register('stdLinux', mkMultiPlatformFarmRecipe({vmware:1141}));
-    apiRecipes.register('stdWin', mkMultiPlatformFarmRecipe({aws:1141, azure:1141}));
+    apiRecipes.register('stdWin', mkMultiPlatformFarmRecipe({aws:10, azure:11}));
 }]);
 

@@ -218,10 +218,10 @@ app.factory('appDefinitions', function(){
 	appDefinitions.registerDef(stdLinuxDef);
 
     var stdWinDef = {
-        name: "Standard Windows Instance",
+        name: "Standard Windows Instance 1",
         logoUrl: "https://www.seeklogo.net/wp-content/uploads/2012/12/windows-8-icon-logo-vector-400x400.png",
         price: defaultPriceFunction,
-        environment: 2,
+        environment: 8,
         recipeId: 'stdWin',
         description: "Just a Windows Server",
         //flavorList: defaultFlavorList,
