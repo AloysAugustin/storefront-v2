@@ -7,7 +7,7 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
             data: {
                 initialFarmId: initialFarmId
             },
-            validateParams: apiRecipes.mkValidateParams(['uid', 'envId', 'flavor', 'name', 'approval_required', 'email']),
+            validateParams: apiRecipes.mkValidateParams(['uid', 'envId', 'name', 'approval_required', 'email']),
             steps: [
                 {
                     description: 'Clone base farm',
@@ -88,6 +88,7 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
                     description: 'Set new farm role instance type',
                     method: 'PATCH',
                     url: function(data, params) {
+                        if (data.newFarmRoles[0].platform !== 'ec2' || !('flavor' in params)) return '';
                         return '/api/v1beta0/user/{envId}/farm-roles/{farmRoleId}/instance/'.replace('{envId}', params.envId).replace('{farmRoleId}', data.newFarmRoles[0].id);
                     },
                     body: function(data, params) {
@@ -234,7 +235,7 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
             data: {
                 initialFarmIds: initialFarmIds
             },
-            validateParams: apiRecipes.mkValidateParams(['uid', 'envId', 'name', 'flavor', 'approval_required', 'platform']),
+            validateParams: apiRecipes.mkValidateParams(['uid', 'envId', 'name', 'approval_required', 'platform']),
             steps: [
                 {
                     description: 'Clone base farm',
@@ -316,7 +317,7 @@ app.factory("recipes", ["apiRecipes",function(apiRecipes){
                     description: 'Set new farm role instance type',
                     method: 'PATCH',
                     url: function(data, params) {
-                        if (params.platform != 'aws') return ''; // Setting instance type supported only on aws
+                        if (params.platform != 'aws' || !('flavor' in params)) return ''; // Setting instance type supported only on aws
                         return '/api/v1beta0/user/{envId}/farm-roles/{farmRoleId}/instance/'.replace('{envId}', params.envId).replace('{farmRoleId}', data.newFarmRoles[0].id);
                     },
                     body: function(data, params) {

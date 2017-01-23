@@ -143,21 +143,41 @@ app.factory('appDefinitions', function(){
 	appDefinitions.defaultProjectCodeList = defaultProjectCodeList;
 	var defaultPriceFunction = function(settings){
 		var platform = "aws";
+        var priceDict = {
+            aws: {
+                _01small: "1.61",
+                _02medium: "3.22",
+                _03large: "6.44"
+            },
+            gce: {
+                _01small: "1.85",
+                _02medium: "3.70",
+                _03large: "7.40"
+            },
+            vmware: {
+                _01small: "0.00",
+                _02medium: "0.00",
+                _03large: "0.00"
+            },
+            azure: {
+                _01small: "0.00",
+                _02medium: "0.00",
+                _03large: "0.00"
+            }
+
+        };
 		if (settings.platform) {
 			platform = settings.platform;
+		} else {
+			return "N/A";
 		}
-		return {
-			aws: {
-			 	_01small: "1.61",
-			 	_02medium: "3.22",
-			 	_03large: "6.44"
-			},
-			gce: {
-				_01small: "1.85",
-			 	_02medium: "3.70",
-			 	_03large: "7.40"
-			}
-		}[platform][settings.flavor];
+		if (!settings.flavor) {
+			return "N/A";
+		}
+        if (!priceDict[platform][settings.flavor]) {
+			return "N/A";
+		}
+        return priceDict[platform][settings.flavor];
 	}
 
 	var defaultApprovalFunction = function(settings) {
