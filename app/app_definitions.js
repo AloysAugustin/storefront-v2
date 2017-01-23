@@ -236,5 +236,24 @@ app.factory('appDefinitions', function(){
     };
     appDefinitions.registerDef(stdWinDef);
 
+    var rdsDef = {
+        name: "Standard RDS Instance ",
+        logoUrl: "https://www.percona.com/blog/wp-content/uploads/2016/07/Amazon-RDS-and-pt-online-schema-change.png",
+        price: defaultPriceFunction,
+        environment: 8,
+        recipeId: 'rds',
+        description: "Just an RDS Server",
+        //flavorList: defaultFlavorList,
+        approvalNeeded: never,
+        availabilityList: defaultAvailabilityList2,
+        runtimeList: defaultRuntimeList,
+        platformList: { aws:"AWS" },
+        //availabilityZoneList: defaultZoneList,
+        projectCodeList: defaultProjectCodeList,
+        approver: defaultApprover,
+        //Advanced User Options are here
+    };
+    appDefinitions.registerDef(rdsDef);
+
 	return appDefinitions;
 });
