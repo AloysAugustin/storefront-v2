@@ -1,4 +1,7 @@
 #!/bin/bash
+#!/bin/bash
+pushd $(dirname $0)/..
+
 echo "Enter Scalr URL:(e.g. https://demo.scalr.com/)"
 read SCALR_URL
 SCALR_URL_OAUTH=$SCALR_URL"public/oauth"
@@ -35,3 +38,5 @@ cat << EOF > config/credentials.json.tmp
   "envs": $SCALR_ENVS_NO_QUOTE
 }
 EOF
+
+popd
