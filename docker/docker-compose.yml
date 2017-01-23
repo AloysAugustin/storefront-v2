@@ -1,0 +1,22 @@
+version: '3'
+services:
+  nginx:
+    restart: always
+    build: 
+      context: '..'
+      dockerfile: docker/nginx/Dockerfile
+    image: storefront-nginx
+    ports:
+      - 80:80
+  uwsgi:
+    restart: always
+    build:
+      context: '..'
+      dockerfile: docker/uwsgi/Dockerfile
+    image: storefront-uwsgi
+  crond:
+    restart: always
+    build:
+      context: '..'
+      dockerfile: docker/crond/Dockerfile
+    image: storefront-crond
